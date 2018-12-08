@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    tools:context="com.violenthoboenterprises.blistful.MainActivity"
+    android:descendantFocusability="beforeDescendants"
+    android:background="@color/turquoise">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:layout_margin="10dp">
+
+    <RelativeLayout
+        android:id="@+id/adRow"
+        android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:descendantFocusability="blocksDescendants">
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            ads:adSize="SMART_BANNER"
+            ads:adUnitId="ca-app-pub-2378583121223638/3959260925"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/banner"
+            android:src="@drawable/banner"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:visibility="gone"
+            android:contentDescription="@string/accessBannerPromptingUser"
+            android:onClick="showPro"/>
+
+    </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/color_picker_border_white">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:descendantFocusability="blocksDescendants"
+            android:id="@+id/taskName"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_height="80dp"
+                android:layout_width="0dp"
+                android:layout_weight="8"
+                android:id="@+id/textView"
+                android:paddingLeft="15dp"
+                android:paddingTop="5dp"
+                android:textSize="25sp"
+                android:textColor="@color/gray"/>
+
+            <ImageView
+                android:id="@+id/completeWhite"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_weight="1"
+                android:layout_margin="8dp"
+                android:src="@drawable/tick_white"
+                android:clickable="true"
+                android:focusable="true"
+                android:onClick="complete"
+                android:soundEffectsEnabled="false"/>
+
+            <ImageView
+                android:id="@+id/completedWhite"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_weight="1"
+                android:layout_margin="8dp"
+                android:src="@drawable/tick_complete_white"
+                android:clickable="true"
+                android:focusable="true"
+                android:onClick="complete"
+                android:visibility="gone"
+                android:soundEffectsEnabled="false"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/statusLayout"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginBottom="5dp"
+            android:gravity="center"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_weight="1"
+                android:id="@+id/dueTextView"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:textColor="@color/gray"
+                android:textSize="17sp"/>
+
+            <RelativeLayout
+                android:id="@+id/checklistLayout"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:layout_marginRight="20dp">
+
+                <ImageView
+                    android:id="@+id/checklistClearWhite"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/subtasks_icon_light"
+                    android:contentDescription="@string/accessSubtasksIcon"
+                    android:visibility="gone"/>
+
+                <ImageView
+                    android:id="@+id/checklistKilled"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/subtasks_icon_killed"
+                    android:contentDescription="@string/accessSubtasksIcon"
+                    android:visibility="gone"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/noteLayout"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:layout_marginRight="20dp">
+
+                <ImageView
+                    android:id="@+id/noteClearWhite"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/note_icon_light"
+                    android:contentDescription="@string/accessNoteIcon"
+                    android:visibility="gone"/>
+
+                <ImageView
+                    android:id="@+id/noteKilled"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/note_icon_killed"
+                    android:contentDescription="@string/accessNoteIcon"
+                    android:visibility="gone"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/repeatLayout"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:layout_marginRight="20dp">
+
+                <ImageView
+                    android:id="@+id/repeatClearWhite"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/repeat_icon_light"
+                    android:contentDescription="@string/accessRepeatIcon"
+                    android:visibility="gone"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/dueLayout"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:layout_marginRight="35dp">
+
+                <ImageView
+                    android:id="@+id/dueClearWhite"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/due_icon_light"
+                    android:contentDescription="@string/accessDueIcon"
+                    android:visibility="gone"/>
+
+                <ImageView
+                    android:id="@+id/dueKilled"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/due_icon_killed"
+                    android:contentDescription="@string/accessDueIcon"
+                    android:visibility="gone"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/overdueLayout"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:visibility="gone"
+                android:layout_marginRight="35dp">
+
+                <ImageView
+                    android:id="@+id/overdueClearWhite"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/overdue_icon_light"
+                    android:contentDescription="@string/accessOverdueIcon"
+                    android:visibility="gone"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/snoozeLayout"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:visibility="gone"
+                android:layout_marginRight="35dp">
+
+                <ImageView
+                    android:id="@+id/snoozeClearWhite"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/snooze_icon_white"
+                    android:contentDescription="@string/accessSnoozeIcon"
+                    android:visibility="gone"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/turquoise">
+        <include
+            layout="@layout/task_properties_layout"
+            android:id="@+id/properties"
+            android:visibility="gone"/>
+        <include
+            layout="@layout/snooze_layout"
+            android:id="@+id/snoozeRow"
+            android:visibility="gone"/>
+        <include
+            layout="@layout/task_overdue_layout"
+            android:id="@+id/taskIsOverdue"
+            android:visibility="gone"/>
+    </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

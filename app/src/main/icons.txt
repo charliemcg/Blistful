@@ -1,0 +1,7 @@
+martini: Itim2101
+trolley: Freepik
+checklist: Dinosoftlabs
+posit: Freepik
+repeat: Freepik
+alarm clock: Freepik
+
