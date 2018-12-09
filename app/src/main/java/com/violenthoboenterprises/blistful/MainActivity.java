@@ -30,6 +30,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -419,6 +420,17 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 taskViewModel.delete(adapter.getTaskAt(viewHolder.getAdapterPosition()));
+//                Snackbar.make(viewHolder.itemView, "This is a snackbar", Snackbar.LENGTH_SHORT)
+//                        .setAction("UNDO", new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View view) {
+//                                Toast.makeText(MainActivity.this, "Undo deletion",
+//                                        Toast.LENGTH_SHORT).show();
+//                            }
+//                        })
+//                        .show();
+                String stringSnack = "Task deleted";
+                showSnackbar(stringSnack);
             }
         }).attachToRecyclerView(recyclerView);
 
@@ -917,6 +929,20 @@ public class MainActivity extends AppCompatActivity implements
 
         });
 
+    }
+
+    private void showSnackbar(String stringSnack) {
+        View view = findViewById(R.id.activityRoot);
+        Snackbar.make(view, stringSnack, Snackbar.LENGTH_SHORT)
+                .setAction("UNDO", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(MainActivity.this, "Reinstate task",
+                                Toast.LENGTH_LONG).show();
+                    }
+                })
+                .setActionTextColor(getResources().getColor(R.color.purple))
+                .show();
     }
 
     private void checkLightDark() {

@@ -17,7 +17,6 @@
         android:background="@color/turquoise"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.LightTheme"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
