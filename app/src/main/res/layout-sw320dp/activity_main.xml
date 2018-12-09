@@ -67,15 +67,21 @@
         android:id="@+id/taskNameEditText"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/purple"
-        android:paddingLeft="5dp"
-        android:maxLines="1"
-        android:maxLength="50"
-        android:inputType="textCapSentences"
         android:layout_alignParentBottom="true"
-        android:visibility="gone"
+        android:background="@color/purple"
         android:hint="@string/taskTitle"
-        android:imeOptions="actionDone"/>
+        android:imeOptions="actionDone"
+        android:inputType="textCapSentences"
+        android:maxLength="50"
+        android:maxLines="1"
+        android:paddingLeft="5dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/recyclerView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/toolbar_light"
+        app:layout_constraintVertical_bias="1.0" />
 
     <!--<RelativeLayout-->
         <!--android:layout_width="130dp"-->

@@ -66,15 +66,21 @@
         android:id="@+id/taskNameEditText"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/purple"
-        android:paddingLeft="5dp"
-        android:maxLines="1"
-        android:maxLength="50"
-        android:inputType="textCapSentences"
         android:layout_alignParentBottom="true"
-        android:visibility="gone"
+        android:background="@color/purple"
         android:hint="@string/taskTitle"
-        android:imeOptions="actionDone"/>
+        android:imeOptions="actionDone"
+        android:inputType="textCapSentences"
+        android:maxLength="50"
+        android:maxLines="1"
+        android:paddingLeft="5dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
 
     <!--<RelativeLayout-->
         <!--android:layout_width="130dp"-->
@@ -99,10 +105,18 @@
         android:layout_height="86dp"
         android:layout_gravity="bottom|end"
         android:layout_margin="32dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:src="@drawable/ic_add"
         app:backgroundTint="@color/purple"
-        tools:layout_editor_absoluteX="701dp"
-        tools:layout_editor_absoluteY="360dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.988"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.978" />
 
     <RelativeLayout
         android:id="@+id/toastView"

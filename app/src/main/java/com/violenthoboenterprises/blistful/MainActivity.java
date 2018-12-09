@@ -385,7 +385,7 @@ public class MainActivity extends AppCompatActivity implements
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainActivity.this, "Add new task", Toast.LENGTH_SHORT).show();
+                addTask();
             }
         });
 
@@ -753,166 +753,171 @@ public class MainActivity extends AppCompatActivity implements
                     //Clear text from text box
                     taskNameEditText.setText("");
 
-                    //Add new task in task list
-                    createTask(taskName, taskList, taskBeingEdited);
-
-                    //Checks to see if there are still tasks available
-                    noTasksLeft();
+//                    //Add new task in task list
+//                    createTask(taskName, taskList, taskBeingEdited);
+//
+//                    //Checks to see if there are still tasks available
+//                    noTasksLeft();
 
                     if (!taskName.equals("")) {
 
-                        Calendar timeNow = new GregorianCalendar();
+                        Log.d(TAG, "Create task");
 
-                        //create records in database
-                        db.insertData(Integer.parseInt(sortedIDs
-                                        .get(taskList.size() - 1)), "", taskName,
-                                Integer.parseInt(sortedIDs.get(taskList.size() - 1)),
-                                String.valueOf(timeNow.getTimeInMillis() / 1000));
-                        db.insertAlarmData(Integer.parseInt(sortedIDs
-                                        .get(taskList.size() - 1)), "", "",
-                                "", "", "", "");
-                        db.insertSnoozeData(Integer.parseInt(sortedIDs
-                                        .get(taskList.size() - 1)), "", "",
-                                "", "", "", "");
 
-                        showDueDates = false;
 
-                        reorderList = true;
+//                        Calendar timeNow = new GregorianCalendar();
 
-                        if (MainActivity.renameHint <= 2) {
-                            if (MainActivity.renameHint == 2) {
-                                MainActivity.toast.setText(R.string.longClickToRename);
-                                final Handler handler = new Handler();
+//                        //create records in database
+//                        db.insertData(Integer.parseInt(sortedIDs
+//                                        .get(taskList.size() - 1)), "", taskName,
+//                                Integer.parseInt(sortedIDs.get(taskList.size() - 1)),
+//                                String.valueOf(timeNow.getTimeInMillis() / 1000));
+//                        db.insertAlarmData(Integer.parseInt(sortedIDs
+//                                        .get(taskList.size() - 1)), "", "",
+//                                "", "", "", "");
+//                        db.insertSnoozeData(Integer.parseInt(sortedIDs
+//                                        .get(taskList.size() - 1)), "", "",
+//                                "", "", "", "");
 
-                                final Runnable runnable = new Runnable() {
-                                    public void run() {
-                                        hint.start();
-                                        MainActivity.toastView.startAnimation(AnimationUtils
-                                                .loadAnimation(MainActivity.this,
-                                                        R.anim.enter_from_right_fast));
-                                        MainActivity.toastView.setVisibility(View.VISIBLE);
-                                        final Handler handler2 = new Handler();
-                                        final Runnable runnable2 = new Runnable() {
-                                            public void run() {
-                                                MainActivity.toastView.startAnimation
-                                                        (AnimationUtils.loadAnimation
-                                                                (MainActivity.this,
-                                                                        android.R.anim.fade_out));
-                                                MainActivity.toastView.setVisibility(View.GONE);
-                                            }
-                                        };
-                                        handler2.postDelayed(runnable2, 2500);
-                                    }
-                                };
+//                        showDueDates = false;
 
-                                handler.postDelayed(runnable, 500);
-                            } else {
-                                if (showMotivation) {
-                                    //showing motivational toast
-                                    int i = random.nextInt(7);
-                                    while (motivation[i].equals(lastToast)) {
-                                        i = random.nextInt(7);
-                                    }
-                                    lastToast = motivation[i];
-                                    toast.setText(motivation[i]);
-                                    final Handler handler = new Handler();
+//                        reorderList = true;
 
-                                    final Runnable runnable = new Runnable() {
-                                        public void run() {
-                                            if (!mute) {
-                                                sweep.start();
-                                            }
-                                            toastView.startAnimation(AnimationUtils.loadAnimation
-                                                    (MainActivity.this,
-                                                            R.anim.enter_from_right_fast));
-                                            toastView.setVisibility(View.VISIBLE);
-                                            final Handler handler2 = new Handler();
-                                            final Runnable runnable2 = new Runnable() {
-                                                public void run() {
-                                                    toastView.startAnimation(
-                                                            AnimationUtils.loadAnimation
-                                                                    (MainActivity.this,
-                                                                            android.R.anim.fade_out));
-                                                    toastView.setVisibility(View.GONE);
-                                                }
-                                            };
-                                            handler2.postDelayed(runnable2, 1500);
-                                        }
-                                    };
+//                        if (MainActivity.renameHint <= 2) {
+//                            if (MainActivity.renameHint == 2) {
+//                                MainActivity.toast.setText(R.string.longClickToRename);
+//                                final Handler handler = new Handler();
 
-                                    handler.postDelayed(runnable, 500);
-                                }
-                            }
-                            MainActivity.renameHint++;
-                            MainActivity.db.updateRenameHint(MainActivity.renameHint);
+//                                final Runnable runnable = new Runnable() {
+//                                    public void run() {
+//                                        hint.start();
+//                                        MainActivity.toastView.startAnimation(AnimationUtils
+//                                                .loadAnimation(MainActivity.this,
+//                                                        R.anim.enter_from_right_fast));
+//                                        MainActivity.toastView.setVisibility(View.VISIBLE);
+//                                        final Handler handler2 = new Handler();
+//                                        final Runnable runnable2 = new Runnable() {
+//                                            public void run() {
+//                                                MainActivity.toastView.startAnimation
+//                                                        (AnimationUtils.loadAnimation
+//                                                                (MainActivity.this,
+//                                                                        android.R.anim.fade_out));
+//                                                MainActivity.toastView.setVisibility(View.GONE);
+//                                            }
+//                                        };
+//                                        handler2.postDelayed(runnable2, 2500);
+//                                    }
+//                                };
+
+//                                handler.postDelayed(runnable, 500);
+//                            } else {
+//                                if (showMotivation) {
+//                                    //showing motivational toast
+//                                    int i = random.nextInt(7);
+//                                    while (motivation[i].equals(lastToast)) {
+//                                        i = random.nextInt(7);
+//                                    }
+//                                    lastToast = motivation[i];
+//                                    toast.setText(motivation[i]);
+//                                    final Handler handler = new Handler();
+//
+//                                    final Runnable runnable = new Runnable() {
+//                                        public void run() {
+//                                            if (!mute) {
+//                                                sweep.start();
+//                                            }
+//                                            toastView.startAnimation(AnimationUtils.loadAnimation
+//                                                    (MainActivity.this,
+//                                                            R.anim.enter_from_right_fast));
+//                                            toastView.setVisibility(View.VISIBLE);
+//                                            final Handler handler2 = new Handler();
+//                                            final Runnable runnable2 = new Runnable() {
+//                                                public void run() {
+//                                                    toastView.startAnimation(
+//                                                            AnimationUtils.loadAnimation
+//                                                                    (MainActivity.this,
+//                                                                            android.R.anim.fade_out));
+//                                                    toastView.setVisibility(View.GONE);
+//                                                }
+//                                            };
+//                                            handler2.postDelayed(runnable2, 1500);
+//                                        }
+//                                    };
+
+//                                    handler.postDelayed(runnable, 500);
+//                                }
+//                            }
+//                            MainActivity.renameHint++;
+//                            MainActivity.db.updateRenameHint(MainActivity.renameHint);
                         } else {
-                            if (showMotivation) {
-                                //showing motivational toast
-                                int i = random.nextInt(7);
-                                while (motivation[i].equals(lastToast)) {
-                                    i = random.nextInt(7);
-                                }
-                                lastToast = motivation[i];
-                                toast.setText(motivation[i]);
-                                final Handler handler = new Handler();
 
-                                final Runnable runnable = new Runnable() {
-                                    public void run() {
-                                        if (!mute) {
-                                            sweep.start();
-                                        }
-                                        toastView.startAnimation(AnimationUtils.loadAnimation
-                                                (MainActivity.this,
-                                                        R.anim.enter_from_right_fast));
-                                        toastView.setVisibility(View.VISIBLE);
-                                        final Handler handler2 = new Handler();
-                                        final Runnable runnable2 = new Runnable() {
-                                            public void run() {
-                                                toastView.startAnimation
-                                                        (AnimationUtils.loadAnimation
-                                                                (MainActivity.this,
-                                                                        android.R.anim.fade_out));
-                                                toastView.setVisibility(View.GONE);
-                                            }
-                                        };
-                                        handler2.postDelayed(runnable2, 1500);
-                                    }
-                                };
-
-                                handler.postDelayed(runnable, 500);
-                            }
+//                            if (showMotivation) {
+//                                //showing motivational toast
+//                                int i = random.nextInt(7);
+//                                while (motivation[i].equals(lastToast)) {
+//                                    i = random.nextInt(7);
+//                                }
+//                                lastToast = motivation[i];
+//                                toast.setText(motivation[i]);
+//                                final Handler handler = new Handler();
+//
+//                                final Runnable runnable = new Runnable() {
+//                                    public void run() {
+//                                        if (!mute) {
+//                                            sweep.start();
+//                                        }
+//                                        toastView.startAnimation(AnimationUtils.loadAnimation
+//                                                (MainActivity.this,
+//                                                        R.anim.enter_from_right_fast));
+//                                        toastView.setVisibility(View.VISIBLE);
+//                                        final Handler handler2 = new Handler();
+//                                        final Runnable runnable2 = new Runnable() {
+//                                            public void run() {
+//                                                toastView.startAnimation
+//                                                        (AnimationUtils.loadAnimation
+//                                                                (MainActivity.this,
+//                                                                        android.R.anim.fade_out));
+//                                                toastView.setVisibility(View.GONE);
+//                                            }
+//                                        };
+//                                        handler2.postDelayed(runnable2, 1500);
+//                                    }
+//                                };
+//
+//                                handler.postDelayed(runnable, 500);
+//                            }
                         }
-                    }
+//                    }
 
-                    theListView.setAdapter(theAdapter[0]);
+//                    theListView.setAdapter(theAdapter[0]);
 
                     return true;
 
-                    //Actions to take when editing existing task
+                //Actions to take when editing existing task
                 } else if (actionId == EditorInfo.IME_ACTION_DONE) {
 
-                    if (!mute) {
-                        blip.start();
-                    }
-
-                    vibrate.vibrate(50);
-
-                    taskNameEditText.setVisibility(View.GONE);
-
-                    //Hide keyboard
-                    keyboard.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-
-                    //Getting user data
-                    String editedTaskString = taskNameEditText.getText().toString();
-
-                    createTask(editedTaskString, taskList, taskBeingEdited);
-
-                    theListView.setAdapter(theAdapter[0]);
-
-                    tasksAreClickable = true;
-
-                    //Marking editing as complete
-                    taskBeingEdited = false;
+//                    if (!mute) {
+//                        blip.start();
+//                    }
+//
+//                    vibrate.vibrate(50);
+//
+//                    taskNameEditText.setVisibility(View.GONE);
+//
+//                    //Hide keyboard
+//                    keyboard.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+//
+//                    //Getting user data
+//                    String editedTaskString = taskNameEditText.getText().toString();
+//
+//                    createTask(editedTaskString, taskList, taskBeingEdited);
+//
+//                    theListView.setAdapter(theAdapter[0]);
+//
+//                    tasksAreClickable = true;
+//
+//                    //Marking editing as complete
+//                    taskBeingEdited = false;
 
                     //Bringing back the 'add' button
 //                    params.height = addHeight;
@@ -928,6 +933,29 @@ public class MainActivity extends AppCompatActivity implements
             }
 
         });
+
+    }
+
+    //Actions to occur when fab clicked
+    private void addTask() {
+
+        taskBeingEdited = false;
+
+        goToMyAdapter = true;
+
+        vibrate.vibrate(50);
+
+        //Show keyboard
+        keyboard.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+
+        //Set return button to 'Done'
+        taskNameEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+
+        //Ensure that there is no previous text in the text box
+        taskNameEditText.setText("");
+
+        //Actions to occur when keyboard is showing
+        checkKeyboardShowing();
 
     }
 
@@ -1405,6 +1433,9 @@ public class MainActivity extends AppCompatActivity implements
 
                     restoreNormalListView = true;
 
+                    //remove fab when keybaord is up
+                    fab.setVisibility(View.GONE);
+
                 } else if (restoreNormalListView) {
 
                     fadeTasks = false;
@@ -1425,6 +1456,9 @@ public class MainActivity extends AppCompatActivity implements
 
                     //Once editing is complete the adapter can update the list
                     goToMyAdapter = true;
+
+                    //fab must be visible when keyboard is down
+                    fab.setVisibility(View.VISIBLE);
 
                 }
 
