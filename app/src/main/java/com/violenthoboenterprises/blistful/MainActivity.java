@@ -388,7 +388,7 @@ public class MainActivity extends AppCompatActivity implements
         recyclerView.setHasFixedSize(true);
 
         //setting up the adapter
-        final TaskAdapter adapter = new TaskAdapter();
+        final TaskAdapter adapter = new TaskAdapter(this);
         recyclerView.setAdapter(adapter);
 
         //observing the recycler view items for changes
@@ -419,12 +419,13 @@ public class MainActivity extends AppCompatActivity implements
         }).attachToRecyclerView(recyclerView);
 
         //show task properties on click
-        adapter.setOnItemClickListener(new TaskAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Task task) {
-                Toast.makeText(MainActivity.this, task.getTask() + " clicked", Toast.LENGTH_SHORT).show();
-            }
-        });
+//        adapter.setOnItemClickListener(new TaskAdapter.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(Task task) {
+//                Toast.makeText(MainActivity.this, "Show properties", Toast.LENGTH_SHORT).show();
+//
+//            }
+//        });
 
         //getting app-wide data
         Cursor dbResult = MainActivity.db.getUniversalData();
@@ -744,8 +745,6 @@ public class MainActivity extends AppCompatActivity implements
 //                    noTasksLeft();
 
                     if (!taskName.equals("")) {
-
-                        Log.d(TAG, "Create task");
 
                         mainActivityPresenter.addTask(taskName);
 

@@ -1,12 +1,18 @@
 package com.violenthoboenterprises.blistful.model;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.violenthoboenterprises.blistful.MainActivity;
 import com.violenthoboenterprises.blistful.R;
 
 import java.util.ArrayList;
@@ -20,6 +26,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
     private final static String TAG = "TaskAdapter";
     private List<Task> tasks = new ArrayList<>();
     private OnItemClickListener listener;
+    private Context context;
+
+    public TaskAdapter(Context context) {
+        this.context = context;
+    }
 
     @NonNull
     @Override
@@ -30,9 +41,19 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
     }
 
     @Override //Binding data to the view
-    public void onBindViewHolder(TaskHolder holder, int position) {
+    public void onBindViewHolder(final TaskHolder holder, int position) {
         Task currentTask = tasks.get(position);
         holder.tvTask.setText(currentTask.getTask());
+        holder.taskLayout.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                if(holder.taskProperties.getVisibility() == View.VISIBLE) {
+                    holder.taskProperties.setVisibility(View.GONE);
+                }else{
+                    holder.taskProperties.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
     @Override
@@ -50,9 +71,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
     //Building the item view
     class TaskHolder extends RecyclerView.ViewHolder {
         private TextView tvTask;
-        public TaskHolder(View itemView) {
+        private LinearLayout taskLayout;
+        private TableRow taskProperties;
+        public TaskHolder(final View itemView) {
             super(itemView);
             tvTask = itemView.findViewById(R.id.tvTask);
+            taskLayout = itemView.findViewById(R.id.taskLayout);
+            taskProperties = itemView.findViewById(R.id.properties);
             itemView.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View view){

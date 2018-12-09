@@ -7,7 +7,8 @@
     xmlns:ads="http://schemas.android.com/apk/res-auto"
     tools:context="com.violenthoboenterprises.blistful.MainActivity"
     android:descendantFocusability="beforeDescendants"
-    android:background="@color/turquoise">
+    android:background="@color/turquoise"
+    android:id="@+id/taskLayout">
 
     <LinearLayout
         android:layout_width="match_parent"
