@@ -1,15 +1,13 @@
-package com.violenthoboenterprises.blistful;
+package com.violenthoboenterprises.blistful.model;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.violenthoboenterprises.blistful.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,12 +40,12 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         return tasks.size();
     }
 
-    void setTasks(List<Task> tasks){
+    public void setTasks(List<Task> tasks){
         this.tasks = tasks;
         notifyDataSetChanged();
     }
 
-    Task getTaskAt(int position){return tasks.get(position);}
+    public Task getTaskAt(int position){return tasks.get(position);}
 
     //Building the item view
     class TaskHolder extends RecyclerView.ViewHolder {

@@ -1,4 +1,4 @@
-package com.violenthoboenterprises.blistful;
+package com.violenthoboenterprises.blistful.model;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;

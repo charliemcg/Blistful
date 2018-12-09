@@ -1,4 +1,4 @@
-package com.violenthoboenterprises.blistful;
+package com.violenthoboenterprises.blistful.presenter;
 
 import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Database;
@@ -8,6 +8,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
+import com.violenthoboenterprises.blistful.model.Task;
+
 /*
  * This is where the database is built
  */
@@ -16,10 +18,10 @@ public abstract class TaskDatabase extends RoomDatabase {
 
     private static TaskDatabase instance;
 
-    abstract TaskDao taskDao();
+    public abstract TaskDao taskDao();
 
     //Instance
-    static synchronized TaskDatabase getInstance(Context context){
+    public static synchronized TaskDatabase getInstance(Context context){
         if(instance == null){
             instance = Room.databaseBuilder(context.getApplicationContext(),
                     TaskDatabase.class, "task_database")
@@ -31,7 +33,7 @@ public abstract class TaskDatabase extends RoomDatabase {
     }
 
     //Callback
-    private static RoomDatabase.Callback roomCallback = new RoomDatabase.Callback(){
+    public static RoomDatabase.Callback roomCallback = new RoomDatabase.Callback(){
         @Override
         public void onCreate(@NonNull SupportSQLiteDatabase db){
             super.onCreate(db);

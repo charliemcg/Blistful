@@ -1,40 +1,26 @@
 package com.violenthoboenterprises.blistful;
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteStatement;
-import android.graphics.Color;
 import android.graphics.Rect;
-import android.graphics.drawable.GradientDrawable;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.ActionMenuView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -52,10 +38,8 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -67,19 +51,22 @@ import android.widget.Toast;
 import com.anjlab.android.iab.v3.BillingProcessor;
 import com.anjlab.android.iab.v3.TransactionDetails;
 import com.google.android.gms.ads.MobileAds;
+import com.violenthoboenterprises.blistful.model.MainActivityPresenterImpl;
+import com.violenthoboenterprises.blistful.model.Task;
+import com.violenthoboenterprises.blistful.model.TaskAdapter;
+import com.violenthoboenterprises.blistful.model.TaskViewModel;
+import com.violenthoboenterprises.blistful.presenter.MainActivityPresenter;
+import com.violenthoboenterprises.blistful.view.MainActivityView;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Random;
 
 import static android.database.DatabaseUtils.queryNumEntries;
 
 public class MainActivity extends AppCompatActivity implements
-        BillingProcessor.IBillingHandler, AbsListView.OnScrollListener {
+        BillingProcessor.IBillingHandler, AbsListView.OnScrollListener, MainActivityView {
 
     //Indicates if a tasks properties are showing
     static boolean taskPropertiesShowing;
@@ -286,6 +273,8 @@ public class MainActivity extends AppCompatActivity implements
 
     FloatingActionButton fab;
 
+    private MainActivityPresenter mainActivityPresenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -303,6 +292,10 @@ public class MainActivity extends AppCompatActivity implements
         toolbarLight = findViewById(R.id.toolbar_light);
         toolbarLight.setTitle("");
         setSupportActionBar(toolbarLight);
+
+        taskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
+        mainActivityPresenter = new MainActivityPresenterImpl
+                (MainActivity.this, taskViewModel, getApplicationContext());
 
         //Initialising variables
         taskPropertiesShowing = false;
@@ -420,15 +413,6 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 taskViewModel.delete(adapter.getTaskAt(viewHolder.getAdapterPosition()));
-//                Snackbar.make(viewHolder.itemView, "This is a snackbar", Snackbar.LENGTH_SHORT)
-//                        .setAction("UNDO", new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View view) {
-//                                Toast.makeText(MainActivity.this, "Undo deletion",
-//                                        Toast.LENGTH_SHORT).show();
-//                            }
-//                        })
-//                        .show();
                 String stringSnack = "Task deleted";
                 showSnackbar(stringSnack);
             }
@@ -763,7 +747,7 @@ public class MainActivity extends AppCompatActivity implements
 
                         Log.d(TAG, "Create task");
 
-
+                        mainActivityPresenter.addTask(taskName);
 
 //                        Calendar timeNow = new GregorianCalendar();
 

@@ -1,8 +1,12 @@
-package com.violenthoboenterprises.blistful;
+package com.violenthoboenterprises.blistful.model;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
+
+import com.violenthoboenterprises.blistful.model.Task;
+import com.violenthoboenterprises.blistful.presenter.TaskDao;
+import com.violenthoboenterprises.blistful.presenter.TaskDatabase;
 
 import java.util.List;
 

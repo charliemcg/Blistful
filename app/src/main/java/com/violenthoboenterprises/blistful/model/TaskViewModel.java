@@ -1,9 +1,12 @@
-package com.violenthoboenterprises.blistful;
+package com.violenthoboenterprises.blistful.model;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
+
+import com.violenthoboenterprises.blistful.model.Task;
+import com.violenthoboenterprises.blistful.model.TaskRepository;
 
 import java.util.List;
 
