@@ -99,136 +99,136 @@ public class SetDue extends MainActivity {
                 Configuration.SCREENLAYOUT_SIZE_MASK;
 
         //getting task data
-        dbDueTime = "";
-        dbTaskId = "";
-        dbTask = "";
-        boolean dbRepeat = false;
-        boolean dbOverdue = false;
+//        dbDueTime = "";
+//        dbTaskId = "";
+//        dbTask = "";
+//        boolean dbRepeat = false;
+//        boolean dbOverdue = false;
         Cursor dbTaskResult = MainActivity.db.getUniversalData();
         while (dbTaskResult.moveToNext()) {
-            dbTaskId = dbTaskResult.getString(4);
+//            dbTaskId = dbTaskResult.getString(4);
         }
-        dbTaskResult = db.getData(Integer.parseInt(dbTaskId));
+//        dbTaskResult = db.getData(Integer.parseInt(dbTaskId));
         while (dbTaskResult.moveToNext()) {
-            dbDueTime = dbTaskResult.getString(3);
-            dbTask = dbTaskResult.getString(4);
-            dbRepeat = dbTaskResult.getInt(8) > 0;
-            dbOverdue = dbTaskResult.getInt(9) > 0;
-            dbRepeatInterval = dbTaskResult.getString(13);
+//            dbDueTime = dbTaskResult.getString(3);
+//            dbTask = dbTaskResult.getString(4);
+//            dbRepeat = dbTaskResult.getInt(8) > 0;
+//            dbOverdue = dbTaskResult.getInt(9) > 0;
+//            dbRepeatInterval = dbTaskResult.getString(13);
         }
         dbTaskResult.close();
 
         onCreateOptionsMenu(dueToolbar.getMenu());
 
         //Inform user that they can set an alarm
-        if(dbDueTime.equals("0")){
+//        if(dbDueTime.equals("0")){
             dateTextView.setText(R.string.addDate);
-            timeTextView.setText(R.string.addTime);
+//            timeTextView.setText(R.string.addTime);
 
-                calendarFadedLight.setVisibility(View.VISIBLE);
-                timeFadedLight.setVisibility(View.VISIBLE);
+//                calendarFadedLight.setVisibility(View.VISIBLE);
+//                timeFadedLight.setVisibility(View.VISIBLE);
 
         //Showing existing due date and time
-        }else{
+//        }else{
             //getting alarm data
-            Cursor alarmResult = MainActivity.db.getAlarmData
-                    (Integer.parseInt(dbTaskId));
-            String alarmHour = "";
-            String alarmMinute = "";
-            String alarmAmPm = "";
-            String alarmDay = "";
-            String alarmMonth = "";
-            while(alarmResult.moveToNext()){
-                alarmHour = alarmResult.getString(1);
-                alarmMinute = alarmResult.getString(2);
-                alarmAmPm = alarmResult.getString(3);
-                alarmDay = alarmResult.getString(4);
-                alarmMonth = alarmResult.getString(5);
-            }
-            alarmResult.close();
+//            Cursor alarmResult = MainActivity.db.getAlarmData
+//                    (Integer.parseInt(dbTaskId));
+//            String alarmHour = "";
+//            String alarmMinute = "";
+//            String alarmAmPm = "";
+//            String alarmDay = "";
+//            String alarmMonth = "";
+//            while(alarmResult.moveToNext()){
+//                alarmHour = alarmResult.getString(1);
+//                alarmMinute = alarmResult.getString(2);
+//                alarmAmPm = alarmResult.getString(3);
+//                alarmDay = alarmResult.getString(4);
+//                alarmMonth = alarmResult.getString(5);
+//            }
+//            alarmResult.close();
 
             String formattedMonth = "";
 
-            int intMonth = Integer.valueOf(alarmMonth) + 1;
-            if(intMonth == 1){
-                formattedMonth = getString(R.string.jan);
-            }else if(intMonth == 2){
-                formattedMonth = getString(R.string.feb);
-            }else if(intMonth == 3){
-                formattedMonth = getString(R.string.mar);
-            }else if(intMonth == 4){
-                formattedMonth = getString(R.string.apr);
-            }else if(intMonth == 5){
-                formattedMonth = getString(R.string.may);
-            }else if(intMonth == 6){
-                formattedMonth = getString(R.string.jun);
-            }else if(intMonth == 7){
-                formattedMonth = getString(R.string.jul);
-            }else if(intMonth == 8){
-                formattedMonth = getString(R.string.aug);
-            }else if(intMonth == 9){
-                formattedMonth = getString(R.string.sep);
-            }else if(intMonth == 10){
-                formattedMonth = getString(R.string.oct);
-            }else if(intMonth == 11){
-                formattedMonth = getString(R.string.nov);
-            }else if(intMonth == 12){
-                formattedMonth = getString(R.string.dec);
-            }
+//            int intMonth = Integer.valueOf(alarmMonth) + 1;
+//            if(intMonth == 1){
+//                formattedMonth = getString(R.string.jan);
+//            }else if(intMonth == 2){
+//                formattedMonth = getString(R.string.feb);
+//            }else if(intMonth == 3){
+//                formattedMonth = getString(R.string.mar);
+//            }else if(intMonth == 4){
+//                formattedMonth = getString(R.string.apr);
+//            }else if(intMonth == 5){
+//                formattedMonth = getString(R.string.may);
+//            }else if(intMonth == 6){
+//                formattedMonth = getString(R.string.jun);
+//            }else if(intMonth == 7){
+//                formattedMonth = getString(R.string.jul);
+//            }else if(intMonth == 8){
+//                formattedMonth = getString(R.string.aug);
+//            }else if(intMonth == 9){
+//                formattedMonth = getString(R.string.sep);
+//            }else if(intMonth == 10){
+//                formattedMonth = getString(R.string.oct);
+//            }else if(intMonth == 11){
+//                formattedMonth = getString(R.string.nov);
+//            }else if(intMonth == 12){
+//                formattedMonth = getString(R.string.dec);
+//            }
 
-            String lang = String.valueOf(Locale.getDefault());
-            if(lang.equals("en_AS") || lang.equals("en_BM")
-                    || lang.equals("en_CA") || lang.equals("en_GU")
-                    || lang.equals("en_PH")
-                    || lang.equals("en_PR") || lang.equals("en_UM")
-                    || lang.equals("en_US") || lang.equals("en_VI")) {
-                dateTextView.setText(formattedMonth + " " + alarmDay);
-            }else{
-                dateTextView.setText(alarmDay + " " + formattedMonth);
-            }
+//            String lang = String.valueOf(Locale.getDefault());
+//            if(lang.equals("en_AS") || lang.equals("en_BM")
+//                    || lang.equals("en_CA") || lang.equals("en_GU")
+//                    || lang.equals("en_PH")
+//                    || lang.equals("en_PR") || lang.equals("en_UM")
+//                    || lang.equals("en_US") || lang.equals("en_VI")) {
+////                dateTextView.setText(formattedMonth + " " + alarmDay);
+//            }else{
+////                dateTextView.setText(alarmDay + " " + formattedMonth);
+//            }
 
-            String adjustedAmPm = String.valueOf(alarmAmPm)/*getString(R.string.am)*/;
-            String adjustedHour = String.valueOf(alarmHour);
-            String adjustedMinute = String.valueOf(alarmMinute);
+//            String adjustedAmPm = String.valueOf(alarmAmPm)/*getString(R.string.am)*/;
+//            String adjustedHour = String.valueOf(alarmHour);
+//            String adjustedMinute = String.valueOf(alarmMinute);
 
-            if(Integer.parseInt(alarmHour) == 0) {
-                adjustedHour = String.valueOf(12);
-            }else if(Integer.parseInt(alarmHour) > 12){
-                adjustedHour = String.valueOf(Integer.parseInt(alarmHour) - 12);
-            }
+//            if(Integer.parseInt(alarmHour) == 0) {
+//                adjustedHour = String.valueOf(12);
+//            }else if(Integer.parseInt(alarmHour) > 12){
+//                adjustedHour = String.valueOf(Integer.parseInt(alarmHour) - 12);
+//            }
 
-            if(Integer.parseInt(alarmMinute) < 10){
-                adjustedMinute = "0" + alarmMinute;
-            }
+//            if(Integer.parseInt(alarmMinute) < 10){
+//                adjustedMinute = "0" + alarmMinute;
+//            }
 
-            if(adjustedAmPm.equals("0")){
-                adjustedAmPm = "am";
-            }else{
-                adjustedAmPm = "pm";
-            }
+//            if(adjustedAmPm.equals("0")){
+//                adjustedAmPm = "am";
+//            }else{
+//                adjustedAmPm = "pm";
+//            }
 
-            timeTextView.setText(adjustedHour + ":" + adjustedMinute + adjustedAmPm);
+//            timeTextView.setText(adjustedHour + ":" + adjustedMinute + adjustedAmPm);
 
-            calendar.setVisibility(View.VISIBLE);
-            time.setVisibility(View.VISIBLE);
-
-                calendarFadedLight.setVisibility(View.GONE);
-                timeFadedLight.setVisibility(View.GONE);
-
-            datePicked = true;
-            timePicked = true;
-            if(screenSize == 3){
-                dateTextView.setTextSize(65);
-                timeTextView.setTextSize(65);
-            }else if(screenSize == 4){
-                dateTextView.setTextSize(85);
-                timeTextView.setTextSize(85);
-            }else {
-                dateTextView.setTextSize(25);
-                timeTextView.setTextSize(25);
-            }
-
-        }
+//            calendar.setVisibility(View.VISIBLE);
+//            time.setVisibility(View.VISIBLE);
+//
+//                calendarFadedLight.setVisibility(View.GONE);
+//                timeFadedLight.setVisibility(View.GONE);
+//
+//            datePicked = true;
+//            timePicked = true;
+//            if(screenSize == 3){
+//                dateTextView.setTextSize(65);
+//                timeTextView.setTextSize(65);
+//            }else if(screenSize == 4){
+//                dateTextView.setTextSize(85);
+//                timeTextView.setTextSize(85);
+//            }else {
+//                dateTextView.setTextSize(25);
+//                timeTextView.setTextSize(25);
+//            }
+//
+//        }
 
             dueToolbar.setSubtitleTextColor(Color.parseColor("#666666"));
             dateTextView.setTextColor(Color.parseColor("#000000"));
@@ -236,19 +236,19 @@ public class SetDue extends MainActivity {
             lightRepeat.setVisibility(View.VISIBLE);
 
         //Highlight the repeat type or highlight No Repeat if none exists
-        if(!dbRepeat){
-            cancelRepeatLight.setVisibility(View.GONE);
-            cancelRepeat.setVisibility(View.VISIBLE);
-        }else if(dbRepeatInterval.equals("day")){
-            dailyLight.setVisibility(View.GONE);
-            daily.setVisibility(View.VISIBLE);
-        }else if(dbRepeatInterval.equals("week")){
-            weeklyLight.setVisibility(View.GONE);
-            weekly.setVisibility(View.VISIBLE);
-        }else if(dbRepeatInterval.equals("month")){
-            monthlyLight.setVisibility(View.GONE);
-            monthly.setVisibility(View.VISIBLE);
-        }
+//        if(!dbRepeat){
+//            cancelRepeatLight.setVisibility(View.GONE);
+//            cancelRepeat.setVisibility(View.VISIBLE);
+//        }else if(dbRepeatInterval.equals("day")){
+//            dailyLight.setVisibility(View.GONE);
+//            daily.setVisibility(View.VISIBLE);
+//        }else if(dbRepeatInterval.equals("week")){
+//            weeklyLight.setVisibility(View.GONE);
+//            weekly.setVisibility(View.VISIBLE);
+//        }else if(dbRepeatInterval.equals("month")){
+//            monthlyLight.setVisibility(View.GONE);
+//            monthly.setVisibility(View.VISIBLE);
+//        }
 
         //Actions to occur when user selects to set/change date
         dateButton.setOnClickListener(new View.OnClickListener() {
@@ -390,7 +390,7 @@ public class SetDue extends MainActivity {
         });
 
         //Actions to occur when user chooses to cancel the repeat
-        final boolean finalDbOverdue = dbOverdue;
+//        final boolean finalDbOverdue = dbOverdue;
         cancelRepeatLight.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -421,69 +421,69 @@ public class SetDue extends MainActivity {
 
                 }
 
-                if(finalDbOverdue && dbRepeatInterval.equals("day")){
-                    db.updateTimestamp(dbTaskId, String.valueOf(Integer.parseInt(dbDueTime) - 86400));
-                }else if(finalDbOverdue && dbRepeatInterval.equals("week")){
-                    db.updateTimestamp(dbTaskId, String.valueOf(Long.parseLong(dbDueTime) - (86400 * 7)));
-                }else if(finalDbOverdue && dbRepeatInterval.equals("month")){
+//                if(finalDbOverdue && dbRepeatInterval.equals("day")){
+//                    db.updateTimestamp(dbTaskId, String.valueOf(Integer.parseInt(dbDueTime) - 86400));
+//                }else if(finalDbOverdue && dbRepeatInterval.equals("week")){
+//                    db.updateTimestamp(dbTaskId, String.valueOf(Long.parseLong(dbDueTime) - (86400 * 7)));
+//                }else if(finalDbOverdue && dbRepeatInterval.equals("month")){
 
-                    int interval = 0;
+//                    int interval = 0;
 
-                    Cursor alarmResult = MainActivity.db.getAlarmData
-                            (Integer.parseInt(dbTaskId));
-                    String alarmDay = "";
-                    String alarmMonth = "";
-                    String alarmYear = "";
-                    while(alarmResult.moveToNext()){
-                        alarmDay = alarmResult.getString(4);
-                        alarmMonth = alarmResult.getString(5);
-                        alarmYear = alarmResult.getString(6);
-                    }
+//                    Cursor alarmResult = MainActivity.db.getAlarmData
+//                            (Integer.parseInt(dbTaskId));
+//                    String alarmDay = "";
+//                    String alarmMonth = "";
+//                    String alarmYear = "";
+//                    while(alarmResult.moveToNext()){
+//                        alarmDay = alarmResult.getString(4);
+//                        alarmMonth = alarmResult.getString(5);
+//                        alarmYear = alarmResult.getString(6);
+//                    }
 
-                    alarmResult.close();
+//                    alarmResult.close();
 
-                    int theYear = Integer.parseInt(alarmYear);
-                    int theMonth = Integer.parseInt(alarmMonth);
-                    int theDay = Integer.parseInt(alarmDay);
+//                    int theYear = Integer.parseInt(alarmYear);
+//                    int theMonth = Integer.parseInt(alarmMonth);
+//                    int theDay = Integer.parseInt(alarmDay);
 
-                    //Month January and day is 29 non leap year 2592000
-                    if((theMonth == 0) && (theDay == 29) && (theYear % 4 != 0)){
-                        interval = 2592000;
-                        //Month January and day is 30 non leap year 2505600
-                    }else if((theMonth == 0) && (theDay == 30) && (theYear % 4 != 0)){
-                        interval = 2505600;
-                        //Month January and day is 31 non leap year 2419200
-                    }else if((theMonth == 0) && (theDay == 31) && (theYear % 4 != 0)){
-                        interval = 2419200;
-                        //Month January and day is 30 leap year 2592000
-                    }else if((theMonth == 0) && (theDay == 30)  && (theYear % 4 == 0)){
-                        interval = 2592000;
-                        //Month January and day is 31 leap year 2505600
-                    }else if((theMonth == 0) && (theDay == 31) && (theYear % 4 == 0)){
-                        interval = 2505600;
-                        //Month March||May||August||October and day is 31 2592000
-                    }else if(((theMonth == 2) || (theMonth == 4) || (theMonth == 7)
-                            || (theMonth == 9)) && (theDay == 31)){
-                        interval = 2592000;
-                        //Month January||March||May||July||August||October||December 2678400
-                    }else if((theMonth == 0) || (theMonth == 2) || (theMonth == 4)
-                            || (theMonth == 6) || (theMonth == 7) || (theMonth == 9)
-                            || (theMonth == 11)){
-                        interval = 2678400;
-                        //Month April||June||September||November 2592000
-                    }else if((theMonth == 3) || (theMonth == 5) || (theMonth == 8)
-                            || (theMonth == 10)){
-                        interval = 2592000;
-                        //Month February non leap year 2419200
-                    }else if((theMonth == 1) && (theYear % 4 != 0)){
-                        interval = 2419200;
-                        //Month February leap year 2505600
-                    }else if((theMonth == 1) && (theYear % 4 == 0)){
-                        interval = 2505600;
-                    }
-
-                    db.updateTimestamp(dbTaskId, String.valueOf(Integer.parseInt(dbDueTime) - interval));
-                }
+//                    Month January and day is 29 non leap year 2592000
+//                    if((theMonth == 0) && (theDay == 29) && (theYear % 4 != 0)){
+//                        interval = 2592000;
+//                        Month January and day is 30 non leap year 2505600
+//                    }else if((theMonth == 0) && (theDay == 30) && (theYear % 4 != 0)){
+//                        interval = 2505600;
+//                        //Month January and day is 31 non leap year 2419200
+//                    }else if((theMonth == 0) && (theDay == 31) && (theYear % 4 != 0)){
+//                        interval = 2419200;
+//                        //Month January and day is 30 leap year 2592000
+//                    }else if((theMonth == 0) && (theDay == 30)  && (theYear % 4 == 0)){
+//                        interval = 2592000;
+//                        //Month January and day is 31 leap year 2505600
+//                    }else if((theMonth == 0) && (theDay == 31) && (theYear % 4 == 0)){
+//                        interval = 2505600;
+//                        //Month March||May||August||October and day is 31 2592000
+//                    }else if(((theMonth == 2) || (theMonth == 4) || (theMonth == 7)
+//                            || (theMonth == 9)) && (theDay == 31)){
+//                        interval = 2592000;
+//                        //Month January||March||May||July||August||October||December 2678400
+//                    }else if((theMonth == 0) || (theMonth == 2) || (theMonth == 4)
+//                            || (theMonth == 6) || (theMonth == 7) || (theMonth == 9)
+//                            || (theMonth == 11)){
+//                        interval = 2678400;
+//                        //Month April||June||September||November 2592000
+//                    }else if((theMonth == 3) || (theMonth == 5) || (theMonth == 8)
+//                            || (theMonth == 10)){
+//                        interval = 2592000;
+//                        //Month February non leap year 2419200
+//                    }else if((theMonth == 1) && (theYear % 4 != 0)){
+//                        interval = 2419200;
+//                        //Month February leap year 2505600
+//                    }else if((theMonth == 1) && (theYear % 4 == 0)){
+//                        interval = 2505600;
+//                    }
+//
+//                    db.updateTimestamp(dbTaskId, String.valueOf(Integer.parseInt(dbDueTime) - interval));
+//                }
 
                 db.updateRepeatInterval(dbTaskId, "");
                 db.updateRepeat(dbTaskId, false);
@@ -502,11 +502,11 @@ public class SetDue extends MainActivity {
             trashAlarmOpen = this.dueToolbar.getMenu().findItem(R.id.trashAlarmOpen);
             this.dueToolbar.setTitle(R.string.setDateTime);
             this.dueToolbar.setSubtitle(dbTask);
-            if(Integer.parseInt(dbDueTime) == 0){
-                killAlarm.setVisible(false);
-            }else {
-                killAlarm.setVisible(true);
-            }
+//            if(Integer.parseInt(dbDueTime) == 0){
+//                killAlarm.setVisible(false);
+//            }else {
+//                killAlarm.setVisible(true);
+//            }
             return true;
         }else {
             killAlarm.setEnabled(true);

@@ -64,16 +64,16 @@ public class Note extends MainActivity {
         noteRoot = findViewById(R.id.noteRoot);
 
         //getting task data
-        dbTask = "";
-        Cursor dbTaskResult = MainActivity.db.getUniversalData();
-        while (dbTaskResult.moveToNext()) {
-            dbTask = dbTaskResult.getString(4);
-        }
-        dbTaskResult = db.getData(Integer.parseInt(dbTask));
-        while (dbTaskResult.moveToNext()) {
-            dbTask = dbTaskResult.getString(4);
-        }
-        dbTaskResult.close();
+//        dbTask = "";
+//        Cursor dbTaskResult = MainActivity.db.getUniversalData();
+//        while (dbTaskResult.moveToNext()) {
+//            dbTask = dbTaskResult.getString(4);
+//        }
+//        dbTaskResult = db.getData(Integer.parseInt(dbTask));
+//        while (dbTaskResult.moveToNext()) {
+//            dbTask = dbTaskResult.getString(4);
+//        }
+//        dbTaskResult.close();
 
         getSupportActionBar().setTitle(R.string.note);
         noteToolbar.setSubtitle(dbTask);
@@ -96,7 +96,7 @@ public class Note extends MainActivity {
 
         keyboard.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 
-        noteEditText.setBackgroundColor(Color.parseColor(highlight));
+//        noteEditText.setBackgroundColor(Color.parseColor(highlight));
 
         //Actions to occur when user clicks submit
         submitNoteBtnDark.setOnClickListener(new View.OnClickListener() {
@@ -362,18 +362,18 @@ public class Note extends MainActivity {
     //Existing notes are recalled when app opened
     private void getSavedData() {
 
-        Cursor result = db.getData(Integer.parseInt(
-                MainActivity.sortedIdsForNote.get(activeTask)));
-        while (result.moveToNext()) {
-            theNote = result.getString(1);
-        }
-        result.close();
+//        Cursor result = db.getData(Integer.parseInt(
+//                MainActivity.sortedIdsForNote.get(activeTask)));
+//        while (result.moveToNext()) {
+//            theNote = result.getString(1);
+//        }
+//        result.close();
 
-        Cursor dbResult = MainActivity.db.getUniversalData();
-        while (dbResult.moveToNext()) {
-            mute = dbResult.getInt(1) > 0;
-        }
-        dbResult.close();
+//        Cursor dbResult = MainActivity.db.getUniversalData();
+//        while (dbResult.moveToNext()) {
+//            mute = dbResult.getInt(1) > 0;
+//        }
+//        dbResult.close();
 
         //Don't allow blank notes
         if (!theNote.equals("")) {
