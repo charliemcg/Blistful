@@ -55,15 +55,15 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         public TaskHolder(View itemView) {
             super(itemView);
             tvTask = itemView.findViewById(R.id.tvTask);
-//            itemView.setOnClickListener(new View.OnClickListener(){
-//                @Override
-//                public void onClick(View view){
-//                    int position = getAdapterPosition();
-//                    if (listener != null && position != RecyclerView.NO_POSITION){
-//                        listener.onItemClick(tasks.get(position));
-//                    }
-//                }
-//            });
+            itemView.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View view){
+                    int position = getAdapterPosition();
+                    if (listener != null && position != RecyclerView.NO_POSITION){
+                        listener.onItemClick(tasks.get(position));
+                    }
+                }
+            });
         }
     }
 

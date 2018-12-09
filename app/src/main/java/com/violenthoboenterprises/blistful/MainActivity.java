@@ -28,6 +28,7 @@ import android.os.Handler;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -148,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements
     //Indicates which task has it's properties showing
     static int activeTask;
     //Height of the 'add' button
-    static int addHeight;
+//    static int addHeight;
     //Height of list view as viewable on screen
     static int listViewHeight;
     static int thePosition;
@@ -209,7 +210,7 @@ public class MainActivity extends AppCompatActivity implements
     static EditText taskNameEditText;
 
     //The button that facilitates the adding of tasks
-    static Button add;
+//    static Button add;
 
     //Used for debugging purposes. Button should not be visible in release.
 //    Button showDb;
@@ -228,8 +229,8 @@ public class MainActivity extends AppCompatActivity implements
     static InputMethodManager keyboard;
 
     //Parameters of 'add' button
-    static RelativeLayout.LayoutParams params;
-    RelativeLayout.LayoutParams toastParams;
+//    static RelativeLayout.LayoutParams params;
+//    RelativeLayout.LayoutParams toastParams;
 
     //Allow phone to vibrate
     static Vibrator vibrate;
@@ -281,6 +282,8 @@ public class MainActivity extends AppCompatActivity implements
 
     private TaskViewModel taskViewModel;
 
+    FloatingActionButton fab;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -305,14 +308,14 @@ public class MainActivity extends AppCompatActivity implements
         taskList = new ArrayList<>();
 //        noTasksToShowWhite = findViewById(R.id.noTasksWhite);
         taskNameEditText = findViewById(R.id.taskNameEditText);
-        add = findViewById(R.id.add);
+//        add = findViewById(R.id.add);
 //        theListView = findViewById(R.id.theListView);
         keyboard = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        params = (RelativeLayout.LayoutParams) add.getLayoutParams();
+//        params = (RelativeLayout.LayoutParams) add.getLayoutParams();
         vibrate = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         inflater = LayoutInflater.from(getApplicationContext());
-        addHeight = params.height;
-        theAdapter = new ListAdapter[]{new MyAdapter(this, taskList)};
+//        addHeight = params.height;
+//        theAdapter = new ListAdapter[]{new MyAdapter(this, taskList)};
         activityRootView = findViewById(R.id.activityRoot);
         fadeTasks = false;
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
@@ -366,7 +369,7 @@ public class MainActivity extends AppCompatActivity implements
         reviewTwo = false;
         reviewThree = false;
         reviewFour = false;
-        toastParams = (RelativeLayout.LayoutParams) toastView.getLayoutParams();
+//        toastParams = (RelativeLayout.LayoutParams) toastView.getLayoutParams();
         toolbarParams = (RelativeLayout.LayoutParams) toolbarLight.getLayoutParams();
 //        theListView.setOnScrollListener(this);
         blockSoundAndAnimate = false;
@@ -375,6 +378,14 @@ public class MainActivity extends AppCompatActivity implements
         blah = false;
 
         db.insertUniversalData(mute);
+
+        fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MainActivity.this, "Add new task", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         //Setting up the recycler view
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
@@ -414,7 +425,7 @@ public class MainActivity extends AppCompatActivity implements
         adapter.setOnItemClickListener(new TaskAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Task task) {
-                Toast.makeText(MainActivity.this, "Show properties", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, task.getTask() + " clicked", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -525,31 +536,31 @@ public class MainActivity extends AppCompatActivity implements
 //        });
 
         //Actions to occur when 'add' selected
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                taskBeingEdited = false;
-
-                goToMyAdapter = true;
-
-                vibrate.vibrate(50);
-
-                //Show keyboard
-                keyboard.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
-
-                //Set return button to 'Done'
-                taskNameEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
-
-                //Ensure that there is no previous text in the text box
-                taskNameEditText.setText("");
-
-                //Actions to occur when keyboard is showing
-                checkKeyboardShowing();
-
-            }
-
-        });
+//        add.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                taskBeingEdited = false;
+//
+//                goToMyAdapter = true;
+//
+//                vibrate.vibrate(50);
+//
+//                //Show keyboard
+//                keyboard.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+//
+//                //Set return button to 'Done'
+//                taskNameEditText.setImeOptions(EditorInfo.IME_ACTION_DONE);
+//
+//                //Ensure that there is no previous text in the text box
+//                taskNameEditText.setText("");
+//
+//                //Actions to occur when keyboard is showing
+//                checkKeyboardShowing();
+//
+//            }
+//
+//        });
 
 ////////////////////////////Used for debugging purposes////////////////////////////
 //        showDb.setOnClickListener(new View.OnClickListener() {
@@ -891,9 +902,9 @@ public class MainActivity extends AppCompatActivity implements
                     taskBeingEdited = false;
 
                     //Bringing back the 'add' button
-                    params.height = addHeight;
+//                    params.height = addHeight;
 
-                    add.setLayoutParams(params);
+//                    add.setLayoutParams(params);
 
                     return true;
 
@@ -1147,9 +1158,9 @@ public class MainActivity extends AppCompatActivity implements
 //        theListView.setAdapter(theAdapter[0]);
 
         //Can't change visibility of 'add' button. Have to set height to zero instead.
-        params.height = 0;
+//        params.height = 0;
 
-        add.setLayoutParams(params);
+//        add.setLayoutParams(params);
 
     }
 
@@ -1163,9 +1174,9 @@ public class MainActivity extends AppCompatActivity implements
         taskPropertiesShowing = false;
 
         //Returns the 'add' button
-        params.height = addHeight;
+//        params.height = addHeight;
 
-        add.setLayoutParams(params);
+//        add.setLayoutParams(params);
     }
 
     //renames task
@@ -1191,9 +1202,9 @@ public class MainActivity extends AppCompatActivity implements
 //        theListView.setAdapter(theAdapter[0]);
 
         //Can't change visibility of 'add' button. Have to set height to zero instead.
-        params.height = 0;
+//        params.height = 0;
 
-        add.setLayoutParams(params);
+//        add.setLayoutParams(params);
     }
 
     //reinstates completed task
@@ -1359,9 +1370,9 @@ public class MainActivity extends AppCompatActivity implements
                     // whenever keyboard is showing
                     taskNameEditText.setVisibility(View.VISIBLE);
 
-                    params.height = 0;
+//                    params.height = 0;
 
-                    add.setLayoutParams(params);
+//                    add.setLayoutParams(params);
 
                     tasksAreClickable = false;
 
@@ -1375,9 +1386,9 @@ public class MainActivity extends AppCompatActivity implements
                     //keyboard is not showing
                     taskNameEditText.setVisibility(View.GONE);
 
-                    params.height = addHeight;
+//                    params.height = addHeight;
 
-                    add.setLayoutParams(params);
+//                    add.setLayoutParams(params);
 
                     tasksAreClickable = true;
 
@@ -1463,7 +1474,7 @@ public class MainActivity extends AppCompatActivity implements
 //
 //        });
 
-        add.setClickable(true);
+//        add.setClickable(true);
 
         onCreateOptionsMenu(toolbarLight.getMenu());
 
@@ -1807,7 +1818,7 @@ public class MainActivity extends AppCompatActivity implements
 //        showPrompt(launchTime);
 
         //Setting the position for the toast
-        toastParams.setMargins(15, (int) (deviceheight / 1.35), 0, 0);
+//        toastParams.setMargins(15, (int) (deviceheight / 1.35), 0, 0);
 
     }
 
