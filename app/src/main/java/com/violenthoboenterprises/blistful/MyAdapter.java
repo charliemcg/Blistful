@@ -70,7 +70,7 @@ class MyAdapter extends ArrayAdapter<String> {
         final LayoutInflater theInflater = LayoutInflater.from(getContext());
         final View taskView = theInflater.inflate(R.layout.task_layout, parent, false);
         //Where the task text is displayed
-        final TextView theTextView = taskView.findViewById(R.id.textView);
+        final TextView theTextView = taskView.findViewById(R.id.tvTask);
         final Intent intent = new Intent(getContext(), Checklist.class);
         final Intent noteIntent = new Intent(getContext(), Note.class);
         final Intent dueIntent = new Intent(getContext(), SetDue.class);

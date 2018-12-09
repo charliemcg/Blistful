@@ -12,24 +12,25 @@ public class TaskRepository {
     //TODO see if LiveData is needed
     private LiveData<List<Task>> allTasks;
 
-    public TaskRepository(Application application){
-        TaskDatabase taskDatabase = TaskDatabase.getIntance(application);
+    TaskRepository(Application application){
+        TaskDatabase taskDatabase = TaskDatabase.getInstance(application);
         taskDao = taskDatabase.taskDao();
         allTasks = taskDao.getAllTasks();
     }
 
-    public void insert(Task task){new InsertTaskAsyncTask(taskDao).execute(task);}
+    void insert(Task task){new InsertTaskAsyncTask(taskDao).execute(task);}
 
-    public void update(Task task){new UpdateTaskAsyncTask(taskDao).execute(task);}
+    void update(Task task){new UpdateTaskAsyncTask(taskDao).execute(task);}
 
     public void delete(Task task){new DeleteTaskAsyncTask(taskDao).execute(task);}
 
     //TODO see if LiveData is needed
-    public LiveData<List<Task>> getAllTasks(){return allTasks;}
+    LiveData<List<Task>> getAllTasks(){return allTasks;}
 
-    private class InsertTaskAsyncTask extends AsyncTask<Task, Void, Void> {
+    //Performing these tasks off of the UI thread
+    private static class InsertTaskAsyncTask extends AsyncTask<Task, Void, Void> {
         private TaskDao taskDao;
-        public InsertTaskAsyncTask(TaskDao taskDao) {
+        InsertTaskAsyncTask(TaskDao taskDao) {
             this.taskDao = taskDao;
         }
         @Override
@@ -39,9 +40,9 @@ public class TaskRepository {
         }
     }
 
-    private class UpdateTaskAsyncTask extends AsyncTask<Task, Void, Void> {
+    private static class UpdateTaskAsyncTask extends AsyncTask<Task, Void, Void> {
         private TaskDao taskDao;
-        public UpdateTaskAsyncTask(TaskDao taskDao) {
+        UpdateTaskAsyncTask(TaskDao taskDao) {
             this.taskDao = taskDao;
         }
         @Override
@@ -51,9 +52,9 @@ public class TaskRepository {
         }
     }
 
-    private class DeleteTaskAsyncTask extends AsyncTask<Task, Void, Void> {
+    private static class DeleteTaskAsyncTask extends AsyncTask<Task, Void, Void> {
         private TaskDao taskDao;
-        public DeleteTaskAsyncTask(TaskDao taskDao) {
+        DeleteTaskAsyncTask(TaskDao taskDao) {
             this.taskDao = taskDao;
         }
         @Override

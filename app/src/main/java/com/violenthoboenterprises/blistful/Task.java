@@ -4,6 +4,9 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
+/*
+ * This is where the task table is defined
+ */
 @Entity(tableName = "task_table")
 public class Task{
 

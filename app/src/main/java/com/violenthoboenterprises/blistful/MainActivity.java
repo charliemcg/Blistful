@@ -6,6 +6,8 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -30,7 +32,10 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.ActionMenuView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -65,6 +70,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Random;
 
 import static android.database.DatabaseUtils.queryNumEntries;
@@ -273,6 +279,8 @@ public class MainActivity extends AppCompatActivity implements
 
     static BillingProcessor bp;
 
+    private TaskViewModel taskViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -295,10 +303,10 @@ public class MainActivity extends AppCompatActivity implements
         taskPropertiesShowing = false;
         tasksAreClickable = true;
         taskList = new ArrayList<>();
-        noTasksToShowWhite = findViewById(R.id.noTasksWhite);
+//        noTasksToShowWhite = findViewById(R.id.noTasksWhite);
         taskNameEditText = findViewById(R.id.taskNameEditText);
         add = findViewById(R.id.add);
-        theListView = findViewById(R.id.theListView);
+//        theListView = findViewById(R.id.theListView);
         keyboard = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         params = (RelativeLayout.LayoutParams) add.getLayoutParams();
         vibrate = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -360,13 +368,55 @@ public class MainActivity extends AppCompatActivity implements
         reviewFour = false;
         toastParams = (RelativeLayout.LayoutParams) toastView.getLayoutParams();
         toolbarParams = (RelativeLayout.LayoutParams) toolbarLight.getLayoutParams();
-        theListView.setOnScrollListener(this);
+//        theListView.setOnScrollListener(this);
         blockSoundAndAnimate = false;
         justReinstated = false;
         tryAgain = false;
         blah = false;
 
         db.insertUniversalData(mute);
+
+        //Setting up the recycler view
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setHasFixedSize(true);
+
+        //setting up the adapter
+        final TaskAdapter adapter = new TaskAdapter();
+        recyclerView.setAdapter(adapter);
+
+        //observing the recycler view items for changes
+        //TODO find out if observer is necessary
+        taskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
+        taskViewModel.getAllTasks().observe(this, new Observer<List<Task>>(){
+            @Override
+            public void onChanged(@Nullable List<Task> tasks){
+                adapter.setTasks(tasks);
+            }
+        });
+
+        //detect swipes
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
+                                  RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                taskViewModel.delete(adapter.getTaskAt(viewHolder.getAdapterPosition()));
+            }
+        }).attachToRecyclerView(recyclerView);
+
+        //show task properties on click
+        adapter.setOnItemClickListener(new TaskAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Task task) {
+                Toast.makeText(MainActivity.this, "Show properties", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         //getting app-wide data
         Cursor dbResult = MainActivity.db.getUniversalData();
@@ -379,100 +429,100 @@ public class MainActivity extends AppCompatActivity implements
         dbResult.close();
 
         //Put data in list
-        theListView.setAdapter(theAdapter[0]);
+//        theListView.setAdapter(theAdapter[0]);
 
 //        taskNameEditText.setBackgroundColor(Color.parseColor(highlight));
 //        toast.setBackgroundColor(Color.parseColor(highlight));
 
         //Make task clickable
-        theListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-
-                //Tasks are not clickable if keyboard is up
-                if (tasksAreClickable && !completeTask) {
-
-                    vibrate.vibrate(50);
-
-                    //checking if task has been killed
-                    Boolean killed = false;
-                    Cursor result = db.getData(Integer
-                            .parseInt(sortedIDs.get(position)));
-                    while (result.moveToNext()) {
-                        killed = result.getInt(6) > 0;
-                    }
-                    result.close();
-
-                    //Selecting a task to view options
-                    if (!taskPropertiesShowing && !killed) {
-
-                        viewProperties(position);
-
-                        theListView.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                theListView.setSelection(activeTask);
-                            }
-                        });
-
-                        //Removes completed task
-                    } else if (!taskPropertiesShowing && killed) {
-
-                        removeTask(position);
-
-                        //Removes task options from view
-                    } else {
-
-                        removeTaskProperties();
-
-                    }
-
-                } else {
-
-                    completeTask = false;
-
-                }
-
-            }
-
-        });
+//        theListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+//
+//                //Tasks are not clickable if keyboard is up
+//                if (tasksAreClickable && !completeTask) {
+//
+//                    vibrate.vibrate(50);
+//
+//                    //checking if task has been killed
+//                    Boolean killed = false;
+//                    Cursor result = db.getData(Integer
+//                            .parseInt(sortedIDs.get(position)));
+//                    while (result.moveToNext()) {
+//                        killed = result.getInt(6) > 0;
+//                    }
+//                    result.close();
+//
+//                    //Selecting a task to view options
+//                    if (!taskPropertiesShowing && !killed) {
+//
+//                        viewProperties(position);
+//
+//                        theListView.post(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                theListView.setSelection(activeTask);
+//                            }
+//                        });
+//
+//                        //Removes completed task
+//                    } else if (!taskPropertiesShowing && killed) {
+//
+//                        removeTask(position);
+//
+//                        //Removes task options from view
+//                    } else {
+//
+//                        removeTaskProperties();
+//
+//                    }
+//
+//                } else {
+//
+//                    completeTask = false;
+//
+//                }
+//
+//            }
+//
+//        });
 
         //Long click allows for editing/reinstating task
-        theListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view,
-                                           int position, long id) {
-
-                //checking if task has been killed
-                Boolean killed = false;
-                Cursor result = db.getData(Integer
-                        .parseInt(sortedIDs.get(position)));
-                while (result.moveToNext()) {
-                    killed = result.getInt(6) > 0;
-                }
-                result.close();
-
-                //Determine if it's possible to edit task
-                if (tasksAreClickable && !killed && !taskPropertiesShowing) {
-
-                    longClicked = true;
-
-                    rename(position);
-
-                    //long click reinstates task that is crossed out
-                } else if (tasksAreClickable && killed && !taskPropertiesShowing) {
-
-                    reinstate(position);
-
-                }
-
-                return true;
-
-            }
-
-        });
+//        theListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> parent, View view,
+//                                           int position, long id) {
+//
+//                //checking if task has been killed
+//                Boolean killed = false;
+//                Cursor result = db.getData(Integer
+//                        .parseInt(sortedIDs.get(position)));
+//                while (result.moveToNext()) {
+//                    killed = result.getInt(6) > 0;
+//                }
+//                result.close();
+//
+//                //Determine if it's possible to edit task
+//                if (tasksAreClickable && !killed && !taskPropertiesShowing) {
+//
+//                    longClicked = true;
+//
+//                    rename(position);
+//
+//                    //long click reinstates task that is crossed out
+//                } else if (tasksAreClickable && killed && !taskPropertiesShowing) {
+//
+//                    reinstate(position);
+//
+//                }
+//
+//                return true;
+//
+//            }
+//
+//        });
 
         //Actions to occur when 'add' selected
         add.setOnClickListener(new View.OnClickListener() {
@@ -859,7 +909,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private void checkLightDark() {
         setSupportActionBar(toolbarLight);
-        theListView.setAdapter(theAdapter[0]);
+//        theListView.setAdapter(theAdapter[0]);
     }
 
     @Override
@@ -997,24 +1047,24 @@ public class MainActivity extends AppCompatActivity implements
 
         //Detect if last list item is showing. 'Add' button can block it and therefore needs to
         //be removed in certain situations
-        if (absListView.getId() == R.id.theListView) {
-
-            if ((first + visible) == total && visible != total) {
-
-                //Removes add button so as to not cover the last item
-                params.height = 0;
-
-                add.setLayoutParams(params);
-
-            } else if (!taskPropertiesShowing) {
-
-                //Returns the 'add' button
-                params.height = addHeight;
-
-                add.setLayoutParams(params);
-
-            }
-        }
+//        if (absListView.getId() == R.id.theListView) {
+//
+//            if ((first + visible) == total && visible != total) {
+//
+//                //Removes add button so as to not cover the last item
+//                params.height = 0;
+//
+//                add.setLayoutParams(params);
+//
+//            } else if (!taskPropertiesShowing) {
+//
+//                //Returns the 'add' button
+//                params.height = addHeight;
+//
+//                add.setLayoutParams(params);
+//
+//            }
+//        }
     }
 
     ////////Shows table results for debugging purposes////////
@@ -1074,7 +1124,7 @@ public class MainActivity extends AppCompatActivity implements
         //Updates the view
         MainActivity.theAdapter = new ListAdapter[]{new MyAdapter(
                 this, MainActivity.taskList)};
-        theListView.setAdapter(theAdapter[0]);
+//        theListView.setAdapter(theAdapter[0]);
 
         //Checks to see if there are still tasks left
         noTasksLeft();
@@ -1094,7 +1144,7 @@ public class MainActivity extends AppCompatActivity implements
         activeTask = position;
 
         //Updates the view
-        theListView.setAdapter(theAdapter[0]);
+//        theListView.setAdapter(theAdapter[0]);
 
         //Can't change visibility of 'add' button. Have to set height to zero instead.
         params.height = 0;
@@ -1107,7 +1157,7 @@ public class MainActivity extends AppCompatActivity implements
     private void removeTaskProperties() {
 
         //Updates the view
-        theListView.setAdapter(theAdapter[0]);
+//        theListView.setAdapter(theAdapter[0]);
 
         //Marks properties as not showing
         taskPropertiesShowing = false;
@@ -1138,7 +1188,7 @@ public class MainActivity extends AppCompatActivity implements
 
         centerTask = true;
 
-        theListView.setAdapter(theAdapter[0]);
+//        theListView.setAdapter(theAdapter[0]);
 
         //Can't change visibility of 'add' button. Have to set height to zero instead.
         params.height = 0;
@@ -1212,7 +1262,7 @@ public class MainActivity extends AppCompatActivity implements
         //Updating the view with the new order
         MainActivity.theAdapter = new ListAdapter[]{new MyAdapter(
                 this, MainActivity.taskList)};
-        MainActivity.theListView.setAdapter(MainActivity.theAdapter[0]);
+//        MainActivity.theListView.setAdapter(MainActivity.theAdapter[0]);
 
     }
 
@@ -1267,10 +1317,10 @@ public class MainActivity extends AppCompatActivity implements
 
             //Inform user to add some tasks
 
-            noTasksToShowWhite.setVisibility(View.VISIBLE);
+//            noTasksToShowWhite.setVisibility(View.VISIBLE);
 
         } else {
-            noTasksToShowWhite.setVisibility(View.GONE);
+//            noTasksToShowWhite.setVisibility(View.GONE);
         }
 
     }
@@ -1292,7 +1342,7 @@ public class MainActivity extends AppCompatActivity implements
 
                     if (goToMyAdapter) {
 
-                        theListView.setAdapter(theAdapter[0]);
+//                        theListView.setAdapter(theAdapter[0]);
 
                         goToMyAdapter = false;
 
@@ -1331,7 +1381,7 @@ public class MainActivity extends AppCompatActivity implements
 
                     tasksAreClickable = true;
 
-                    theListView.setAdapter(theAdapter[0]);
+//                    theListView.setAdapter(theAdapter[0]);
 
                     restoreNormalListView = false;
 
@@ -1367,58 +1417,58 @@ public class MainActivity extends AppCompatActivity implements
 
         }
 
-        theListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-
-                //Tasks are not clickable if keyboard is up
-                if (tasksAreClickable && !completeTask) {
-
-                    vibrate.vibrate(50);
-
-                    //checking if task has been killed
-                    Boolean killed = false;
-                    Cursor result = db.getData(Integer
-                            .parseInt(sortedIDs.get(position)));
-                    while (result.moveToNext()) {
-                        killed = result.getInt(6) > 0;
-                    }
-                    result.close();
-
-                    //Selecting a task to view options
-                    if (!taskPropertiesShowing && !killed) {
-
-                        viewProperties(position);
-
-                        //Removes completed task
-                    } else if (!taskPropertiesShowing) {
-
-                        removeTask(position);
-
-                        //Removes task options from view
-                    } else {
-
-                        removeTaskProperties();
-
-                    }
-
-                } else {
-
-                    completeTask = false;
-
-                }
-
-            }
-
-        });
+//        theListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+//
+//                //Tasks are not clickable if keyboard is up
+//                if (tasksAreClickable && !completeTask) {
+//
+//                    vibrate.vibrate(50);
+//
+//                    //checking if task has been killed
+//                    Boolean killed = false;
+//                    Cursor result = db.getData(Integer
+//                            .parseInt(sortedIDs.get(position)));
+//                    while (result.moveToNext()) {
+//                        killed = result.getInt(6) > 0;
+//                    }
+//                    result.close();
+//
+//                    //Selecting a task to view options
+//                    if (!taskPropertiesShowing && !killed) {
+//
+//                        viewProperties(position);
+//
+//                        //Removes completed task
+//                    } else if (!taskPropertiesShowing) {
+//
+//                        removeTask(position);
+//
+//                        //Removes task options from view
+//                    } else {
+//
+//                        removeTaskProperties();
+//
+//                    }
+//
+//                } else {
+//
+//                    completeTask = false;
+//
+//                }
+//
+//            }
+//
+//        });
 
         add.setClickable(true);
 
         onCreateOptionsMenu(toolbarLight.getMenu());
 
 
-        theListView.setAdapter(theAdapter[0]);
+//        theListView.setAdapter(theAdapter[0]);
 
     }
 
@@ -1441,7 +1491,7 @@ public class MainActivity extends AppCompatActivity implements
                     thePosition, null, null), thePosition,
                     theListView.getAdapter().getItemId(thePosition));
 
-            theListView.setAdapter(theAdapter[0]);
+//            theListView.setAdapter(theAdapter[0]);
 
             //getting task data
             boolean dbRepeat = false;
@@ -1466,7 +1516,7 @@ public class MainActivity extends AppCompatActivity implements
 
             MainActivity.theAdapter = new ListAdapter[]{new MyAdapter(
                     this, MainActivity.taskList)};
-            theListView.setAdapter(theAdapter[0]);
+//            theListView.setAdapter(theAdapter[0]);
 
         }
 
@@ -1478,94 +1528,94 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-    private void showPrompt(final int launchTime) {
+//    private void showPrompt(final int launchTime) {
+//
+//        final Calendar calendar = Calendar.getInstance();
+//
+//        if (!reviewOne && ((launchTime <= (calendar.getTimeInMillis()
+//                / 1000 / 60 / 60) - 72))) {
+//
+//            int reviewNumber = 1;
+//            prompt(reviewNumber);
+//
+//        } else if (!reviewTwo && ((launchTime <= (calendar.getTimeInMillis()
+//                / 1000 / 60 / 60) - 168))) {
+//
+//            int reviewNumber = 2;
+//            prompt(reviewNumber);
+//
+//        } else if (!reviewThree && ((launchTime <= (calendar.getTimeInMillis()
+//                / 1000 / 60 / 60) - 732))) {
+//
+//            int reviewNumber = 3;
+//            prompt(reviewNumber);
+//
+//        } else if (!reviewFour && ((launchTime <= (calendar.getTimeInMillis()
+//                / 1000 / 60 / 60) - 1464))) {
+//
+//            int reviewNumber = 4;
+//            prompt(reviewNumber);
+//
+//        }
+//    }
 
-        final Calendar calendar = Calendar.getInstance();
-
-        if (!reviewOne && ((launchTime <= (calendar.getTimeInMillis()
-                / 1000 / 60 / 60) - 72))) {
-
-            int reviewNumber = 1;
-            prompt(reviewNumber);
-
-        } else if (!reviewTwo && ((launchTime <= (calendar.getTimeInMillis()
-                / 1000 / 60 / 60) - 168))) {
-
-            int reviewNumber = 2;
-            prompt(reviewNumber);
-
-        } else if (!reviewThree && ((launchTime <= (calendar.getTimeInMillis()
-                / 1000 / 60 / 60) - 732))) {
-
-            int reviewNumber = 3;
-            prompt(reviewNumber);
-
-        } else if (!reviewFour && ((launchTime <= (calendar.getTimeInMillis()
-                / 1000 / 60 / 60) - 1464))) {
-
-            int reviewNumber = 4;
-            prompt(reviewNumber);
-
-        }
-    }
-
-    private void prompt(final int reviewNumber) {
-
-        final Dialog dialog = new Dialog(MainActivity.this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCancelable(false);
-
-        dialog.setContentView(R.layout.review_dialog_light);
-
-        Button positive = dialog.findViewById(R.id.positive);
-        Button negative = dialog.findViewById(R.id.negative);
-
-        positive.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                reviewOne = true;
-                reviewTwo = true;
-                reviewThree = true;
-                reviewFour = true;
-                db.updateReviewOne(true);
-                db.updateReviewTwo(true);
-                db.updateReviewThree(true);
-                db.updateReviewFour(true);
-                String URL = "https://play.google.com/store/apps/details?id=com.violenthoboenterprises.blistful";
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(URL));
-                startActivity(i);
-                dialog.dismiss();
-
-            }
-        });
-
-        negative.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                dialog.dismiss();
-                if (reviewNumber == 1) {
-                    reviewOne = true;
-                    db.updateReviewOne(true);
-                } else if (reviewNumber == 2) {
-                    reviewTwo = true;
-                    db.updateReviewTwo(true);
-                } else if (reviewNumber == 3) {
-                    reviewThree = true;
-                    db.updateReviewThree(true);
-                } else if (reviewNumber == 4) {
-                    reviewFour = true;
-                    db.updateReviewFour(true);
-                }
-
-            }
-        });
-
-        dialog.show();
-
-    }
+//    private void prompt(final int reviewNumber) {
+//
+//        final Dialog dialog = new Dialog(MainActivity.this);
+//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        dialog.setCancelable(false);
+//
+//        dialog.setContentView(R.layout.review_dialog_light);
+//
+//        Button positive = dialog.findViewById(R.id.positive);
+//        Button negative = dialog.findViewById(R.id.negative);
+//
+//        positive.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                reviewOne = true;
+//                reviewTwo = true;
+//                reviewThree = true;
+//                reviewFour = true;
+//                db.updateReviewOne(true);
+//                db.updateReviewTwo(true);
+//                db.updateReviewThree(true);
+//                db.updateReviewFour(true);
+//                String URL = "https://play.google.com/store/apps/details?id=com.violenthoboenterprises.blistful";
+//                Intent i = new Intent(Intent.ACTION_VIEW);
+//                i.setData(Uri.parse(URL));
+//                startActivity(i);
+//                dialog.dismiss();
+//
+//            }
+//        });
+//
+//        negative.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                dialog.dismiss();
+//                if (reviewNumber == 1) {
+//                    reviewOne = true;
+//                    db.updateReviewOne(true);
+//                } else if (reviewNumber == 2) {
+//                    reviewTwo = true;
+//                    db.updateReviewTwo(true);
+//                } else if (reviewNumber == 3) {
+//                    reviewThree = true;
+//                    db.updateReviewThree(true);
+//                } else if (reviewNumber == 4) {
+//                    reviewFour = true;
+//                    db.updateReviewFour(true);
+//                }
+//
+//            }
+//        });
+//
+//        dialog.show();
+//
+//    }
 
     @Override
     public void onProductPurchased(@NonNull String productId,
@@ -1736,17 +1786,17 @@ public class MainActivity extends AppCompatActivity implements
 
         new Reorder();
 
-        theListView.post(new Runnable() {
-            @Override
-            public void run() {
-                theListView.setSelection(activeTask);
-            }
-        });
+//        theListView.post(new Runnable() {
+//            @Override
+//            public void run() {
+////                theListView.setSelection(activeTask);
+//            }
+//        });
 
         //Updating the view with the new order
         theAdapter = new ListAdapter[]{new MyAdapter(
                 this, taskList)};
-        theListView.setAdapter(theAdapter[0]);
+//        theListView.setAdapter(theAdapter[0]);
 
         alertIntent = new Intent(this, AlertReceiver.class);
 
@@ -1754,7 +1804,7 @@ public class MainActivity extends AppCompatActivity implements
         noTasksLeft();
 
         //Prompt user to leave review if required
-        showPrompt(launchTime);
+//        showPrompt(launchTime);
 
         //Setting the position for the toast
         toastParams.setMargins(15, (int) (deviceheight / 1.35), 0, 0);
@@ -1771,7 +1821,7 @@ public class MainActivity extends AppCompatActivity implements
         } else if (purchasesShowing) {
             colorPickerShowing();
         } else if (taskOptionsShowing) {
-            theListView.setAdapter(theAdapter[0]);
+//            theListView.setAdapter(theAdapter[0]);
             taskOptionsShowing = false;
             //Properties to home
         } else if (taskPropertiesShowing) {

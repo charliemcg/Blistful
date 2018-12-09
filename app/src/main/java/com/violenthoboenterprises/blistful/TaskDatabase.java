@@ -8,14 +8,18 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
+/*
+ * This is where the database is built
+ */
 @Database(entities = {Task.class}, version = 1)
 public abstract class TaskDatabase extends RoomDatabase {
 
     private static TaskDatabase instance;
 
-    public abstract TaskDao taskDao();
+    abstract TaskDao taskDao();
 
-    public static synchronized TaskDatabase getIntance(Context context){
+    //Instance
+    static synchronized TaskDatabase getInstance(Context context){
         if(instance == null){
             instance = Room.databaseBuilder(context.getApplicationContext(),
                     TaskDatabase.class, "task_database")
@@ -26,6 +30,7 @@ public abstract class TaskDatabase extends RoomDatabase {
         return instance;
     }
 
+    //Callback
     private static RoomDatabase.Callback roomCallback = new RoomDatabase.Callback(){
         @Override
         public void onCreate(@NonNull SupportSQLiteDatabase db){
@@ -34,12 +39,15 @@ public abstract class TaskDatabase extends RoomDatabase {
         }
     };
 
+    //Populating the task table with tutorial tasks
     private static class PopulateDbAsyncTask extends AsyncTask<Void, Void, Void>{
         private TaskDao taskDao;
         private PopulateDbAsyncTask(TaskDatabase db){taskDao = db.taskDao();}
         @Override
         protected Void doInBackground(Void... voids){
-            taskDao.insert(new Task("Default task one"));
+            taskDao.insert(new Task("This is a task"));
+            taskDao.insert(new Task("Swipe left or right to delete a task"));
+            taskDao.insert(new Task("Press '+' to add a new task"));
             return null;
         }
     }

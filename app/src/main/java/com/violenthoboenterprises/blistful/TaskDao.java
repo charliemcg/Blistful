@@ -9,6 +9,9 @@ import android.arch.persistence.room.Update;
 
 import java.util.List;
 
+/*
+ * These are the database calls on the task table
+ */
 @Dao
 public interface TaskDao {
 
