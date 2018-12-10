@@ -388,7 +388,7 @@ public class MainActivity extends AppCompatActivity implements
         recyclerView.setHasFixedSize(true);
 
         //setting up the adapter
-        final TaskAdapter adapter = new TaskAdapter(this, mainActivityPresenter);
+        final TaskAdapter adapter = new TaskAdapter(this, mainActivityPresenter, activityRootView);
         recyclerView.setAdapter(adapter);
 
         //observing the recycler view items for changes

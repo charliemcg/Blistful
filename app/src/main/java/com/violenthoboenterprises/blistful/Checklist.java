@@ -72,10 +72,10 @@ public class Checklist extends MainActivity {
         noteExists = false;
         inChecklist = true;
         renameMe = 0;
-        listParams = (RelativeLayout.LayoutParams) checklistView.getLayoutParams();
-        editTextParams = (RelativeLayout.LayoutParams) checklistEditText.getLayoutParams();
+//        listParams = (RelativeLayout.LayoutParams) checklistView.getLayoutParams();
+//        editTextParams = (RelativeLayout.LayoutParams) checklistEditText.getLayoutParams();
         rootParams = (FrameLayout.LayoutParams) checklistRootView.getLayoutParams();
-        toolbarParams = (RelativeLayout.LayoutParams) subTasksToolbar.getLayoutParams();
+//        toolbarParams = (RelativeLayout.LayoutParams) subTasksToolbar.getLayoutParams();
 
         String dbTaskId = "";
 
@@ -120,93 +120,93 @@ public class Checklist extends MainActivity {
         }
 
         //actions to occur when user clicks list item
-        checklistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-
-                //Getting id of selected item
-//                boolean isKilled = false;
-//                Cursor dbResult = db.getSubtaskData(finalDbID,
-//                        sortedSubtaskIds.get(position));
-//                while(dbResult.moveToNext()){
-//                    isKilled = dbResult.getInt(3) > 0;
-//                }
-//                dbResult.close();
-
-                //removes completed task from view
-//                if(isKilled && subTasksClickable){
+//        checklistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //
-//                    vibrate.vibrate(50);
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
 //
-//                    checklist.remove(position);
+//                //Getting id of selected item
+////                boolean isKilled = false;
+////                Cursor dbResult = db.getSubtaskData(finalDbID,
+////                        sortedSubtaskIds.get(position));
+////                while(dbResult.moveToNext()){
+////                    isKilled = dbResult.getInt(3) > 0;
+////                }
+////                dbResult.close();
 //
-//                    subTasksKilled.remove(position);
+//                //removes completed task from view
+////                if(isKilled && subTasksClickable){
+////
+////                    vibrate.vibrate(50);
+////
+////                    checklist.remove(position);
+////
+////                    subTasksKilled.remove(position);
+////
+////                    MainActivity.db.deleteSubtaskData(String.valueOf(finalDbID),
+////                            String.valueOf(sortedSubtaskIds.get(position)));
+////
+////                    db.updateChecklistSize(finalDbTaskId, checklist.size());
+////
+////                    sortedSubtaskIds.remove(position);
+////
+////                    checklistView.setAdapter(checklistAdapter[0]);
+////
+////                }
 //
-//                    MainActivity.db.deleteSubtaskData(String.valueOf(finalDbID),
-//                            String.valueOf(sortedSubtaskIds.get(position)));
+//            }
 //
-//                    db.updateChecklistSize(finalDbTaskId, checklist.size());
-//
-//                    sortedSubtaskIds.remove(position);
-//
-//                    checklistView.setAdapter(checklistAdapter[0]);
-//
-//                }
-
-            }
-
-        });
+//        });
 
         //Actions to occur on long click of a list item
-        checklistView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view,
-                                           int position, long id) {
-
-//                boolean isKilled = false;
-//                Cursor dbResult = db.getSubtaskData(finalDbID,
-//                        sortedSubtaskIds.get(position));
-//                while(dbResult.moveToNext()){
-//                    isKilled = dbResult.getInt(3) > 0;
-//                }
-//                dbResult.close();
-
-                //Rename subtask
-//                if(subTasksClickable && !isKilled){
+//        checklistView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 //
-//                    keyboard.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> parent, View view,
+//                                           int position, long id) {
 //
-//                    goToChecklistAdapter = false;
+////                boolean isKilled = false;
+////                Cursor dbResult = db.getSubtaskData(finalDbID,
+////                        sortedSubtaskIds.get(position));
+////                while(dbResult.moveToNext()){
+////                    isKilled = dbResult.getInt(3) > 0;
+////                }
+////                dbResult.close();
 //
-//                    fadeSubTasks = true;
+//                //Rename subtask
+////                if(subTasksClickable && !isKilled){
+////
+////                    keyboard.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+////
+////                    goToChecklistAdapter = false;
+////
+////                    fadeSubTasks = true;
+////
+////                    //Indicates that a task is being edited
+////                    subTaskBeingEdited = true;
+////
+////                    renameMe = position;
+////
+////                    checklistView.setAdapter(checklistAdapter[0]);
+////
+////                //Reinstate killed subtask
+////                }else if(subTasksClickable && isKilled){
+////
+////                    //marks task as not killed in database
+////                    db.updateSubtaskKilled(finalDbTaskId, String.valueOf
+////                            (sortedSubtaskIds.get(position)), false);
+////
+////                    subTasksKilled.set(position, false);
+////
+////                    checklistView.setAdapter(checklistAdapter[0]);
+////
+////                }
 //
-//                    //Indicates that a task is being edited
-//                    subTaskBeingEdited = true;
+//                return true;
 //
-//                    renameMe = position;
+//            }
 //
-//                    checklistView.setAdapter(checklistAdapter[0]);
-//
-//                //Reinstate killed subtask
-//                }else if(subTasksClickable && isKilled){
-//
-//                    //marks task as not killed in database
-//                    db.updateSubtaskKilled(finalDbTaskId, String.valueOf
-//                            (sortedSubtaskIds.get(position)), false);
-//
-//                    subTasksKilled.set(position, false);
-//
-//                    checklistView.setAdapter(checklistAdapter[0]);
-//
-//                }
-
-                return true;
-
-            }
-
-        });
+//        });
 
         //Actions to occur when keyboard's 'Done' button is pressed
         checklistEditText.setOnEditorActionListener(new TextView.OnEditorActionListener(){
@@ -470,7 +470,7 @@ public class Checklist extends MainActivity {
         checklist = tempTaskList;
 
         checklistAdapter = new ListAdapter[]{new ChecklistAdapter(this, checklist)};
-        checklistView.setAdapter(checklistAdapter[0]);
+//        checklistView.setAdapter(checklistAdapter[0]);
 
     }
 
@@ -535,15 +535,15 @@ public class Checklist extends MainActivity {
         }
 
         //Setting height of the list view
-        int statusHeight = 0;
-        int resourceId = getResources().getIdentifier("status_bar_height",
-                "dimen", "android");
-        if (resourceId > 0) {
-            statusHeight = getResources().getDimensionPixelSize(resourceId);
-        }
-        listParams.height = deviceheight - (editTextParams.height +
-                toolbarParams.height + statusHeight);
-        checklistView.setLayoutParams(listParams);
+//        int statusHeight = 0;
+//        int resourceId = getResources().getIdentifier("status_bar_height",
+//                "dimen", "android");
+//        if (resourceId > 0) {
+//            statusHeight = getResources().getDimensionPixelSize(resourceId);
+//        }
+//        listParams.height = deviceheight - (editTextParams.height +
+//                toolbarParams.height + statusHeight);
+//        checklistView.setLayoutParams(listParams);
 
     }
 

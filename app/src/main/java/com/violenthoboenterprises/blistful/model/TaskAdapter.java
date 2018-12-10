@@ -34,10 +34,12 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
     private OnItemClickListener listener;
     private Context context;
     private MainActivityPresenter mainActivityPresenter;
+    View activityRootView;
 
-    public TaskAdapter(Context context, MainActivityPresenter mainActivityPresenter) {
+    public TaskAdapter(Context context, MainActivityPresenter mainActivityPresenter, View activityRootView) {
         this.context = context;
         this.mainActivityPresenter = mainActivityPresenter;
+        this.activityRootView = activityRootView;
     }
 
     @NonNull
@@ -55,9 +57,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         holder.taskLayout.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                Log.d(TAG, "Click registered");
                 if(holder.taskProperties.getVisibility() == View.VISIBLE) {
                     holder.taskProperties.setVisibility(View.GONE);
+                    //redrawing the UI to remove properties from view
+                    activityRootView.postInvalidate();
                 }else{
                     holder.taskProperties.setVisibility(View.VISIBLE);
                 }
