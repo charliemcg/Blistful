@@ -3,6 +3,7 @@ package com.violenthoboenterprises.blistful.model;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -54,6 +55,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         holder.taskLayout.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
+                Log.d(TAG, "Click registered");
                 if(holder.taskProperties.getVisibility() == View.VISIBLE) {
                     holder.taskProperties.setVisibility(View.GONE);
                 }else{
@@ -99,11 +101,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
     //Building the item view
     class TaskHolder extends RecyclerView.ViewHolder {
         private TextView tvTask;
-        private LinearLayout taskLayout;
-        private TableRow taskProperties;
-        private LinearLayout btnAlarm;
-        private LinearLayout btnSubtasks;
-        private LinearLayout btnNote;
+        private ConstraintLayout taskLayout;
+        private ConstraintLayout taskProperties;
+        private ConstraintLayout btnAlarm;
+        private ConstraintLayout btnSubtasks;
+        private ConstraintLayout btnNote;
         public TaskHolder(final View itemView) {
             super(itemView);
             tvTask = itemView.findViewById(R.id.tvTask);

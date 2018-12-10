@@ -1,4 +1,6 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="64dp"
     android:background="@color/white"
@@ -8,34 +10,32 @@
         android:id="@+id/notif_icon"
         android:layout_width="64dp"
         android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
         android:src="@drawable/ic_launcher_og"
-        android:layout_gravity="center_vertical"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
-    <LinearLayout
-        android:id="@+id/notif_details"
-        android:layout_width="0dp"
+    <!--<TextView-->
+    <!--android:id="@+id/notif_affirmation"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:singleLine="true"-->
+    <!--android:textColor="#000000"-->
+    <!--android:textSize="14sp"/>-->
+
+    <TextView
+        android:id="@+id/notif_title"
+        android:layout_width="321dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="5dp"
-        android:orientation="vertical">
+        android:gravity="center_vertical"
+        android:lines="2"
+        android:textColor="#666666"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/notif_icon"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <!--<TextView-->
-            <!--android:id="@+id/notif_affirmation"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:singleLine="true"-->
-            <!--android:textColor="#000000"-->
-            <!--android:textSize="14sp"/>-->
-
-        <TextView
-            android:id="@+id/notif_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:lines="2"
-            android:textColor="#666666"
-            android:gravity="center_vertical"/>
-
-    </LinearLayout>
-
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

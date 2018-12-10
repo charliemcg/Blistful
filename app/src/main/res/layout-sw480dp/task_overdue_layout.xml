@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,11 +12,10 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-        <LinearLayout
+        <android.support.constraint.ConstraintLayout
             android:id="@+id/snoozeTask"
             android:layout_width="0dp"
             android:layout_height="50dp"
-            android:orientation="horizontal"
             android:layout_weight="1"
             android:gravity="center"
             android:layout_marginTop="5dp"
@@ -29,16 +28,14 @@
                 android:layout_height="match_parent"
                 android:lines="1"
                 android:gravity="center"
-                android:text="@string/snooze"
-                android:textColor="@color/gray"/>
+                android:text="@string/snooze"/>
 
-        </LinearLayout>
+        </android.support.constraint.ConstraintLayout>
 
-        <LinearLayout
+        <android.support.constraint.ConstraintLayout
             android:id="@+id/taskDone"
             android:layout_width="0dp"
             android:layout_height="50dp"
-            android:orientation="horizontal"
             android:layout_weight="1"
             android:gravity="center"
             android:layout_marginTop="5dp"
@@ -50,16 +47,14 @@
                 android:layout_height="match_parent"
                 android:lines="1"
                 android:gravity="center"
-                android:text="@string/done"
-                android:textColor="@color/gray"/>
+                android:text="@string/done"/>
 
-        </LinearLayout>
+        </android.support.constraint.ConstraintLayout>
 
-        <LinearLayout
+        <android.support.constraint.ConstraintLayout
             android:id="@+id/taskIgnore"
             android:layout_width="0dp"
             android:layout_height="50dp"
-            android:orientation="horizontal"
             android:layout_weight="1"
             android:gravity="center"
             android:layout_marginTop="5dp"
@@ -72,11 +67,10 @@
                 android:layout_height="match_parent"
                 android:lines="1"
                 android:gravity="center"
-                android:text="@string/ignore"
-                android:textColor="@color/gray"/>
+                android:text="@string/ignore"/>
 
-        </LinearLayout>
+        </android.support.constraint.ConstraintLayout>
 
     </LinearLayout>
 
-</TableRow>
+</android.support.constraint.ConstraintLayout>

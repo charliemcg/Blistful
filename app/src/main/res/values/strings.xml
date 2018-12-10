@@ -98,5 +98,7 @@
     <string name="accessYellowShoppingCart">Yellow shopping cart containing no ads symbol and notification symbol.</string>
     <string name="accessGoldTickGoldStars">Gold tick with five gold stars below.</string>
     <string name="thank_you_for_purchase">Thank you for your purchase.</string>
+    <string name="circularArrowRepeatWeekly">Circular arrow that says weekly repeat.</string>
+    <string name="redCircularArrowRepeatWeekly">Circular arrow that says weekly repeat.</string>
 
 </resources>

@@ -1,244 +1,192 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/taskLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    xmlns:ads="http://schemas.android.com/apk/res-auto"
-    tools:context="com.violenthoboenterprises.blistful.MainActivity"
-    android:descendantFocusability="beforeDescendants"
     android:background="@color/turquoise"
-    android:id="@+id/taskLayout">
+    android:descendantFocusability="beforeDescendants"
+    android:layout_margin="8dp"
+    tools:context="com.violenthoboenterprises.blistful.MainActivity">
 
-    <LinearLayout
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white"
-        android:orientation="vertical"
-        android:layout_margin="10dp">
+        android:layout_height="wrap_content"
+        android:elevation="100dp"
+        android:visibility="gone"
+        ads:adSize="SMART_BANNER"
+        ads:adUnitId="ca-app-pub-2378583121223638/3959260925"
+        app:layout_constraintBottom_toTopOf="@+id/mainTaskView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <RelativeLayout
-            android:id="@+id/adRow"
-            android:visibility="gone"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:descendantFocusability="blocksDescendants"
-            android:background="@color/turquoise">
+    <ImageView
+        android:id="@+id/banner"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:contentDescription="@string/accessBannerPromptingUser"
+        android:elevation="100dp"
+        android:onClick="showPro"
+        android:src="@drawable/banner"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/mainTaskView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-            <com.google.android.gms.ads.AdView
-                android:id="@+id/adView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                ads:adSize="SMART_BANNER"
-                ads:adUnitId="ca-app-pub-2378583121223638/3959260925"
-                android:visibility="gone"/>
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/mainTaskView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/color_picker_border_white"
+        android:elevation="50dp"
+        app:layout_constraintBottom_toTopOf="@+id/propertiesView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/banner">
 
-            <ImageView
-                android:id="@+id/banner"
-                android:src="@drawable/banner"
-                android:layout_width="wrap_content"
-                android:layout_height="60dp"
-                android:visibility="gone"
-                android:onClick="showPro"
-                android:contentDescription="@string/accessBannerPromptingUser"/>
+        <TextView
+            android:id="@+id/tvTask"
+            android:layout_width="345dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:elevation="100dp"
+            android:gravity="center_vertical"
+            android:textSize="20sp"
+            ads:layout_constraintEnd_toEndOf="@+id/mainTaskView"
+            ads:layout_constraintStart_toStartOf="@+id/mainTaskView"
+            ads:layout_constraintTop_toTopOf="@+id/mainTaskView" />
 
-        </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/color_picker_border_white">
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:descendantFocusability="blocksDescendants"
-            android:id="@+id/taskName"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:layout_height="80dp"
-                android:layout_width="0dp"
-                android:layout_weight="8"
-                android:id="@+id/tvTask"
-                android:paddingLeft="15dp"
-                android:paddingTop="5dp"
-                android:textSize="25sp"
-                android:textColor="@color/gray"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/statusLayout"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_marginBottom="5dp"
+        <TextView
+            android:id="@+id/dueTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             android:gravity="center"
-            android:visibility="gone">
+            android:textAlignment="center"
+            android:visibility="gone"
+            ads:layout_constraintBottom_toBottomOf="@+id/mainTaskView"
+            ads:layout_constraintEnd_toStartOf="@+id/checklistClearWhite"
+            ads:layout_constraintStart_toStartOf="@+id/mainTaskView"
+            ads:layout_constraintTop_toBottomOf="@+id/tvTask" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="45dp"
-                android:layout_weight="1"
-                android:id="@+id/dueTextView"
-                android:textAlignment="center"
-                android:gravity="center"
-                android:textColor="@color/gray"
-                android:textSize="17sp"/>
+        <ImageView
+            android:id="@+id/checklistClearWhite"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:contentDescription="@string/accessSubtasksIcon"
+            android:elevation="100dp"
+            android:src="@drawable/subtasks_icon_light"
+            android:visibility="gone"
+            ads:layout_constraintBottom_toBottomOf="@+id/mainTaskView"
+            ads:layout_constraintEnd_toStartOf="@+id/noteClearWhite"
+            ads:layout_constraintTop_toBottomOf="@+id/tvTask" />
 
-            <RelativeLayout
-                android:id="@+id/checklistLayout"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:gravity="center"
-                android:layout_marginRight="20dp">
+        <ImageView
+            android:id="@+id/noteClearWhite"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:contentDescription="@string/accessNoteIcon"
+            android:elevation="100dp"
+            android:src="@drawable/note_icon_light"
+            android:visibility="gone"
+            ads:layout_constraintBottom_toBottomOf="@+id/mainTaskView"
+            ads:layout_constraintEnd_toStartOf="@+id/repeatClearWhite"
+            ads:layout_constraintTop_toBottomOf="@+id/tvTask" />
 
-                <ImageView
-                    android:id="@+id/checklistClearWhite"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/subtasks_icon_light"
-                    android:contentDescription="@string/accessSubtasksIcon"
-                    android:visibility="gone"/>
+        <ImageView
+            android:id="@+id/repeatClearWhite"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:contentDescription="@string/accessRepeatIcon"
+            android:elevation="100dp"
+            android:src="@drawable/repeat_icon_light"
+            android:visibility="gone"
+            ads:layout_constraintBottom_toBottomOf="@+id/mainTaskView"
+            ads:layout_constraintEnd_toStartOf="@+id/dueClearWhite"
+            ads:layout_constraintTop_toBottomOf="@+id/tvTask" />
 
-                <ImageView
-                    android:id="@+id/checklistKilled"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/subtasks_icon_killed"
-                    android:contentDescription="@string/accessSubtasksIcon"
-                    android:visibility="gone"/>
+        <ImageView
+            android:id="@+id/dueClearWhite"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:contentDescription="@string/accessDueIcon"
+            android:elevation="100dp"
+            android:src="@drawable/due_icon_light"
+            android:visibility="gone"
+            ads:layout_constraintBottom_toBottomOf="@+id/mainTaskView"
+            ads:layout_constraintEnd_toEndOf="@+id/mainTaskView"
+            ads:layout_constraintTop_toBottomOf="@+id/tvTask" />
 
-            </RelativeLayout>
+        <ImageView
+            android:id="@+id/overdueClearWhite"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:contentDescription="@string/accessOverdueIcon"
+            android:src="@drawable/overdue_icon_light"
+            android:visibility="gone"
+            ads:layout_constraintBottom_toBottomOf="@+id/mainTaskView"
+            ads:layout_constraintEnd_toEndOf="@+id/mainTaskView"
+            ads:layout_constraintTop_toBottomOf="@+id/tvTask" />
 
-            <RelativeLayout
-                android:id="@+id/noteLayout"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:gravity="center"
-                android:layout_marginRight="20dp">
+        <ImageView
+            android:id="@+id/snoozeClearWhite"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:contentDescription="@string/accessSnoozeIcon"
+            android:src="@drawable/snooze_icon_white"
+            android:visibility="gone"
+            ads:layout_constraintBottom_toBottomOf="@+id/mainTaskView"
+            ads:layout_constraintEnd_toEndOf="@+id/mainTaskView"
+            ads:layout_constraintTop_toBottomOf="@+id/tvTask" />
 
-                <ImageView
-                    android:id="@+id/noteClearWhite"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/note_icon_light"
-                    android:contentDescription="@string/accessNoteIcon"
-                    android:visibility="gone"/>
+    </android.support.constraint.ConstraintLayout>
 
-                <ImageView
-                    android:id="@+id/noteKilled"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/note_icon_killed"
-                    android:contentDescription="@string/accessNoteIcon"
-                    android:visibility="gone"/>
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/propertiesView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/turquoise"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mainTaskView">
 
-            </RelativeLayout>
+        <include
+            android:id="@+id/properties"
+            layout="@layout/task_properties_layout"
+            android:visibility="gone"/>
 
-            <RelativeLayout
-                android:id="@+id/repeatLayout"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:gravity="center"
-                android:layout_marginRight="20dp">
+        <include
+            android:id="@+id/snoozeRow"
+            layout="@layout/snooze_layout"
+            android:visibility="gone"/>
 
-                <ImageView
-                    android:id="@+id/repeatClearWhite"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/repeat_icon_light"
-                    android:contentDescription="@string/accessRepeatIcon"
-                    android:visibility="gone"/>
+        <include
+            android:id="@+id/taskIsOverdue"
+            layout="@layout/task_overdue_layout"
+            android:visibility="gone"/>
 
-            </RelativeLayout>
+    </android.support.constraint.ConstraintLayout>
 
-            <RelativeLayout
-                android:id="@+id/dueLayout"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:gravity="center"
-                android:layout_marginRight="20dp">
-
-                <ImageView
-                    android:id="@+id/dueClearWhite"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/due_icon_light"
-                    android:contentDescription="@string/accessDueIcon"
-                    android:visibility="gone"/>
-
-                <ImageView
-                    android:id="@+id/dueKilled"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/due_icon_killed"
-                    android:contentDescription="@string/accessDueIcon"
-                    android:visibility="gone"/>
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/overdueLayout"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:gravity="center"
-                android:visibility="gone"
-                android:layout_marginRight="20dp">
-
-                <ImageView
-                    android:id="@+id/overdueClearWhite"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/overdue_icon_light"
-                    android:contentDescription="@string/accessOverdueIcon"
-                    android:visibility="gone"/>
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/snoozeLayout"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:gravity="center"
-                android:visibility="gone"
-                android:layout_marginRight="20dp">
-
-                <ImageView
-                    android:id="@+id/snoozeClearWhite"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/snooze_icon_white"
-                    android:contentDescription="@string/accessSnoozeIcon"
-                    android:visibility="gone"/>
-
-            </RelativeLayout>
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/turquoise">
-            <include
-                layout="@layout/task_properties_layout"
-                android:id="@+id/properties"
-                android:visibility="gone"/>
-            <include
-                layout="@layout/snooze_layout"
-                android:id="@+id/snoozeRow"
-                android:visibility="gone"/>
-            <include
-                layout="@layout/task_overdue_layout"
-                android:id="@+id/taskIsOverdue"
-                android:visibility="gone"/>
-        </LinearLayout>
-
-    </LinearLayout>
-
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

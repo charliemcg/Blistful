@@ -1,108 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/noteRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/noteRoot"
-    android:background="@color/turquoise">
+    android:background="@color/turquoise"
+    android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/noteToolbar"
+        style="@style/HeaderBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        style="@style/HeaderBar"
+        android:background="@color/turquoise"
         android:elevation="4dp"
-        android:background="@color/turquoise"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@+id/noteToolbar"
-        android:background="@color/mid_gray"/>
+    <!--<TextView-->
+    <!--android:id="@+id/divider"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="1dp"-->
+    <!--android:layout_below="@+id/noteToolbar"-->
+    <!--android:background="@color/mid_gray"/>-->
 
     <TextView
         android:id="@+id/noteTextView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/divider"
-        android:textColor="@color/gray"
-        android:textSize="20sp"
+        android:layout_height="463dp"
+        android:layout_marginTop="8dp"
         android:scrollbars="vertical"
-        android:layout_marginLeft="20dp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="20dp"/>
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/noteToolbar" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_alignParentBottom="true">
+    <EditText
+        android:id="@+id/noteEditText"
+        android:layout_width="333dp"
+        android:layout_height="39dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="8dp"
+        android:background="@color/purple"
+        android:hint="@string/addYourNote"
+        android:imeOptions="actionDone"
+        android:inputType="textCapSentences|textMultiLine"
+        android:maxLength="2000"
+        android:maxLines="3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/noteToolbar"
+        app:layout_constraintVertical_bias="1.0" />
 
-        <EditText
-            android:id="@+id/noteEditText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="6"
-            android:paddingLeft="5dp"
-            android:maxLines="3"
-            android:maxLength="2000"
-            android:imeOptions="actionDone"
-            android:inputType="textCapSentences|textMultiLine"
-            android:layout_alignParentBottom="true"
-            android:hint="@string/addYourNote"/>
+    <ImageView
+        android:id="@+id/submitNoteBtnDark"
+        android:layout_width="50dp"
+        android:layout_height="39dp"
+        android:layout_gravity="center_vertical"
+        android:contentDescription="@string/accessSubmitButton"
+        android:padding="5dp"
+        android:src="@drawable/submit_dark"
+        app:layout_constraintBottom_toBottomOf="@+id/noteEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/noteEditText"
+        app:layout_constraintTop_toTopOf="@+id/noteEditText" />
 
-        <ImageView
-            android:id="@+id/submitNoteBtnDark"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:padding="5dp"
-            android:layout_gravity="center_vertical"
-            android:contentDescription="@string/accessSubmitButton"
-            android:src="@drawable/submit_dark"/>
+    <ImageView
+        android:id="@+id/submitNoteOne"
+        android:layout_width="50dp"
+        android:layout_height="39dp"
+        android:layout_gravity="center_vertical"
+        android:padding="5dp"
+        android:src="@drawable/submit_one"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/noteEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/noteEditText"
+        app:layout_constraintTop_toTopOf="@+id/noteEditText" />
 
-        <ImageView
-            android:id="@+id/submitNoteOne"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:padding="5dp"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/submit_one"
-            android:visibility="gone"/>
+    <ImageView
+        android:id="@+id/submitNoteOneHalf"
+        android:layout_width="50dp"
+        android:layout_height="39dp"
+        android:layout_gravity="center_vertical"
+        android:padding="5dp"
+        android:src="@drawable/submit_one_half"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/noteEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/noteEditText"
+        app:layout_constraintTop_toTopOf="@+id/noteEditText" />
 
-        <ImageView
-            android:id="@+id/submitNoteOneHalf"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:padding="5dp"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/submit_one_half"
-            android:visibility="gone"/>
+    <ImageView
+        android:id="@+id/submitNoteTwo"
+        android:layout_width="50dp"
+        android:layout_height="39dp"
+        android:layout_gravity="center_vertical"
+        android:padding="5dp"
+        android:src="@drawable/submit_two"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/noteEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/noteEditText"
+        app:layout_constraintTop_toTopOf="@+id/noteEditText" />
 
-        <ImageView
-            android:id="@+id/submitNoteTwo"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:padding="5dp"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/submit_two"
-            android:visibility="gone"/>
+    <ImageView
+        android:id="@+id/submitNoteTwoHalf"
+        android:layout_width="50dp"
+        android:layout_height="39dp"
+        android:layout_gravity="center_vertical"
+        android:padding="5dp"
+        android:src="@drawable/submit_two_half"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/noteEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/noteEditText"
+        app:layout_constraintTop_toTopOf="@+id/noteEditText" />
 
-        <ImageView
-            android:id="@+id/submitNoteTwoHalf"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:padding="5dp"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/submit_two_half"
-            android:visibility="gone"/>
-
-    </LinearLayout>
-
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

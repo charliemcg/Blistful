@@ -1,206 +1,248 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/pickerRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/turquoise"
-    android:id="@+id/pickerRoot">
+    android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/dueToolbar"
+        style="@style/HeaderBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        style="@style/HeaderBar"
         android:background="@color/turquoise"
-        android:elevation="4dp"/>
+        android:elevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
+    <ImageView
+        android:id="@+id/calendarFadedLight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="@string/accessGrayedOutCalendar"
+        android:elevation="100dp"
+        android:src="@drawable/calendar_faded_light"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/timeBtn"
+        app:layout_constraintEnd_toEndOf="@+id/timeBtn"
+        app:layout_constraintHorizontal_bias="0.139"
+        app:layout_constraintStart_toStartOf="@+id/timeBtn"
+        app:layout_constraintTop_toTopOf="@+id/timeBtn"
+        app:layout_constraintVertical_bias="0.533" />
+
+    <ImageView
+        android:id="@+id/calendar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/accessCalendar"
+        android:elevation="100dp"
+        android:src="@drawable/calendar"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/timeBtn"
+        app:layout_constraintEnd_toEndOf="@+id/timeBtn"
+        app:layout_constraintHorizontal_bias="0.134"
+        app:layout_constraintStart_toStartOf="@+id/timeBtn"
+        app:layout_constraintTop_toTopOf="@+id/timeBtn"
+        app:layout_constraintVertical_bias="0.533" />
+
+    <TextView
+        android:id="@+id/dateTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:elevation="100dp"
+        android:gravity="center"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="@+id/timeBtn"
+        app:layout_constraintEnd_toEndOf="@+id/timeBtn"
+        app:layout_constraintHorizontal_bias="0.717"
+        app:layout_constraintStart_toStartOf="@+id/timeBtn"
+        app:layout_constraintTop_toTopOf="@+id/timeBtn"
+        app:layout_constraintVertical_bias="0.524" />
+
+    <View
         android:id="@+id/dateBtn"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="3"
-        android:orientation="horizontal"
-        android:layout_margin="20dp"
-        android:padding="20dp"
-        android:background="@drawable/color_picker_border_white">
+        android:layout_height="360dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/color_picker_border_white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timeBtn" />
 
-        <ImageView
-            android:id="@+id/calendarFadedLight"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:src="@drawable/calendar_faded_light"
-            android:contentDescription="@string/accessGrayedOutCalendar"
-            android:padding="15dp"
-            android:visibility="gone"/>
+    <ImageView
+        android:id="@+id/timeFadedLight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/accessGrayedOutClock"
+        android:src="@drawable/time_faded_light"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/dateBtn"
+        app:layout_constraintEnd_toEndOf="@+id/calendar"
+        app:layout_constraintStart_toStartOf="@+id/calendar"
+        app:layout_constraintTop_toTopOf="@+id/dateBtn" />
 
-        <ImageView
-            android:id="@+id/calendar"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:src="@drawable/calendar"
-            android:contentDescription="@string/accessCalendar"
-            android:padding="15dp"
-            android:visibility="gone"/>
+    <ImageView
+        android:id="@+id/time"
+        android:layout_width="127dp"
+        android:layout_height="130dp"
+        android:contentDescription="@string/accessClock"
+        android:src="@drawable/time"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/dateBtn"
+        app:layout_constraintEnd_toEndOf="@+id/calendar"
+        app:layout_constraintStart_toStartOf="@+id/calendar"
+        app:layout_constraintTop_toTopOf="@+id/dateBtn" />
 
-        <TextView
-            android:id="@+id/dateTextView"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:gravity="center"
-            android:textSize="35sp"
-            android:textColor="@color/gray"/>
+    <TextView
+        android:id="@+id/timeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:gravity="center"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="@+id/dateBtn"
+        app:layout_constraintEnd_toEndOf="@+id/dateBtn"
+        app:layout_constraintHorizontal_bias="0.761"
+        app:layout_constraintStart_toStartOf="@+id/dateBtn"
+        app:layout_constraintTop_toTopOf="@+id/dateBtn"
+        app:layout_constraintVertical_bias="0.516" />
 
-    </LinearLayout>
-
-    <LinearLayout
+    <View
         android:id="@+id/timeBtn"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="3"
-        android:orientation="horizontal"
-        android:layout_margin="20dp"
-        android:padding="20dp"
-        android:background="@drawable/color_picker_border_white">
+        android:layout_height="360dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/color_picker_border_white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dueToolbar" />
 
-        <ImageView
-            android:id="@+id/timeFadedLight"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:src="@drawable/time_faded_light"
-            android:contentDescription="@string/accessGrayedOutClock"
-            android:padding="10dp"
-            android:visibility="gone"/>
+    <ImageView
+        android:id="@+id/cancelRepeatLight"
+        android:layout_width="0dp"
+        android:layout_height="95dp"
+        android:contentDescription="@string/accessNoRepeat"
+        android:elevation="100dp"
+        android:src="@drawable/repeat_none_light"
+        app:layout_constraintLeft_toLeftOf="@+id/lightRepeatLayout"
+        app:layout_constraintRight_toLeftOf="@+id/dailyLight"
+        app:layout_constraintBottom_toBottomOf="@+id/lightRepeatLayout"
+        app:layout_constraintTop_toTopOf="@+id/lightRepeatLayout"/>
 
-        <ImageView
-            android:id="@+id/time"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:src="@drawable/time"
-            android:contentDescription="@string/accessClock"
-            android:padding="10dp"
-            android:visibility="gone"/>
+    <ImageView
+        android:id="@+id/cancelRepeat"
+        android:layout_width="0dp"
+        android:layout_height="95dp"
+        android:contentDescription="@string/accessNoRepeat"
+        android:elevation="100dp"
+        android:src="@drawable/repeat_none"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="@+id/lightRepeatLayout"
+        app:layout_constraintRight_toLeftOf="@+id/dailyLight"
+        app:layout_constraintBottom_toBottomOf="@+id/lightRepeatLayout"
+        app:layout_constraintTop_toTopOf="@+id/lightRepeatLayout" />
 
-        <TextView
-            android:id="@+id/timeTextView"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:gravity="center"
-            android:textSize="35sp"
-            android:textColor="@color/gray"/>
+    <ImageView
+        android:id="@+id/dailyLight"
+        android:layout_width="0dp"
+        android:layout_height="95dp"
+        android:contentDescription="@string/accessDailyRepeat"
+        android:elevation="100dp"
+        android:src="@drawable/repeat_day_light"
+        app:layout_constraintLeft_toRightOf="@+id/cancelRepeatLight"
+        app:layout_constraintRight_toLeftOf="@+id/weeklyLight"
+        app:layout_constraintBottom_toBottomOf="@+id/lightRepeatLayout"
+        app:layout_constraintTop_toTopOf="@+id/lightRepeatLayout" />
 
-    </LinearLayout>
+    <ImageView
+        android:id="@+id/daily"
+        android:layout_width="0dp"
+        android:layout_height="95dp"
+        android:contentDescription="@string/accessDailyRepeat"
+        android:elevation="100dp"
+        android:src="@drawable/repeat_day"
+        android:visibility="gone"
+        app:layout_constraintLeft_toRightOf="@+id/cancelRepeatLight"
+        app:layout_constraintRight_toLeftOf="@+id/weeklyLight"
+        app:layout_constraintBottom_toBottomOf="@+id/lightRepeatLayout"
+        app:layout_constraintTop_toTopOf="@+id/lightRepeatLayout"/>
 
-        <LinearLayout
-            android:id="@+id/lightRepeatLayout"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="2"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="30dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginLeft="20dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:background="@drawable/color_picker_border_white">
+    <ImageView
+        android:id="@+id/weeklyLight"
+        android:layout_width="0dp"
+        android:layout_height="95dp"
+        android:contentDescription="@string/circularArrowRepeatWeekly"
+        android:elevation="100dp"
+        android:src="@drawable/repeat_week_light"
+        app:layout_constraintLeft_toRightOf="@+id/dailyLight"
+        app:layout_constraintRight_toLeftOf="@+id/monthlyLight"
+        app:layout_constraintBottom_toBottomOf="@+id/lightRepeatLayout"
+        app:layout_constraintTop_toTopOf="@+id/lightRepeatLayout" />
 
-            <RelativeLayout
-                android:layout_width="180dp"
-                android:layout_height="180dp"
-                android:layout_weight="1"
-                android:gravity="center">
+    <ImageView
+        android:id="@+id/weekly"
+        android:layout_width="0dp"
+        android:layout_height="95dp"
+        android:contentDescription="@string/redCircularArrowRepeatWeekly"
+        android:elevation="100dp"
+        android:src="@drawable/repeat_week"
+        android:visibility="gone"
+        app:layout_constraintLeft_toRightOf="@+id/dailyLight"
+        app:layout_constraintRight_toLeftOf="@+id/monthlyLight"
+        app:layout_constraintBottom_toBottomOf="@+id/lightRepeatLayout"
+        app:layout_constraintTop_toTopOf="@+id/lightRepeatLayout"  />
 
-                <ImageView
-                    android:id="@+id/cancelRepeatLight"
-                    android:layout_width="180dp"
-                    android:layout_height="180dp"
-                    android:contentDescription="@string/accessNoRepeat"
-                    android:src="@drawable/no_repeat_light"/>
+    <ImageView
+        android:id="@+id/monthlyLight"
+        android:layout_width="0dp"
+        android:layout_height="95dp"
+        android:contentDescription="@string/accessMonthlyRepeat"
+        android:elevation="100dp"
+        android:src="@drawable/repeat_month_light"
+        app:layout_constraintLeft_toRightOf="@+id/weeklyLight"
+        app:layout_constraintRight_toRightOf="@id/lightRepeatLayout"
+        app:layout_constraintBottom_toBottomOf="@+id/lightRepeatLayout"
+        app:layout_constraintTop_toTopOf="@+id/lightRepeatLayout" />
 
-                <ImageView
-                    android:id="@+id/cancelRepeat"
-                    android:layout_width="180dp"
-                    android:layout_height="180dp"
-                    android:src="@drawable/no_repeat"
-                    android:contentDescription="@string/accessNoRepeat"
-                    android:visibility="gone"/>
+    <ImageView
+        android:id="@+id/monthly"
+        android:layout_width="0dp"
+        android:layout_height="95dp"
+        android:contentDescription="@string/accessMonthlyRepeat"
+        android:elevation="100dp"
+        android:src="@drawable/repeat_month"
+        android:visibility="gone"
+        app:layout_constraintLeft_toRightOf="@+id/weeklyLight"
+        app:layout_constraintRight_toRightOf="@id/lightRepeatLayout"
+        app:layout_constraintBottom_toBottomOf="@+id/lightRepeatLayout"
+        app:layout_constraintTop_toTopOf="@+id/lightRepeatLayout"/>
 
-            </RelativeLayout>
+    <View
+        android:id="@+id/lightRepeatLayout"
+        android:layout_width="match_parent"
+        android:layout_height="178dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/color_picker_border_white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dateBtn"
+        app:layout_constraintVertical_bias="0.66" />
 
-            <RelativeLayout
-                android:layout_width="180dp"
-                android:layout_height="180dp"
-                android:layout_weight="1"
-                android:gravity="center">
-
-                <ImageView
-                    android:id="@+id/dailyLight"
-                    android:layout_width="180dp"
-                    android:layout_height="180dp"
-                    android:contentDescription="@string/accessDailyRepeat"
-                    android:src="@drawable/repeat_daily_light"/>
-
-                <ImageView
-                    android:id="@+id/daily"
-                    android:layout_width="180dp"
-                    android:layout_height="180dp"
-                    android:src="@drawable/repeat_daily"
-                    android:contentDescription="@string/accessDailyRepeat"
-                    android:visibility="gone"/>
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="180dp"
-                android:layout_height="180dp"
-                android:layout_weight="1"
-                android:gravity="center">
-
-                <ImageView
-                    android:id="@+id/weeklyLight"
-                    android:layout_width="180dp"
-                    android:layout_height="180dp"
-                    android:contentDescription="Circular arrow that says weekly repeat."
-                    android:src="@drawable/repeat_weekly_light"/>
-
-                <ImageView
-                    android:id="@+id/weekly"
-                    android:layout_width="180dp"
-                    android:layout_height="180dp"
-                    android:src="@drawable/repeat_weekly"
-                    android:contentDescription="Circular arrow that says weekly repeat."
-                    android:visibility="gone"/>
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="180dp"
-                android:layout_height="180dp"
-                android:layout_weight="1"
-                android:gravity="center">
-
-                <ImageView
-                    android:id="@+id/monthlyLight"
-                    android:layout_width="180dp"
-                    android:layout_height="180dp"
-                    android:contentDescription="@string/accessMonthlyRepeat"
-                    android:src="@drawable/repeat_monthly_light"/>
-
-                <ImageView
-                    android:id="@+id/monthly"
-                    android:layout_width="180dp"
-                    android:layout_height="180dp"
-                    android:src="@drawable/repeat_monthly"
-                    android:contentDescription="@string/accessMonthlyRepeat"
-                    android:visibility="gone"/>
-
-            </RelativeLayout>
-
-        </LinearLayout>
-
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

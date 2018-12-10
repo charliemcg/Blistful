@@ -33,12 +33,12 @@ class ChecklistAdapter extends ArrayAdapter<String> {
         final View checklistItemView = theInflater.inflate
                 (R.layout.checklist_item, parent, false);
         TextView checklistTextView = checklistItemView.findViewById(R.id.checklistTextView);
-        final ImageView tickWhite = checklistItemView.findViewById(R.id.subtaskCompleteWhite);
-        final ImageView tickedWhite = checklistItemView.findViewById(R.id.subtaskCompletedWhite);
-        final ImageView tickWhiteFaded = checklistItemView
-                .findViewById(R.id.subtaskCompleteWhiteFaded);
-        final ImageView tickedWhiteFaded = checklistItemView
-                .findViewById(R.id.subtaskCompletedWhiteFaded);
+//        final ImageView tickWhite = checklistItemView.findViewById(R.id.subtaskCompleteWhite);
+//        final ImageView tickedWhite = checklistItemView.findViewById(R.id.subtaskCompletedWhite);
+//        final ImageView tickWhiteFaded = checklistItemView
+//                .findViewById(R.id.subtaskCompleteWhiteFaded);
+//        final ImageView tickedWhiteFaded = checklistItemView
+//                .findViewById(R.id.subtaskCompletedWhiteFaded);
 
         String dbTaskId = "";
 
@@ -54,23 +54,23 @@ class ChecklistAdapter extends ArrayAdapter<String> {
         checklistTextView.setTextColor(Color.parseColor("#000000"));
         if (Checklist.fadeSubTasks) {
             checklistTextView.setTextColor(Color.parseColor("#AAAAAA"));
-            tickWhite.setVisibility(View.GONE);
-            tickWhiteFaded.setVisibility(View.VISIBLE);
+//            tickWhite.setVisibility(View.GONE);
+//            tickWhiteFaded.setVisibility(View.VISIBLE);
         } else {
-            tickWhiteFaded.setVisibility(View.GONE);
-            tickWhite.setVisibility(View.VISIBLE);
+//            tickWhiteFaded.setVisibility(View.GONE);
+//            tickWhite.setVisibility(View.VISIBLE);
         }
 
         //registering that subtask should be marked as done
-        tickWhite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+//        tickWhite.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
 
-                markAsDone(position, finalDbTaskId);
+//                markAsDone(position, finalDbTaskId);
 
-            }
-
-        });
+//            }
+//
+//        });
 
         checklistTextView.setText(item);
 
@@ -90,13 +90,13 @@ class ChecklistAdapter extends ArrayAdapter<String> {
             checklistTextView.setPaintFlags(checklistTextView.getPaintFlags() |
                     Paint.STRIKE_THRU_TEXT_FLAG);
 
-            if (Checklist.fadeSubTasks) {
-                tickWhiteFaded.setVisibility(View.GONE);
-                tickedWhiteFaded.setVisibility(View.VISIBLE);
-            } else {
-                tickWhite.setVisibility(View.GONE);
-                tickedWhite.setVisibility(View.VISIBLE);
-            }
+//            if (Checklist.fadeSubTasks) {
+//                tickWhiteFaded.setVisibility(View.GONE);
+//                tickedWhiteFaded.setVisibility(View.VISIBLE);
+//            } else {
+//                tickWhite.setVisibility(View.GONE);
+//                tickedWhite.setVisibility(View.VISIBLE);
+//            }
 
         }
 
