@@ -131,8 +131,8 @@ public class NoteActivity extends MainActivity implements NoteView {
                     //new note being added
 //                    Task task = (Task) getIntent().getSerializableExtra("task");
                     String newNote = noteEditText.getText().toString();
-//                    task.setNote(newNote);
-//                    taskViewModel.update(task);
+                    task.setNote(newNote);
+                    taskViewModel.update(task);
 
                     noteTextView.setText(newNote);
 
@@ -424,16 +424,19 @@ public class NoteActivity extends MainActivity implements NoteView {
                                 public void run() {
 
                                     trashNote.setVisible(false);
-                                    Cursor result = db.getData(Integer.parseInt(
-                                            MainActivity.sortedIdsForNote.get(activeTask)));
-                                    while (result.moveToNext()) {
-                                        checklistExists = (result.getInt(2) == 1);
-                                    }
-                                    result.close();
+//                                    Cursor result = db.getData(Integer.parseInt(
+//                                            MainActivity.sortedIdsForNote.get(activeTask)));
+//                                    while (result.moveToNext()) {
+//                                        checklistExists = (result.getInt(2) == 1);
+//                                    }
+//                                    result.close();
+
+                                    task.setNote("");
+                                    taskViewModel.update(task);
 
                                     //setting note in database to nothing
-                                    db.updateData(MainActivity.sortedIdsForNote
-                                            .get(activeTask), "", checklistExists);
+//                                    db.updateData(MainActivity.sortedIdsForNote
+//                                            .get(activeTask), "", checklistExists);
 
                                     noteTextView.setText("");
 
@@ -493,7 +496,7 @@ public class NoteActivity extends MainActivity implements NoteView {
         String theNote = task.getNote();
 
         //Don't allow blank notes
-        if (!theNote.equals("")) {
+        if (theNote != null) {
 
             noteTextView.setText(theNote);
             this.getWindow().setSoftInputMode(WindowManager

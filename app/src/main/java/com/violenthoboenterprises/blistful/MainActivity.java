@@ -746,7 +746,7 @@ public class MainActivity extends AppCompatActivity implements
 
                     if (!taskName.equals("")) {
 
-                        mainActivityPresenter.addTask("", taskName);
+                        mainActivityPresenter.addTask(taskName);
 
 //                        Calendar timeNow = new GregorianCalendar();
 

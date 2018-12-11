@@ -78,13 +78,13 @@ public class Task implements Parcelable {
     //when the snooze alarm is due
     private long snoozedTimestamp;
 
-    public Task(/*int id, */String note, /*boolean subtasks, long timestamp, */String task/*, boolean due,
+    public Task(/*int id, String note, boolean subtasks, long timestamp, */String task/*, boolean due,
                 boolean killed, boolean repeat, boolean overdue, boolean snoozed, boolean showonce,
                 int interval, String repeatInterval, boolean ignored, String timeCreated,
                 int sortedIndex, int subtasksSize, boolean manualKill, boolean killedEarly,
                 int originalDay, long snoozedTimestamp*/) {
 //        this.id = id;
-        this.note = note;
+//        this.note = note;
 //        this.subtasks = subtasks;
 //        this.timestamp = timestamp;
         this.task = task;
