@@ -56,13 +56,6 @@ public abstract class TaskDatabase extends RoomDatabase {
             taskDao.insert(new Task("This is a task"));
             taskDao.insert(new Task("Swipe left or right to delete a task"));
             taskDao.insert(new Task("Press '+' to add a new task"));
-            subtaskDao.insert(new Subtask(1, "id 1 subby 1"));
-            subtaskDao.insert(new Subtask(1, "id 1 subby 2"));
-            subtaskDao.insert(new Subtask(1, "id 1 subby 3"));
-            subtaskDao.insert(new Subtask(2, "id 2 subby 1"));
-            subtaskDao.insert(new Subtask(2, "id 2 subby 2"));
-            subtaskDao.insert(new Subtask(2, "id 2 subby 3"));
-            subtaskDao.insert(new Subtask(3, "id 3 subby 1"));
             return null;
         }
     }

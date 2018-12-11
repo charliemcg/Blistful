@@ -55,7 +55,7 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
     static InputMethodManager keyboard;
     static EditText checklistEditText;
 //    public ListAdapter[] checklistAdapter;
-    static ListView checklistView;
+//    static ListView checklistView;
 //    static ArrayList<String> checklist;
 //    static ArrayList<Boolean> subTasksKilled;
 //    static ArrayList<Integer> sortedSubtaskIds;
@@ -72,9 +72,10 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
 //    FrameLayout.LayoutParams rootParams;
 //    RelativeLayout.LayoutParams toolbarParams;
     private Task task;
+    private Subtask subtaskEditing;
 
     private SubtaskViewModel subtaskViewModel;
-    private SubtasksPresenter subtasksActivityPresenter;
+    private SubtasksPresenter subtasksPresenter;
     private View subtasksRootView;
 
     public void onCreate(Bundle savedInstanceState){
@@ -86,14 +87,14 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
         activityRootView = findViewById(R.id.subtasksRoot);
 
         subtaskViewModel = ViewModelProviders.of(this).get(SubtaskViewModel.class);
-        subtasksActivityPresenter = new SubtasksPresenterImpl
+        subtasksPresenter = new SubtasksPresenterImpl
                 (SubtasksActivity.this, subtaskViewModel, getApplicationContext());
 
         //Getting the parent task to which the subtasks are related
         task = getIntent().getParcelableExtra("task");
         keyboard = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         checklistEditText = findViewById(R.id.checklistEditText);
-        checklistView = findViewById(R.id.theChecklist);
+//        checklistView = findViewById(R.id.theChecklist);
 //        checklist = new ArrayList<>();
 //        subTasksKilled = new ArrayList<>();
 //        sortedSubtaskIds = new ArrayList<>();
@@ -115,12 +116,13 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
         recyclerView.setHasFixedSize(true);
 
         //setting up the adapter
-        final SubtasksAdapter subtasksAdapter = new SubtasksAdapter(this, /*subtasksPresenter, */subtasksRootView, subtaskViewModel, task);
+        final SubtasksAdapter subtasksAdapter = new SubtasksAdapter();
         recyclerView.setAdapter(subtasksAdapter);
 
         //observing the recycler view items for changes
         //TODO find out if observer is necessary
         subtaskViewModel = ViewModelProviders.of(this).get(SubtaskViewModel.class);
+        //need to specifically get subtasks belonging to parent task
         subtaskViewModel.getAllSubtasks(task.getId()).observe(this, new Observer<List<Subtask>>(){
             @Override
             public void onChanged(@Nullable List<Subtask> subtasks){
@@ -144,6 +146,25 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
                 showSnackbar(stringSnack);
             }
         }).attachToRecyclerView(recyclerView);
+
+        //edit subtask on long click
+        subtasksAdapter.setOnItemClickListener(new SubtasksAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Subtask subtask) {
+
+                keyboard.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+
+                //Indicates that a task is being edited
+                subTaskBeingEdited = true;
+
+                //setting subtask name in the edit text
+                checklistEditText.setText(subtask.getSubtask());
+
+                //keeping a reference to the subtask which is being edited
+                subtaskEditing = subtask;
+
+            }
+        });
 
         String dbTaskId = "";
 
@@ -233,42 +254,42 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
 //            public boolean onItemLongClick(AdapterView<?> parent, View view,
 //                                           int position, long id) {
 //
-////                boolean isKilled = false;
-////                Cursor dbResult = db.getSubtaskData(finalDbID,
-////                        sortedSubtaskIds.get(position));
-////                while(dbResult.moveToNext()){
-////                    isKilled = dbResult.getInt(3) > 0;
-////                }
-////                dbResult.close();
+//////                boolean isKilled = false;
+//////                Cursor dbResult = db.getSubtaskData(finalDbID,
+//////                        sortedSubtaskIds.get(position));
+//////                while(dbResult.moveToNext()){
+//////                    isKilled = dbResult.getInt(3) > 0;
+//////                }
+//////                dbResult.close();
+////
+////                //Rename subtask
+//////                if(subTasksClickable && !isKilled){
+//////
+//                    keyboard.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
 //
-//                //Rename subtask
-////                if(subTasksClickable && !isKilled){
-////
-////                    keyboard.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
-////
 ////                    goToChecklistAdapter = false;
-////
+//
 ////                    fadeSubTasks = true;
-////
-////                    //Indicates that a task is being edited
-////                    subTaskBeingEdited = true;
-////
-////                    renameMe = position;
-////
+//
+//                    //Indicates that a task is being edited
+//                    subTaskBeingEdited = true;
+//
+//                    renameMe = position;
+//
 ////                    checklistView.setAdapter(checklistAdapter[0]);
-////
-////                //Reinstate killed subtask
-////                }else if(subTasksClickable && isKilled){
-////
-////                    //marks task as not killed in database
-////                    db.updateSubtaskKilled(finalDbTaskId, String.valueOf
-////                            (sortedSubtaskIds.get(position)), false);
-////
-////                    subTasksKilled.set(position, false);
-////
-////                    checklistView.setAdapter(checklistAdapter[0]);
-////
-////                }
+//////
+//////                //Reinstate killed subtask
+//////                }else if(subTasksClickable && isKilled){
+//////
+//////                    //marks task as not killed in database
+//////                    db.updateSubtaskKilled(finalDbTaskId, String.valueOf
+//////                            (sortedSubtaskIds.get(position)), false);
+//////
+//////                    subTasksKilled.set(position, false);
+//////
+//////                    checklistView.setAdapter(checklistAdapter[0]);
+//////
+//////                }
 //
 //                return true;
 //
@@ -303,7 +324,7 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
                             blip.start();
                         }
 
-                        subtasksActivityPresenter.addSubtask(task.getId(), subtaskName);
+                        subtasksPresenter.addSubtask(task.getId(), subtaskName);
 
                         //adding data to arraylists
 //                        checklist.add(checklistTaskName);
@@ -354,13 +375,19 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
                     keyboard.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY,0);
 
                     //Getting user data
-                    String checklistTaskName = checklistEditText.getText().toString();
+                    String subtaskName = checklistEditText.getText().toString();
 
                     //Clear text from text box
                     checklistEditText.setText("");
 
                     //Don't allow blank tasks
-                    if(!checklistTaskName.equals("")) {
+                    if(!subtaskName.equals("")) {
+
+                        //updating the subtask with the new name
+                        subtaskEditing.setSubtask(subtaskName);
+                        subtasksPresenter.update(subtaskEditing);
+
+                        subTaskBeingEdited = false;
 
                         //updating arraylists
 //                        checklist.set(renameMe, checklistTaskName);

@@ -31,4 +31,6 @@ public interface SubtaskDao {
         //TODO see if LiveData is needed
     LiveData<List<Subtask>> getAllTasks(int parentId);
 
+    @Query("SELECT * FROM subtask_table WHERE parentId = :parentId AND id = :subtaskId")
+    Subtask getSubtask(Integer parentId, Integer subtaskId);
 }

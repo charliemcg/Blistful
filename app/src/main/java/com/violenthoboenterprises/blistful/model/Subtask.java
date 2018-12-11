@@ -27,7 +27,9 @@ public class Subtask {
     private int timeCreated;
 
     public Subtask(int parentId, @NonNull String subtask) {
+        //need to know the parent task to which the subtask belongs
         this.parentId = parentId;
+        //name of the subtask
         this.subtask = subtask;
     }
 

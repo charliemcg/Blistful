@@ -1,6 +1,7 @@
 package com.violenthoboenterprises.blistful.model;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.violenthoboenterprises.blistful.R;
+import com.violenthoboenterprises.blistful.SubtasksActivity;
 import com.violenthoboenterprises.blistful.presenter.MainActivityPresenter;
 import com.violenthoboenterprises.blistful.presenter.SubtasksPresenter;
 
@@ -24,18 +26,6 @@ public class SubtasksAdapter extends RecyclerView.Adapter<SubtasksAdapter.Subtas
     private final static String TAG = "SubtasksAdapter";
     private List<Subtask> subtasks = new ArrayList<>();
     private SubtasksAdapter.OnItemClickListener listener;
-    private Context context;
-//    private SubtasksPresenter subtasksPresenter;
-    private View subtasksRootView;
-    private SubtaskViewModel subtaskViewModel;
-    private Task parentTask;
-
-    public SubtasksAdapter(Context context, /*SubtasksPresenter subtasksPresenter, */View subtasksRootView, SubtaskViewModel subtaskViewModel, Task parentTask) {
-        this.context = context;
-//        this.subtasksPresenter = subtasksPresenter;
-        this.subtasksRootView = subtasksRootView;
-        this.subtaskViewModel = subtaskViewModel;
-    }
 
     @Override
     public SubtasksAdapter.SubtaskHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -46,6 +36,7 @@ public class SubtasksAdapter extends RecyclerView.Adapter<SubtasksAdapter.Subtas
 
     @Override
     public void onBindViewHolder(SubtasksAdapter.SubtaskHolder holder, int position) {
+        //setting the subtask name in the item
         Subtask currentSubtask = subtasks.get(position);
         holder.tvSubtask.setText(currentSubtask.getSubtask());
     }

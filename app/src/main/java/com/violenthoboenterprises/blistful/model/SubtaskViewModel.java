@@ -9,9 +9,7 @@ import java.util.List;
 
 public class SubtaskViewModel extends AndroidViewModel {
 
-    SubtaskRepository subtaskRepository;
-    //TODO see if LiveData is needed
-//    private LiveData<List<Subtask>> allSubtasks;
+    private SubtaskRepository subtaskRepository;
 
     public SubtaskViewModel(@NonNull Application application) {
         super(application);
@@ -23,7 +21,11 @@ public class SubtaskViewModel extends AndroidViewModel {
     public void delete(Subtask subtask){subtaskRepository.delete(subtask);}
 
     //TODO see if LiveData is needed
-//    public LiveData<List<Subtask>> getAllSubtasks(){return allTasks;}
-    public LiveData<List<Subtask>> getAllSubtasks(int parentId){return subtaskRepository.getAllSubtasks(parentId);}
+    public LiveData<List<Subtask>> getAllSubtasks(int parentId){
+        return subtaskRepository.getAllSubtasks(parentId);
+    }
 
+    public Subtask getSubtask(int parentId, int subtaskId) {
+        return subtaskRepository.getSubtask(parentId, subtaskId);
+    }
 }

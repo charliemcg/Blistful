@@ -3,7 +3,6 @@ package com.violenthoboenterprises.blistful.model;
 import android.content.Context;
 
 import com.violenthoboenterprises.blistful.presenter.SubtasksPresenter;
-import com.violenthoboenterprises.blistful.view.NoteView;
 import com.violenthoboenterprises.blistful.view.SubtasksView;
 
 public class SubtasksPresenterImpl implements SubtasksPresenter {
@@ -22,6 +21,16 @@ public class SubtasksPresenterImpl implements SubtasksPresenter {
     public void addSubtask(int parentId, String subtaskName) {
         Subtask subtask = new Subtask(parentId, subtaskName);
         subtaskViewModel.insert(subtask);
+    }
+
+    @Override
+    public Subtask getSubtask(int parentId, int subtaskId) {
+        return subtaskViewModel.getSubtask(parentId, subtaskId);
+    }
+
+    @Override
+    public void update(Subtask subtask) {
+        subtaskViewModel.update(subtask);
     }
 
 }
