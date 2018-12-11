@@ -31,7 +31,7 @@
             android:name=".Checklist"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
         <activity
-            android:name=".Note"
+            android:name=".NoteActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"/>
         <activity
             android:name=".SetDue"

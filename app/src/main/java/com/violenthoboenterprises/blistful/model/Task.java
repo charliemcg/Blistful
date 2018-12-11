@@ -2,20 +2,22 @@ package com.violenthoboenterprises.blistful.model;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 /*
  * This is where the task table is defined
  */
 @Entity(tableName = "task_table")
-public class Task{
+public class Task implements Parcelable {
 
     private static final String TAG = "Task";
 
     @PrimaryKey(autoGenerate = true)
     private int id;
 
-    //Note if there is one
+    //NoteActivity if there is one
     private String note;
 
     //Is there a list of subtasks
@@ -76,13 +78,13 @@ public class Task{
     //when the snooze alarm is due
     private long snoozedTimestamp;
 
-    public Task(/*int id, String note, boolean subtasks, long timestamp, */String task/*, boolean due,
+    public Task(/*int id, */String note, /*boolean subtasks, long timestamp, */String task/*, boolean due,
                 boolean killed, boolean repeat, boolean overdue, boolean snoozed, boolean showonce,
                 int interval, String repeatInterval, boolean ignored, String timeCreated,
                 int sortedIndex, int subtasksSize, boolean manualKill, boolean killedEarly,
                 int originalDay, long snoozedTimestamp*/) {
 //        this.id = id;
-//        this.note = note;
+        this.note = note;
 //        this.subtasks = subtasks;
 //        this.timestamp = timestamp;
         this.task = task;
@@ -103,6 +105,42 @@ public class Task{
 //        this.originalDay = originalDay;
 //        this.snoozedTimestamp = snoozedTimestamp;
     }
+
+    protected Task(Parcel in) {
+        id = in.readInt();
+        note = in.readString();
+        subtasks = in.readByte() != 0;
+        timestamp = in.readLong();
+        task = in.readString();
+        due = in.readByte() != 0;
+        killed = in.readByte() != 0;
+        repeat = in.readByte() != 0;
+        overdue = in.readByte() != 0;
+        snoozed = in.readByte() != 0;
+        showonce = in.readByte() != 0;
+        interval = in.readInt();
+        repeatInterval = in.readString();
+        ignored = in.readByte() != 0;
+        timeCreated = in.readString();
+        sortedIndex = in.readInt();
+        subtasksSize = in.readInt();
+        manualKill = in.readByte() != 0;
+        killedEarly = in.readByte() != 0;
+        originalDay = in.readInt();
+        snoozedTimestamp = in.readLong();
+    }
+
+    public static final Creator<Task> CREATOR = new Creator<Task>() {
+        @Override
+        public Task createFromParcel(Parcel in) {
+            return new Task(in);
+        }
+
+        @Override
+        public Task[] newArray(int size) {
+            return new Task[size];
+        }
+    };
 
     public int getId() {
         return id;
@@ -270,5 +308,35 @@ public class Task{
 
     public void setSnoozedTimestamp(long snoozedTimestamp) {
         this.snoozedTimestamp = snoozedTimestamp;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(id);
+        parcel.writeString(note);
+        parcel.writeByte((byte) (subtasks ? 1 : 0));
+        parcel.writeLong(timestamp);
+        parcel.writeString(task);
+        parcel.writeByte((byte) (due ? 1 : 0));
+        parcel.writeByte((byte) (killed ? 1 : 0));
+        parcel.writeByte((byte) (repeat ? 1 : 0));
+        parcel.writeByte((byte) (overdue ? 1 : 0));
+        parcel.writeByte((byte) (snoozed ? 1 : 0));
+        parcel.writeByte((byte) (showonce ? 1 : 0));
+        parcel.writeInt(interval);
+        parcel.writeString(repeatInterval);
+        parcel.writeByte((byte) (ignored ? 1 : 0));
+        parcel.writeString(timeCreated);
+        parcel.writeInt(sortedIndex);
+        parcel.writeInt(subtasksSize);
+        parcel.writeByte((byte) (manualKill ? 1 : 0));
+        parcel.writeByte((byte) (killedEarly ? 1 : 0));
+        parcel.writeInt(originalDay);
+        parcel.writeLong(snoozedTimestamp);
     }
 }

@@ -2,44 +2,44 @@ package com.violenthoboenterprises.blistful.model;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.violenthoboenterprises.blistful.Checklist;
-import com.violenthoboenterprises.blistful.MainActivity;
-import com.violenthoboenterprises.blistful.Note;
+import com.violenthoboenterprises.blistful.NoteActivity;
 import com.violenthoboenterprises.blistful.R;
 import com.violenthoboenterprises.blistful.SetDue;
 import com.violenthoboenterprises.blistful.presenter.MainActivityPresenter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /*
  * Adding tasks to the recycler view
  */
-public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
+public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder>{
 
     private final static String TAG = "TaskAdapter";
     private List<Task> tasks = new ArrayList<>();
     private OnItemClickListener listener;
     private Context context;
     private MainActivityPresenter mainActivityPresenter;
-    View activityRootView;
+    private View activityRootView;
+    private TaskViewModel taskViewModel;
 
-    public TaskAdapter(Context context, MainActivityPresenter mainActivityPresenter, View activityRootView) {
+    public TaskAdapter(Context context, MainActivityPresenter mainActivityPresenter, View activityRootView, TaskViewModel taskViewModel) {
         this.context = context;
         this.mainActivityPresenter = mainActivityPresenter;
         this.activityRootView = activityRootView;
+        this.taskViewModel = taskViewModel;
     }
 
     @NonNull
@@ -51,7 +51,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
     }
 
     @Override //Binding data to the view
-    public void onBindViewHolder(final TaskHolder holder, int position) {
+    public void onBindViewHolder(final TaskHolder holder, final int position) {
         Task currentTask = tasks.get(position);
         holder.tvTask.setText(currentTask.getTask());
         holder.taskLayout.setOnClickListener(new View.OnClickListener(){
@@ -83,7 +83,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         holder.btnNote.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                Intent intent = new Intent(context, Note.class);
+                Intent intent = new Intent(context, NoteActivity.class);
+//                Task task = taskViewModel.getTask(position);
+                intent.putExtra("task", tasks.get(position));
                 context.startActivity(intent);
             }
         });

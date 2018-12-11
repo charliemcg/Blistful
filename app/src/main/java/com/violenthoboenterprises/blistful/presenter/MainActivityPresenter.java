@@ -2,6 +2,6 @@ package com.violenthoboenterprises.blistful.presenter;
 
 public interface MainActivityPresenter {
 
-    void addTask(String task);
+    void addTask(String note, String task);
 
 }

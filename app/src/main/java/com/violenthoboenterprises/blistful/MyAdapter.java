@@ -1,22 +1,16 @@
 package com.violenthoboenterprises.blistful;
 
-import android.app.Activity;
 import android.app.AlarmManager;
-import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,27 +18,21 @@ import android.view.Window;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.TimePicker;
-import android.widget.Toast;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
@@ -72,7 +60,7 @@ class MyAdapter extends ArrayAdapter<String> {
         //Where the task text is displayed
         final TextView theTextView = taskView.findViewById(R.id.tvTask);
         final Intent intent = new Intent(getContext(), Checklist.class);
-        final Intent noteIntent = new Intent(getContext(), Note.class);
+        final Intent noteIntent = new Intent(getContext(), NoteActivity.class);
         final Intent dueIntent = new Intent(getContext(), SetDue.class);
         //This row changes content depending on what needs to be displayed
         final TableRow propertyRow = taskView.findViewById(R.id.properties);
@@ -3377,7 +3365,7 @@ class MyAdapter extends ArrayAdapter<String> {
                 }
             });
 
-            //Actions to occur if user selects 'Add Note'
+            //Actions to occur if user selects 'Add NoteActivity'
             note.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

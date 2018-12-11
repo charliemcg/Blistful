@@ -27,7 +27,7 @@ public interface TaskDao {
     void delete(Task task);
 
     @Query("SELECT * FROM task_table ORDER BY timeCreated DESC")
-    //TODO soo if LiveData is needed
+    //TODO see if LiveData is needed
     LiveData<List<Task>> getAllTasks();
 
 }

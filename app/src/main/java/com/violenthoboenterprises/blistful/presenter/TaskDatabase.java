@@ -47,9 +47,9 @@ public abstract class TaskDatabase extends RoomDatabase {
         private PopulateDbAsyncTask(TaskDatabase db){taskDao = db.taskDao();}
         @Override
         protected Void doInBackground(Void... voids){
-            taskDao.insert(new Task("This is a task"));
-            taskDao.insert(new Task("Swipe left or right to delete a task"));
-            taskDao.insert(new Task("Press '+' to add a new task"));
+            taskDao.insert(new Task("Test note", "This is a task"));
+            taskDao.insert(new Task("Test note", "Swipe left or right to delete a task"));
+            taskDao.insert(new Task("Test note", "Press '+' to add a new task"));
             return null;
         }
     }

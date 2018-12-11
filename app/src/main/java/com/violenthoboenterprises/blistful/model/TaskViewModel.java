@@ -15,6 +15,7 @@ public class TaskViewModel extends AndroidViewModel {
     private TaskRepository repository;
     //TODO see if LiveData is needed
     private LiveData<List<Task>> allTasks;
+    private Task task;
 
     public TaskViewModel(@NonNull Application application) {
         super(application);
@@ -28,5 +29,7 @@ public class TaskViewModel extends AndroidViewModel {
 
     //TODO see if LiveData is needed
     public LiveData<List<Task>> getAllTasks(){return allTasks;}
+
+    public Task getTask(int id){return task;}
 
 }

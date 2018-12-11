@@ -388,7 +388,7 @@ public class MainActivity extends AppCompatActivity implements
         recyclerView.setHasFixedSize(true);
 
         //setting up the adapter
-        final TaskAdapter adapter = new TaskAdapter(this, mainActivityPresenter, activityRootView);
+        final TaskAdapter adapter = new TaskAdapter(this, mainActivityPresenter, activityRootView, taskViewModel);
         recyclerView.setAdapter(adapter);
 
         //observing the recycler view items for changes
@@ -746,7 +746,7 @@ public class MainActivity extends AppCompatActivity implements
 
                     if (!taskName.equals("")) {
 
-                        mainActivityPresenter.addTask(taskName);
+                        mainActivityPresenter.addTask("", taskName);
 
 //                        Calendar timeNow = new GregorianCalendar();
 
