@@ -42,12 +42,11 @@ import java.io.Serializable;
 //TODO find out if necessary to extend MainActivity
 public class NoteActivity extends MainActivity implements NoteView {
 
+    String TAG = this.getClass().getSimpleName();
     TextView noteTextView;
     EditText noteEditText;
     InputMethodManager keyboard;
     ImageView submitNoteBtnDark, submitNoteOne, submitNoteOneHalf, submitNoteTwoHalf, submitNoteTwo;
-    String TAG = this.getClass().getSimpleName();
-//    String theNote;
     String dbTask;
     //Indicates that the active task has subtasks
     Boolean checklistExists;
@@ -67,6 +66,7 @@ public class NoteActivity extends MainActivity implements NoteView {
         taskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
         notePresenter = new NotePresenterImpl
                 (NoteActivity.this, taskViewModel, getApplicationContext());
+        //getting the task to which this note is related
         task = getIntent().getParcelableExtra("task");
 
         noteTextView = findViewById(R.id.noteTextView);
@@ -77,22 +77,9 @@ public class NoteActivity extends MainActivity implements NoteView {
         submitNoteTwo = findViewById(R.id.submitNoteTwo);
         submitNoteOneHalf = findViewById(R.id.submitNoteOneHalf);
         submitNoteTwoHalf = findViewById(R.id.submitNoteTwoHalf);
-//        theNote = "";
         checklistExists = false;
         inNote = true;
         noteRoot = findViewById(R.id.noteRoot);
-
-        //getting task data
-//        dbTask = "";
-//        Cursor dbTaskResult = MainActivity.db.getUniversalData();
-//        while (dbTaskResult.moveToNext()) {
-//            dbTask = dbTaskResult.getString(4);
-//        }
-//        dbTaskResult = db.getData(Integer.parseInt(dbTask));
-//        while (dbTaskResult.moveToNext()) {
-//            dbTask = dbTaskResult.getString(4);
-//        }
-//        dbTaskResult.close();
 
         getSupportActionBar().setTitle(R.string.note);
         noteToolbar.setSubtitle(dbTask);
@@ -106,16 +93,10 @@ public class NoteActivity extends MainActivity implements NoteView {
         }
         dbResult.close();
 
-//        noteTextView.setTextColor(Color.parseColor("#000000"));
-//        noteToolbar.setTitleTextColor(Color.parseColor("#000000"));
-//        noteToolbar.setSubtitleTextColor(Color.parseColor("#666666"));
-
         //keyboard will display the default edit text instead of the custom one without this line
         noteEditText.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
 
         keyboard.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
-
-//        noteEditText.setBackgroundColor(Color.parseColor(highlight));
 
         //Actions to occur when user clicks submit
         submitNoteBtnDark.setOnClickListener(new View.OnClickListener() {
@@ -127,17 +108,16 @@ public class NoteActivity extends MainActivity implements NoteView {
 
                 animateSubmitButton();
 
-//                if (!noteEditText.getText().toString().equals("")) {
-                    //new note being added
-                    String newNote = noteEditText.getText().toString();
-                    task.setNote(newNote);
-                    taskViewModel.update(task);
+                //new note being added
+                String newNote = noteEditText.getText().toString();
+                task.setNote(newNote);
+                taskViewModel.update(task);
 
-                    noteTextView.setText(newNote);
+                //display new note in the view
+                noteTextView.setText(newNote);
 
-                    noteEditText.setText("");
-
-//                }
+                //clear the edit text
+                noteEditText.setText("");
 
             }
 
@@ -178,6 +158,7 @@ public class NoteActivity extends MainActivity implements NoteView {
 
     }
 
+    //Submit button collapses on itself on click
     private void animateSubmitButton() {
         //Animating the submit icon
         final Handler handler = new Handler();
@@ -227,9 +208,6 @@ public class NoteActivity extends MainActivity implements NoteView {
 
                                                 submitNoteTwoHalf.setVisibility(View.GONE);
 
-                                                //Set text view to the note content
-//                                                noteTextView.setText(theNote);
-
                                                 //Hide text box
                                                 noteEditText.setVisibility(View.GONE);
 
@@ -256,118 +234,6 @@ public class NoteActivity extends MainActivity implements NoteView {
             }
         };
         handler.postDelayed(runnable, 50);
-    }
-
-    private void submit() {
-
-        //Keyboard is inactive without this line
-        noteEditText.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
-
-//        Cursor result = db.getData(Integer.parseInt(
-//                MainActivity.sortedIdsForNote.get(activeTask)));
-//        while (result.moveToNext()) {
-//            checklistExists = (result.getInt(2) == 1);
-//        }
-//        result.close();
-
-        if (!noteEditText.getText().toString().equals("")) {
-            //new note being added
-//            db.updateData(MainActivity.sortedIdsForNote.get(activeTask),
-//                    noteEditText.getText().toString(), checklistExists);
-        }
-
-        //Clear text from text box
-        noteEditText.setText("");
-
-        //Getting note from database
-//        result = db.getData(Integer.parseInt(MainActivity.sortedIdsForNote.get(activeTask)));
-//        while (result.moveToNext()) {
-//            theNote = result.getString(1);
-//        }
-
-        //Don't allow blank notes
-//        if (!theNote.equals("")) {
-//
-//            //Animating the send icon
-//            final Handler handler = new Handler();
-//
-//            final Runnable runnable = new Runnable() {
-//                public void run() {
-//
-//                    submitNoteBtnDark.setVisibility(View.GONE);
-//                    submitNoteOne.setVisibility(View.VISIBLE);
-//
-//                    final Handler handler2 = new Handler();
-//
-//                    final Runnable runnable2 = new Runnable() {
-//                        public void run() {
-//
-//                            submitNoteOne.setVisibility(View.GONE);
-//                            submitNoteOneHalf.setVisibility(View.VISIBLE);
-//
-//                            final Handler handler3 = new Handler();
-//
-//                            final Runnable runnable3 = new Runnable() {
-//                                public void run() {
-//
-//                                    submitNoteOneHalf.setVisibility(View.GONE);
-//                                    submitNoteTwo.setVisibility(View.VISIBLE);
-//
-//                                    final Handler handler4 = new Handler();
-//
-//                                    final Runnable runnable4 = new Runnable() {
-//                                        @Override
-//                                        public void run() {
-//
-//                                            submitNoteTwo.setVisibility(View.GONE);
-//                                            submitNoteTwoHalf.setVisibility(View.VISIBLE);
-//
-//                                            final Handler handler5 = new Handler();
-//
-//                                            final Runnable runnable5 = new Runnable() {
-//                                                @Override
-//                                                public void run() {
-//
-//                                                    vibrate.vibrate(50);
-//
-//                                                    if (!mute) {
-//                                                        blip.start();
-//                                                    }
-//
-//                                                    submitNoteTwoHalf.setVisibility(View.GONE);
-//
-//                                                    //Set text view to the note content
-//                                                    noteTextView.setText(theNote);
-//
-//                                                    //Hide text box
-//                                                    noteEditText.setVisibility(View.GONE);
-//
-//                                                    submitNoteBtnDark.setVisibility(View.GONE);
-//
-//                                                    trashNote.setVisible(true);
-//
-//                                                    //Hide keyboard
-//                                                    keyboard.toggleSoftInput(InputMethodManager
-//                                                            .HIDE_IMPLICIT_ONLY, 0);
-//
-//                                                }
-//                                            };
-//                                            handler5.postDelayed(runnable5, 50);
-//                                        }
-//                                    };
-//                                    handler4.postDelayed(runnable4, 50);
-//                                }
-//                            };
-//                            handler3.postDelayed(runnable3, 50);
-//                        }
-//                    };
-//                    handler2.postDelayed(runnable2, 50);
-//                }
-//            };
-//            handler.postDelayed(runnable, 50);
-//
-//        }
-
     }
 
     @Override
@@ -423,19 +289,9 @@ public class NoteActivity extends MainActivity implements NoteView {
                                 public void run() {
 
                                     trashNote.setVisible(false);
-//                                    Cursor result = db.getData(Integer.parseInt(
-//                                            MainActivity.sortedIdsForNote.get(activeTask)));
-//                                    while (result.moveToNext()) {
-//                                        checklistExists = (result.getInt(2) == 1);
-//                                    }
-//                                    result.close();
 
                                     task.setNote(null);
                                     taskViewModel.update(task);
-
-                                    //setting note in database to nothing
-//                                    db.updateData(MainActivity.sortedIdsForNote
-//                                            .get(activeTask), "", checklistExists);
 
                                     noteTextView.setText("");
 
@@ -479,22 +335,9 @@ public class NoteActivity extends MainActivity implements NoteView {
     //Existing notes are recalled when app opened
     private void getSavedData() {
 
-//        Cursor result = db.getData(Integer.parseInt(
-//                MainActivity.sortedIdsForNote.get(activeTask)));
-//        while (result.moveToNext()) {
-//            theNote = result.getString(1);
-//        }
-//        result.close();
-
-//        Cursor dbResult = MainActivity.db.getUniversalData();
-//        while (dbResult.moveToNext()) {
-//            mute = dbResult.getInt(1) > 0;
-//        }
-//        dbResult.close();
-
         String theNote = task.getNote();
 
-        //Don't allow blank notes
+        //Display note if there is one
         if (theNote != null) {
 
             noteTextView.setText(theNote);

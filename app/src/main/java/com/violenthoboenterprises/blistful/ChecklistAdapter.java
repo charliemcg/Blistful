@@ -5,12 +5,10 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -32,7 +30,7 @@ class ChecklistAdapter extends ArrayAdapter<String> {
         final LayoutInflater theInflater = LayoutInflater.from(getContext());
         final View checklistItemView = theInflater.inflate
                 (R.layout.checklist_item, parent, false);
-        TextView checklistTextView = checklistItemView.findViewById(R.id.checklistTextView);
+//        TextView checklistTextView = checklistItemView.findViewById(R.id.checklistTextView);
 //        final ImageView tickWhite = checklistItemView.findViewById(R.id.subtaskCompleteWhite);
 //        final ImageView tickedWhite = checklistItemView.findViewById(R.id.subtaskCompletedWhite);
 //        final ImageView tickWhiteFaded = checklistItemView
@@ -51,15 +49,15 @@ class ChecklistAdapter extends ArrayAdapter<String> {
         final String finalDbTaskId = dbTaskId;
 
         //setting up UI based on light or dark mode
-        checklistTextView.setTextColor(Color.parseColor("#000000"));
-        if (Checklist.fadeSubTasks) {
-            checklistTextView.setTextColor(Color.parseColor("#AAAAAA"));
+//        checklistTextView.setTextColor(Color.parseColor("#000000"));
+//        if (SubtasksActivity.fadeSubTasks) {
+//            checklistTextView.setTextColor(Color.parseColor("#AAAAAA"));
 //            tickWhite.setVisibility(View.GONE);
 //            tickWhiteFaded.setVisibility(View.VISIBLE);
-        } else {
+//        } else {
 //            tickWhiteFaded.setVisibility(View.GONE);
 //            tickWhite.setVisibility(View.VISIBLE);
-        }
+//        }
 
         //registering that subtask should be marked as done
 //        tickWhite.setOnClickListener(new View.OnClickListener() {
@@ -72,25 +70,25 @@ class ChecklistAdapter extends ArrayAdapter<String> {
 //
 //        });
 
-        checklistTextView.setText(item);
+//        checklistTextView.setText(item);
 
         Boolean isKilled = false;
 
         //finding out if the subtask is completed
-        Cursor dbIdResult = MainActivity.db.getSubtaskData(Integer.parseInt(dbTaskId),
-                Checklist.sortedSubtaskIds.get(position));
-        while (dbIdResult.moveToNext()) {
-            isKilled = dbIdResult.getInt(3) > 0;
-        }
-        dbIdResult.close();
+//        Cursor dbIdResult = MainActivity.db.getSubtaskData(Integer.parseInt(dbTaskId),
+//                SubtasksActivity.sortedSubtaskIds.get(position));
+//        while (dbIdResult.moveToNext()) {
+//            isKilled = dbIdResult.getInt(3) > 0;
+//        }
+//        dbIdResult.close();
 
         //sub task is crossed out if it is marked as done
         if (isKilled) {
 
-            checklistTextView.setPaintFlags(checklistTextView.getPaintFlags() |
-                    Paint.STRIKE_THRU_TEXT_FLAG);
+//            checklistTextView.setPaintFlags(checklistTextView.getPaintFlags() |
+//                    Paint.STRIKE_THRU_TEXT_FLAG);
 
-//            if (Checklist.fadeSubTasks) {
+//            if (SubtasksActivity.fadeSubTasks) {
 //                tickWhiteFaded.setVisibility(View.GONE);
 //                tickedWhiteFaded.setVisibility(View.VISIBLE);
 //            } else {
@@ -101,26 +99,26 @@ class ChecklistAdapter extends ArrayAdapter<String> {
         }
 
         //remove task name from view if it is currently being edited
-        if (position == Checklist.renameMe && Checklist.subTaskBeingEdited) {
-            checklistTextView.setText("");
-        }
+//        if (position == SubtasksActivity.renameMe && SubtasksActivity.subTaskBeingEdited) {
+//            checklistTextView.setText("");
+//        }
 
         //setting sub task name
-        if (Checklist.subTaskBeingEdited && (/*Integer.parseInt(dbTaskId)*/Checklist.renameMe ==
-                Checklist.sortedSubtaskIds.get(position)) &&
-                !Checklist.goToChecklistAdapter) {
+//        if (SubtasksActivity.subTaskBeingEdited && (/*Integer.parseInt(dbTaskId)*/SubtasksActivity.renameMe ==
+//                SubtasksActivity.sortedSubtaskIds.get(position)) &&
+//                !SubtasksActivity.goToChecklistAdapter) {
 
-            String oldSubTaskString = Checklist.checklist.get(Checklist.renameMe);
+//            String oldSubTaskString = SubtasksActivity.checklist.get(SubtasksActivity.renameMe);
 
-            Checklist.checklistEditText.setText(oldSubTaskString);
+//            SubtasksActivity.checklistEditText.setText(oldSubTaskString);
 
             //Focus on edit text so that keyboard does not cover it up
-            Checklist.checklistEditText.requestFocus();
+//            SubtasksActivity.checklistEditText.requestFocus();
 
-            Checklist.checklistEditText.setSelection(Checklist.checklistEditText
-                    .getText().length());
+//            SubtasksActivity.checklistEditText.setSelection(SubtasksActivity.checklistEditText
+//                    .getText().length());
 
-        }
+//        }
 
         return checklistItemView;
 
@@ -136,30 +134,30 @@ class ChecklistAdapter extends ArrayAdapter<String> {
 
         Rect screen = new Rect();
 
-        Checklist.checklistRootView.getWindowVisibleDisplayFrame(screen);
+//        SubtasksActivity.checklistRootView.getWindowVisibleDisplayFrame(screen);
 
-        if (Checklist.subTasksClickable) {
+        if (SubtasksActivity.subTasksClickable) {
 
             boolean isKilled = false;
 
             //finding out if subtask has been killed
-            Cursor dbIdResult = MainActivity.db.getSubtaskData(Integer.parseInt(finalDbTaskId),
-                    Checklist.sortedSubtaskIds.get(position));
-            while (dbIdResult.moveToNext()) {
-                isKilled = dbIdResult.getInt(3) > 0;
-            }
-            dbIdResult.close();
+//            Cursor dbIdResult = MainActivity.db.getSubtaskData(Integer.parseInt(finalDbTaskId),
+//                    SubtasksActivity.sortedSubtaskIds.get(position));
+//            while (dbIdResult.moveToNext()) {
+//                isKilled = dbIdResult.getInt(3) > 0;
+//            }
+//            dbIdResult.close();
 
             //Marks sub task as complete
-            if (!isKilled) {
-
-                MainActivity.db.updateSubtaskKilled(finalDbTaskId, String.valueOf(Checklist
-                        .sortedSubtaskIds.get(position)), true);
-                Checklist.subTasksKilled.set(position, true);
-
-                notifyDataSetChanged();
-
-            }
+//            if (!isKilled) {
+//
+//                MainActivity.db.updateSubtaskKilled(finalDbTaskId, String.valueOf(SubtasksActivity
+//                        .sortedSubtaskIds.get(position)), true);
+//                SubtasksActivity.subTasksKilled.set(position, true);
+//
+//                notifyDataSetChanged();
+//
+//            }
 
         }
 

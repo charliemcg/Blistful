@@ -7,10 +7,11 @@
     android:orientation="horizontal"
     tools:context="com.violenthoboenterprises.blistful.MainActivity"
     android:background="@color/lightTurquoise"
-    android:descendantFocusability="blocksDescendants">
+    android:descendantFocusability="blocksDescendants"
+    android:id="@+id/subtask_layout">
 
     <TextView
-        android:id="@+id/checklistTextView"
+        android:id="@+id/tvSubtask"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginStart="8dp"

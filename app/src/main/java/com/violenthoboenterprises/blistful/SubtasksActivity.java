@@ -1,5 +1,7 @@
 package com.violenthoboenterprises.blistful;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -7,7 +9,12 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -25,33 +32,50 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.violenthoboenterprises.blistful.model.MainActivityPresenterImpl;
+import com.violenthoboenterprises.blistful.model.Subtask;
+import com.violenthoboenterprises.blistful.model.SubtaskViewModel;
+import com.violenthoboenterprises.blistful.model.SubtasksAdapter;
+import com.violenthoboenterprises.blistful.model.SubtasksPresenterImpl;
+import com.violenthoboenterprises.blistful.model.Task;
+import com.violenthoboenterprises.blistful.model.TaskAdapter;
+import com.violenthoboenterprises.blistful.model.TaskViewModel;
+import com.violenthoboenterprises.blistful.presenter.SubtasksPresenter;
+import com.violenthoboenterprises.blistful.view.SubtasksView;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
+import java.util.List;
 
-public class Checklist extends MainActivity {
+public class SubtasksActivity extends MainActivity implements SubtasksView {
 
     private String TAG = this.getClass().getSimpleName();
     static InputMethodManager keyboard;
     static EditText checklistEditText;
-    public ListAdapter[] checklistAdapter;
+//    public ListAdapter[] checklistAdapter;
     static ListView checklistView;
-    static ArrayList<String> checklist;
-    static ArrayList<Boolean> subTasksKilled;
-    static ArrayList<Integer> sortedSubtaskIds;
+//    static ArrayList<String> checklist;
+//    static ArrayList<Boolean> subTasksKilled;
+//    static ArrayList<Integer> sortedSubtaskIds;
     static boolean subTaskBeingEdited;
     static boolean goToChecklistAdapter;
     private boolean restoreListView;
     static boolean subTasksClickable;
     static boolean fadeSubTasks;
     static boolean noteExists;
-    static View checklistRootView;
+//    static View checklistRootView;
     static int renameMe;
-    RelativeLayout.LayoutParams listParams;
-    RelativeLayout.LayoutParams editTextParams;
-    FrameLayout.LayoutParams rootParams;
-    RelativeLayout.LayoutParams toolbarParams;
+//    RelativeLayout.LayoutParams listParams;
+//    RelativeLayout.LayoutParams editTextParams;
+//    FrameLayout.LayoutParams rootParams;
+//    RelativeLayout.LayoutParams toolbarParams;
+    private Subtask subtask;
+
+    private SubtaskViewModel subtaskViewModel;
+    private SubtasksPresenter subtasksActivityPresenter;
+    private View subtasksRootView;
 
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -59,23 +83,67 @@ public class Checklist extends MainActivity {
         overridePendingTransition( R.anim.enter_from_left, R.anim.enter_from_left);
         Toolbar subTasksToolbar = findViewById(R.id.subTasksToolbar);
 
+        activityRootView = findViewById(R.id.subtasksRoot);
+
+        subtaskViewModel = ViewModelProviders.of(this).get(SubtaskViewModel.class);
+        subtasksActivityPresenter = new SubtasksPresenterImpl
+                (SubtasksActivity.this, subtaskViewModel, getApplicationContext());
+
+        //Getting the task to which the subtasks are related
+        subtask = getIntent().getParcelableExtra("subtask");
         keyboard = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         checklistEditText = findViewById(R.id.checklistEditText);
         checklistView = findViewById(R.id.theChecklist);
-        checklist = new ArrayList<>();
-        subTasksKilled = new ArrayList<>();
-        sortedSubtaskIds = new ArrayList<>();
+//        checklist = new ArrayList<>();
+//        subTasksKilled = new ArrayList<>();
+//        sortedSubtaskIds = new ArrayList<>();
         subTaskBeingEdited = false;
         subTasksClickable = false;
-        checklistRootView = findViewById(R.id.checklistRoot);
+//        checklistRootView = findViewById(R.id.checklistRoot);
         fadeSubTasks = false;
         noteExists = false;
         inChecklist = true;
         renameMe = 0;
 //        listParams = (RelativeLayout.LayoutParams) checklistView.getLayoutParams();
 //        editTextParams = (RelativeLayout.LayoutParams) checklistEditText.getLayoutParams();
-        rootParams = (FrameLayout.LayoutParams) checklistRootView.getLayoutParams();
+//        rootParams = (FrameLayout.LayoutParams) checklistRootView.getLayoutParams();
 //        toolbarParams = (RelativeLayout.LayoutParams) subTasksToolbar.getLayoutParams();
+
+        //Setting up the recycler view
+        RecyclerView recyclerView = findViewById(R.id.subTasksRecyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setHasFixedSize(true);
+
+        //setting up the adapter
+        final SubtasksAdapter subtasksAdapter = new SubtasksAdapter(this, /*subtasksPresenter, */subtasksRootView, subtaskViewModel);
+        recyclerView.setAdapter(subtasksAdapter);
+
+        //observing the recycler view items for changes
+        //TODO find out if observer is necessary
+        subtaskViewModel = ViewModelProviders.of(this).get(SubtaskViewModel.class);
+        subtaskViewModel.getAllSubtasks().observe(this, new Observer<List<Subtask>>(){
+            @Override
+            public void onChanged(@Nullable List<Subtask> subtasks){
+                subtasksAdapter.setSubtasks(subtasks);
+            }
+        });
+
+        //detect swipes
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
+                                  RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                subtaskViewModel.delete(subtasksAdapter.getSubtaskAt(viewHolder.getAdapterPosition()));
+                String stringSnack = "Subtask deleted";
+                showSnackbar(stringSnack);
+            }
+        }).attachToRecyclerView(recyclerView);
 
         String dbTaskId = "";
 
@@ -105,19 +173,19 @@ public class Checklist extends MainActivity {
         //setting text in toolbar
         subTasksToolbar.setTitle(R.string.subTasks);
 //        subTasksToolbar.setSubtitle(dbTask);
-        subTasksToolbar.setTitleTextColor(Color.parseColor("#000000"));
-        subTasksToolbar.setSubtitleTextColor(Color.parseColor("#666666"));
+//        subTasksToolbar.setTitleTextColor(Color.parseColor("#000000"));
+//        subTasksToolbar.setSubtitleTextColor(Color.parseColor("#666666"));
 
         //setting up adapter
-        checklistAdapter = new ListAdapter[]{new ChecklistAdapter(this, checklist)};
+//        checklistAdapter = new ListAdapter[]{new ChecklistAdapter(this, checklist)};
 
-        if(checklist.size() != 0) {
-
-            checklistAdapter = new ListAdapter[]{new ChecklistAdapter(this, checklist)};
-
-            checklistView.setAdapter(checklistAdapter[0]);
-
-        }
+//        if(checklist.size() != 0) {
+//
+//            checklistAdapter = new ListAdapter[]{new ChecklistAdapter(this, checklist)};
+//
+//            checklistView.setAdapter(checklistAdapter[0]);
+//
+//        }
 
         //actions to occur when user clicks list item
 //        checklistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -236,8 +304,8 @@ public class Checklist extends MainActivity {
                         }
 
                         //adding data to arraylists
-                        checklist.add(checklistTaskName);
-                        subTasksKilled.add(false);
+//                        checklist.add(checklistTaskName);
+//                        subTasksKilled.add(false);
 
                         //updating list size in database
 //                        db.updateChecklistSize(String.valueOf(finalDbID), checklist.size());
@@ -293,13 +361,13 @@ public class Checklist extends MainActivity {
                     if(!checklistTaskName.equals("")) {
 
                         //updating arraylists
-                        checklist.set(renameMe, checklistTaskName);
-                        subTasksKilled.set(renameMe, true);
+//                        checklist.set(renameMe, checklistTaskName);
+//                        subTasksKilled.set(renameMe, true);
 
                         //updating database
 //                        db.updateSubtask(finalDbTaskId, String.valueOf
 //                                (sortedSubtaskIds.get(renameMe)), checklistTaskName);
-                        checklistView.setAdapter(checklistAdapter[0]);
+//                        checklistView.setAdapter(checklistAdapter[0]);
 
                     }
 
@@ -307,7 +375,7 @@ public class Checklist extends MainActivity {
 
                 }
 
-                checklistView.setAdapter(checklistAdapter[0]);
+//                checklistView.setAdapter(checklistAdapter[0]);
 
                 //Marking editing as complete
                 subTaskBeingEdited = false;
@@ -320,159 +388,173 @@ public class Checklist extends MainActivity {
 
     }
 
+    private void showSnackbar(String stringSnack) {
+        View view = findViewById(R.id.subtasksRoot);
+        Snackbar.make(view, stringSnack, Snackbar.LENGTH_SHORT)
+                .setAction("UNDO", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(SubtasksActivity.this, "Reinstate subtask",
+                                Toast.LENGTH_LONG).show();
+                    }
+                })
+                .setActionTextColor(getResources().getColor(R.color.purple))
+                .show();
+    }
+
     //Actions to occur when keyboard is showing
     public void checkIfKeyboardShowing() {
 
         subTasksClickable = true;
 
-        checklistRootView.getViewTreeObserver().addOnGlobalLayoutListener(
-                new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-
-                Rect screen = new Rect();
-
-                checklistRootView.getWindowVisibleDisplayFrame(screen);
-
-                //Keyboard is up
-                if(screen.bottom != deviceheight){
-
-                    if (subTaskBeingEdited) {
-
-                        checklistRootView.setBackgroundColor(Color.parseColor("#888888"));
-
-                    }
-
-                    fadeSubTasks = true;
-
-                    if (goToChecklistAdapter) {
-
-                        if(checklist.size() != 0) {
-                            checklistView.setAdapter(checklistAdapter[0]);
-                        }
-
-                        goToChecklistAdapter = false;
-
-                    }
-
-                    subTasksClickable = false;
-
-                    //Keyboard is inactive without this line
-                    checklistEditText.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
-
-                    restoreListView = true;
-
-                //Keyboard is down
-                }else if(restoreListView){
-
-                    checklistRootView.setBackgroundColor(Color.parseColor("#FFFFFF"));
-
-                    fadeSubTasks = false;
-
-                    subTasksClickable = true;
-
-                    checklistEditText.setText("");
-
-                    subTaskBeingEdited = false;
-
-                    if(checklist.size() != 0) {
-
-                        checklistView.setAdapter(checklistAdapter[0]);
-
-                    }
-
-                    restoreListView = false;
-
-                    goToChecklistAdapter = true;
-
-                }
-
-            }
-
-        });
+//        subtasksRootView.getViewTreeObserver().addOnGlobalLayoutListener(
+//                new ViewTreeObserver.OnGlobalLayoutListener() {
+//            @Override
+//            public void onGlobalLayout() {
+//
+//                Rect screen = new Rect();
+//
+//                subtasksRootView.getWindowVisibleDisplayFrame(screen);
+//
+//                //Keyboard is up
+//                if(screen.bottom != deviceheight){
+//
+//                    if (subTaskBeingEdited) {
+//
+//                        subtasksRootView.setBackgroundColor(Color.parseColor("#888888"));
+//
+//                    }
+//
+//                    fadeSubTasks = true;
+//
+//                    if (goToChecklistAdapter) {
+//
+////                        if(checklist.size() != 0) {
+////                            checklistView.setAdapter(checklistAdapter[0]);
+////                        }
+//
+//                        goToChecklistAdapter = false;
+//
+//                    }
+//
+//                    subTasksClickable = false;
+//
+//                    //Keyboard is inactive without this line
+//                    checklistEditText.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
+//
+//                    restoreListView = true;
+//
+//                //Keyboard is down
+//                }else if(restoreListView){
+//
+////                    checklistRootView.setBackgroundColor(Color.parseColor("#FFFFFF"));
+//
+//                    fadeSubTasks = false;
+//
+//                    subTasksClickable = true;
+//
+//                    checklistEditText.setText("");
+//
+//                    subTaskBeingEdited = false;
+//
+////                    if(checklist.size() != 0) {
+//
+////                        checklistView.setAdapter(checklistAdapter[0]);
+//
+////                    }
+//
+//                    restoreListView = false;
+//
+//                    goToChecklistAdapter = true;
+//
+//                }
+//
+//            }
+//
+//        });
 
     }
 
     //Ordering list by time created
-    public void reorderList(String parentID){
-
-        ArrayList<Integer> tempList = new ArrayList<>();
-
-        //Saving timestamps into a temporary array
-        for(int i = 0; i < checklist.size(); i++){
-
-            //getting timestamp
-            String dbTimestamp = "";
-            Cursor dbResult = MainActivity.db.getSubtaskData(Integer.parseInt(parentID),
-                    sortedSubtaskIds.get(i));
-            while (dbResult.moveToNext()) {
-                dbTimestamp = dbResult.getString(1);
-            }
-            dbResult.close();
-
-            tempList.add(Integer.valueOf(dbTimestamp));
-
-        }
-
-        //Ordering list by time task was created
-        ArrayList<String> whenTaskCreated = new ArrayList<>();
-        for(int i = 0; i < checklist.size(); i++){
-            String created = "";
-            Cursor createdResult = MainActivity.db.getSubtaskData(Integer.parseInt
-                    (parentID), sortedSubtaskIds.get(i));
-            while (createdResult.moveToNext()) {
-                created = createdResult.getString(4);
-            }
-            createdResult.close();
-            whenTaskCreated.add(created);
-        }
-        Collections.sort(whenTaskCreated);
-        Collections.reverse(whenTaskCreated);
-
-        ArrayList<String> tempIdsList = new ArrayList<>();
-        ArrayList<String> tempTaskList = new ArrayList<>();
-
-        //getting tasks
-        for(int i = 0; i < checklist.size(); i++){
-
-            //getting task data
-            int dbId = 0;
-            String dbTask = "";
-            Cursor dbResult = MainActivity.db.getSubtaskDataByTimestamp(
-                    whenTaskCreated.get(i));
-            while (dbResult.moveToNext()) {
-                dbId = dbResult.getInt(1);
-                dbTask = dbResult.getString(2);
-            }
-            dbResult.close();
-
-            tempIdsList.add(String.valueOf(dbId));
-            tempTaskList.add(dbTask);
-
-        }
-
-        //Setting the sorted ID in the database
-        for(int i = 0; i < checklist.size(); i++){
-
-            MainActivity.db.updateSubtaskSortedIndex(parentID, String.valueOf(i),
-                    Integer.parseInt(tempIdsList.get(i)));
-
-        }
-
-        sortedSubtaskIds.clear();
-
-        //setting the new sortedIds list
-        for(int i = 0; i < checklist.size(); i++){
-            sortedSubtaskIds.add(Integer.valueOf(tempIdsList.get(i)));
-        }
-
-        //setting the new task list in correct order
-        checklist = tempTaskList;
-
-        checklistAdapter = new ListAdapter[]{new ChecklistAdapter(this, checklist)};
-//        checklistView.setAdapter(checklistAdapter[0]);
-
-    }
+//    public void reorderList(String parentID){
+//
+//        ArrayList<Integer> tempList = new ArrayList<>();
+//
+//        //Saving timestamps into a temporary array
+////        for(int i = 0; i < checklist.size(); i++){
+////
+////            //getting timestamp
+////            String dbTimestamp = "";
+////            Cursor dbResult = MainActivity.db.getSubtaskData(Integer.parseInt(parentID),
+////                    sortedSubtaskIds.get(i));
+////            while (dbResult.moveToNext()) {
+////                dbTimestamp = dbResult.getString(1);
+////            }
+////            dbResult.close();
+////
+////            tempList.add(Integer.valueOf(dbTimestamp));
+////
+////        }
+//
+//        //Ordering list by time task was created
+//        ArrayList<String> whenTaskCreated = new ArrayList<>();
+////        for(int i = 0; i < checklist.size(); i++){
+////            String created = "";
+////            Cursor createdResult = MainActivity.db.getSubtaskData(Integer.parseInt
+////                    (parentID), sortedSubtaskIds.get(i));
+////            while (createdResult.moveToNext()) {
+////                created = createdResult.getString(4);
+////            }
+////            createdResult.close();
+////            whenTaskCreated.add(created);
+////        }
+//        Collections.sort(whenTaskCreated);
+//        Collections.reverse(whenTaskCreated);
+//
+//        ArrayList<String> tempIdsList = new ArrayList<>();
+//        ArrayList<String> tempTaskList = new ArrayList<>();
+//
+//        //getting tasks
+////        for(int i = 0; i < checklist.size(); i++){
+////
+////            //getting task data
+////            int dbId = 0;
+////            String dbTask = "";
+////            Cursor dbResult = MainActivity.db.getSubtaskDataByTimestamp(
+////                    whenTaskCreated.get(i));
+////            while (dbResult.moveToNext()) {
+////                dbId = dbResult.getInt(1);
+////                dbTask = dbResult.getString(2);
+////            }
+////            dbResult.close();
+////
+////            tempIdsList.add(String.valueOf(dbId));
+////            tempTaskList.add(dbTask);
+////
+////        }
+//
+//        //Setting the sorted ID in the database
+////        for(int i = 0; i < checklist.size(); i++){
+////
+////            MainActivity.db.updateSubtaskSortedIndex(parentID, String.valueOf(i),
+////                    Integer.parseInt(tempIdsList.get(i)));
+////
+////        }
+//
+////        sortedSubtaskIds.clear();
+//
+//        //setting the new sortedIds list
+////        for(int i = 0; i < checklist.size(); i++){
+////            sortedSubtaskIds.add(Integer.valueOf(tempIdsList.get(i)));
+////        }
+//
+//        //setting the new task list in correct order
+////        checklist = tempTaskList;
+//
+////        checklistAdapter = new ListAdapter[]{new ChecklistAdapter(this, checklist)};
+////        checklistView.setAdapter(checklistAdapter[0]);
+//
+//    }
 
     @Override
     //Tasks are saved in a manner so that they don't vanish when app closed
@@ -497,9 +579,9 @@ public class Checklist extends MainActivity {
     private void getSavedData() {
 
         //clearing lists to prevent duplicates
-        sortedSubtaskIds.clear();
-        checklist.clear();
-        subTasksKilled.clear();
+//        sortedSubtaskIds.clear();
+//        checklist.clear();
+//        subTasksKilled.clear();
 
         goToChecklistAdapter = true;
 
@@ -508,12 +590,12 @@ public class Checklist extends MainActivity {
         //Keyboard is inactive without this line
         checklistEditText.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
 
-        String id = null;
-        Cursor dbResult = db.getUniversalData();
-        while (dbResult.moveToNext()) {
-            id = dbResult.getString(4);
-        }
-        dbResult.close();
+//        String id = null;
+//        Cursor dbResult = db.getUniversalData();
+//        while (dbResult.moveToNext()) {
+//            id = dbResult.getString(4);
+//        }
+//        dbResult.close();
 
 //        Cursor dbIdResult = db.getSubtask(Integer.parseInt(id));
 //        while (dbIdResult.moveToNext()) {
@@ -525,14 +607,14 @@ public class Checklist extends MainActivity {
 //        dbIdResult.close();
 
         //ordering the list by time subtask created
-        reorderList(id);
+//        reorderList(id);
 
         //if subtasks already exist keyboard isn't displayed and therefore tasks must be clickable
-        if(checklist.size() == 0) {
-            subTasksClickable = false;
-        }else{
-            subTasksClickable = true;
-        }
+//        if(checklist.size() == 0) {
+//            subTasksClickable = false;
+//        }else{
+//            subTasksClickable = true;
+//        }
 
         //Setting height of the list view
 //        int statusHeight = 0;

@@ -94,7 +94,7 @@ public class Database extends SQLiteOpenHelper {
     private static final String UCOL32 = "ORIGINALDAYTEMP";
     private static final String UCOL33 = "REPEATTEMP";
 
-    //Subtasks
+    //SubtasksActivity
     private static final String CTABLE = "subtasks_table";
     private static final String CCOL1 = "ID";
     private static final String CCOL2 = "SUBTASKID";

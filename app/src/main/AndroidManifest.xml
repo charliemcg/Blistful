@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Checklist"
+            android:name=".SubtasksActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
         <activity
             android:name=".NoteActivity"

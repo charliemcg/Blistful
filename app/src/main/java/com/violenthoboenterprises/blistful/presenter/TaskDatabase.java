@@ -8,17 +8,19 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
+import com.violenthoboenterprises.blistful.model.Subtask;
 import com.violenthoboenterprises.blistful.model.Task;
 
 /*
  * This is where the database is built
  */
-@Database(entities = {Task.class}, version = 1)
+@Database(entities = {Task.class, Subtask.class}, version = 1)
 public abstract class TaskDatabase extends RoomDatabase {
 
     private static TaskDatabase instance;
 
     public abstract TaskDao taskDao();
+    public abstract SubtaskDao subtaskDao();
 
     //Instance
     public static synchronized TaskDatabase getInstance(Context context){
@@ -44,7 +46,11 @@ public abstract class TaskDatabase extends RoomDatabase {
     //Populating the task table with tutorial tasks
     private static class PopulateDbAsyncTask extends AsyncTask<Void, Void, Void>{
         private TaskDao taskDao;
-        private PopulateDbAsyncTask(TaskDatabase db){taskDao = db.taskDao();}
+        private SubtaskDao subtaskDao;
+        private PopulateDbAsyncTask(TaskDatabase db){
+            taskDao = db.taskDao();
+            subtaskDao = db.subtaskDao();
+        }
         @Override
         protected Void doInBackground(Void... voids){
             taskDao.insert(new Task("This is a task"));

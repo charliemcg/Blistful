@@ -2,8 +2,6 @@ package com.violenthoboenterprises.blistful.model;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
@@ -13,13 +11,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.violenthoboenterprises.blistful.Checklist;
+import com.violenthoboenterprises.blistful.SubtasksActivity;
 import com.violenthoboenterprises.blistful.NoteActivity;
 import com.violenthoboenterprises.blistful.R;
 import com.violenthoboenterprises.blistful.SetDue;
 import com.violenthoboenterprises.blistful.presenter.MainActivityPresenter;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,11 +50,22 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder>{
 
     @Override //Binding data to the view
     public void onBindViewHolder(final TaskHolder holder, final int position) {
-        Task currentTask = tasks.get(position);
+        final Task currentTask = tasks.get(position);
         holder.tvTask.setText(currentTask.getTask());
-        if(tasks.get(position).getNote() != null){
+        //checking if any status icons need to be displayed
+        if(currentTask.getNote() != null){
             holder.noteIcon.setVisibility(View.VISIBLE);
         }
+        if(currentTask.getSubtasksSize() != 0){
+            holder.noteIcon.setVisibility(View.VISIBLE);
+        }
+        if(currentTask.getRepeatInterval() != null){
+            holder.noteIcon.setVisibility(View.VISIBLE);
+        }
+        if(currentTask.getTimeCreated() != null){
+            holder.noteIcon.setVisibility(View.VISIBLE);
+        }
+        //show properties on click
         holder.taskLayout.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
@@ -70,6 +78,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder>{
                 }
             }
         });
+        //buttons should open respective activities
         holder.btnAlarm.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
@@ -80,7 +89,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder>{
         holder.btnSubtasks.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                Intent intent = new Intent(context, Checklist.class);
+                Intent intent = new Intent(context, SubtasksActivity.class);
+                intent.putExtra("task", currentTask);
                 context.startActivity(intent);
             }
         });
@@ -88,7 +98,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder>{
             @Override
             public void onClick(View view){
                 Intent intent = new Intent(context, NoteActivity.class);
-//                Task task = taskViewModel.getTask(position);
                 intent.putExtra("task", tasks.get(position));
                 context.startActivity(intent);
             }
@@ -116,6 +125,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder>{
         private ConstraintLayout btnSubtasks;
         private ConstraintLayout btnNote;
         private ImageView noteIcon;
+        private ImageView subtasksIcon;
+        private ImageView repeatIcon;
+        private ImageView dueIcon;
         public TaskHolder(final View itemView) {
             super(itemView);
             tvTask = itemView.findViewById(R.id.tvTask);
@@ -125,6 +137,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder>{
             btnSubtasks = itemView.findViewById(R.id.subTasks);
             btnNote = itemView.findViewById(R.id.note);
             noteIcon = itemView.findViewById(R.id.noteClearWhite);
+            subtasksIcon = itemView.findViewById(R.id.checklistClearWhite);
+            repeatIcon = itemView.findViewById(R.id.repeatClearWhite);
+            dueIcon = itemView.findViewById(R.id.dueClearWhite);
             itemView.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View view){
