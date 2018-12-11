@@ -47,7 +47,7 @@ public class NoteActivity extends MainActivity implements NoteView {
     InputMethodManager keyboard;
     ImageView submitNoteBtnDark, submitNoteOne, submitNoteOneHalf, submitNoteTwoHalf, submitNoteTwo;
     String TAG = this.getClass().getSimpleName();
-    String theNote;
+//    String theNote;
     String dbTask;
     //Indicates that the active task has subtasks
     Boolean checklistExists;
@@ -77,7 +77,7 @@ public class NoteActivity extends MainActivity implements NoteView {
         submitNoteTwo = findViewById(R.id.submitNoteTwo);
         submitNoteOneHalf = findViewById(R.id.submitNoteOneHalf);
         submitNoteTwoHalf = findViewById(R.id.submitNoteTwoHalf);
-        theNote = "";
+//        theNote = "";
         checklistExists = false;
         inNote = true;
         noteRoot = findViewById(R.id.noteRoot);
@@ -127,9 +127,8 @@ public class NoteActivity extends MainActivity implements NoteView {
 
                 animateSubmitButton();
 
-                if (!noteEditText.getText().toString().equals("")) {
+//                if (!noteEditText.getText().toString().equals("")) {
                     //new note being added
-//                    Task task = (Task) getIntent().getSerializableExtra("task");
                     String newNote = noteEditText.getText().toString();
                     task.setNote(newNote);
                     taskViewModel.update(task);
@@ -138,7 +137,7 @@ public class NoteActivity extends MainActivity implements NoteView {
 
                     noteEditText.setText("");
 
-                }
+//                }
 
             }
 
@@ -166,7 +165,7 @@ public class NoteActivity extends MainActivity implements NoteView {
                 keyboard.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 
                 //set text to existing note
-                noteEditText.setText(theNote);
+                noteEditText.setText(task.getNote());
 
                 //put cursor at end of text
                 noteEditText.setSelection(noteEditText.getText().length());
@@ -229,7 +228,7 @@ public class NoteActivity extends MainActivity implements NoteView {
                                                 submitNoteTwoHalf.setVisibility(View.GONE);
 
                                                 //Set text view to the note content
-                                                noteTextView.setText(theNote);
+//                                                noteTextView.setText(theNote);
 
                                                 //Hide text box
                                                 noteEditText.setVisibility(View.GONE);
@@ -287,87 +286,87 @@ public class NoteActivity extends MainActivity implements NoteView {
 //        }
 
         //Don't allow blank notes
-        if (!theNote.equals("")) {
-
-            //Animating the send icon
-            final Handler handler = new Handler();
-
-            final Runnable runnable = new Runnable() {
-                public void run() {
-
-                    submitNoteBtnDark.setVisibility(View.GONE);
-                    submitNoteOne.setVisibility(View.VISIBLE);
-
-                    final Handler handler2 = new Handler();
-
-                    final Runnable runnable2 = new Runnable() {
-                        public void run() {
-
-                            submitNoteOne.setVisibility(View.GONE);
-                            submitNoteOneHalf.setVisibility(View.VISIBLE);
-
-                            final Handler handler3 = new Handler();
-
-                            final Runnable runnable3 = new Runnable() {
-                                public void run() {
-
-                                    submitNoteOneHalf.setVisibility(View.GONE);
-                                    submitNoteTwo.setVisibility(View.VISIBLE);
-
-                                    final Handler handler4 = new Handler();
-
-                                    final Runnable runnable4 = new Runnable() {
-                                        @Override
-                                        public void run() {
-
-                                            submitNoteTwo.setVisibility(View.GONE);
-                                            submitNoteTwoHalf.setVisibility(View.VISIBLE);
-
-                                            final Handler handler5 = new Handler();
-
-                                            final Runnable runnable5 = new Runnable() {
-                                                @Override
-                                                public void run() {
-
-                                                    vibrate.vibrate(50);
-
-                                                    if (!mute) {
-                                                        blip.start();
-                                                    }
-
-                                                    submitNoteTwoHalf.setVisibility(View.GONE);
-
-                                                    //Set text view to the note content
-                                                    noteTextView.setText(theNote);
-
-                                                    //Hide text box
-                                                    noteEditText.setVisibility(View.GONE);
-
-                                                    submitNoteBtnDark.setVisibility(View.GONE);
-
-                                                    trashNote.setVisible(true);
-
-                                                    //Hide keyboard
-                                                    keyboard.toggleSoftInput(InputMethodManager
-                                                            .HIDE_IMPLICIT_ONLY, 0);
-
-                                                }
-                                            };
-                                            handler5.postDelayed(runnable5, 50);
-                                        }
-                                    };
-                                    handler4.postDelayed(runnable4, 50);
-                                }
-                            };
-                            handler3.postDelayed(runnable3, 50);
-                        }
-                    };
-                    handler2.postDelayed(runnable2, 50);
-                }
-            };
-            handler.postDelayed(runnable, 50);
-
-        }
+//        if (!theNote.equals("")) {
+//
+//            //Animating the send icon
+//            final Handler handler = new Handler();
+//
+//            final Runnable runnable = new Runnable() {
+//                public void run() {
+//
+//                    submitNoteBtnDark.setVisibility(View.GONE);
+//                    submitNoteOne.setVisibility(View.VISIBLE);
+//
+//                    final Handler handler2 = new Handler();
+//
+//                    final Runnable runnable2 = new Runnable() {
+//                        public void run() {
+//
+//                            submitNoteOne.setVisibility(View.GONE);
+//                            submitNoteOneHalf.setVisibility(View.VISIBLE);
+//
+//                            final Handler handler3 = new Handler();
+//
+//                            final Runnable runnable3 = new Runnable() {
+//                                public void run() {
+//
+//                                    submitNoteOneHalf.setVisibility(View.GONE);
+//                                    submitNoteTwo.setVisibility(View.VISIBLE);
+//
+//                                    final Handler handler4 = new Handler();
+//
+//                                    final Runnable runnable4 = new Runnable() {
+//                                        @Override
+//                                        public void run() {
+//
+//                                            submitNoteTwo.setVisibility(View.GONE);
+//                                            submitNoteTwoHalf.setVisibility(View.VISIBLE);
+//
+//                                            final Handler handler5 = new Handler();
+//
+//                                            final Runnable runnable5 = new Runnable() {
+//                                                @Override
+//                                                public void run() {
+//
+//                                                    vibrate.vibrate(50);
+//
+//                                                    if (!mute) {
+//                                                        blip.start();
+//                                                    }
+//
+//                                                    submitNoteTwoHalf.setVisibility(View.GONE);
+//
+//                                                    //Set text view to the note content
+//                                                    noteTextView.setText(theNote);
+//
+//                                                    //Hide text box
+//                                                    noteEditText.setVisibility(View.GONE);
+//
+//                                                    submitNoteBtnDark.setVisibility(View.GONE);
+//
+//                                                    trashNote.setVisible(true);
+//
+//                                                    //Hide keyboard
+//                                                    keyboard.toggleSoftInput(InputMethodManager
+//                                                            .HIDE_IMPLICIT_ONLY, 0);
+//
+//                                                }
+//                                            };
+//                                            handler5.postDelayed(runnable5, 50);
+//                                        }
+//                                    };
+//                                    handler4.postDelayed(runnable4, 50);
+//                                }
+//                            };
+//                            handler3.postDelayed(runnable3, 50);
+//                        }
+//                    };
+//                    handler2.postDelayed(runnable2, 50);
+//                }
+//            };
+//            handler.postDelayed(runnable, 50);
+//
+//        }
 
     }
 
@@ -431,7 +430,7 @@ public class NoteActivity extends MainActivity implements NoteView {
 //                                    }
 //                                    result.close();
 
-                                    task.setNote("");
+                                    task.setNote(null);
                                     taskViewModel.update(task);
 
                                     //setting note in database to nothing
