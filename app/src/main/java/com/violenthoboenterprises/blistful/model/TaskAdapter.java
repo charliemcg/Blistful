@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.violenthoboenterprises.blistful.Checklist;
@@ -54,6 +55,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder>{
     public void onBindViewHolder(final TaskHolder holder, final int position) {
         Task currentTask = tasks.get(position);
         holder.tvTask.setText(currentTask.getTask());
+        if(tasks.get(position).getNote() != null){
+            holder.noteIcon.setVisibility(View.VISIBLE);
+        }
         holder.taskLayout.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
@@ -111,6 +115,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder>{
         private ConstraintLayout btnAlarm;
         private ConstraintLayout btnSubtasks;
         private ConstraintLayout btnNote;
+        private ImageView noteIcon;
         public TaskHolder(final View itemView) {
             super(itemView);
             tvTask = itemView.findViewById(R.id.tvTask);
@@ -119,6 +124,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder>{
             btnAlarm = itemView.findViewById(R.id.alarm);
             btnSubtasks = itemView.findViewById(R.id.subTasks);
             btnNote = itemView.findViewById(R.id.note);
+            noteIcon = itemView.findViewById(R.id.noteClearWhite);
             itemView.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View view){
