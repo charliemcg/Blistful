@@ -19,8 +19,8 @@ public class SubtasksPresenterImpl implements SubtasksPresenter {
     }
 
     @Override
-    public void addSubtask(String subtaskName) {
-        Subtask subtask = new Subtask(0, subtaskName);//TODO get correct id
+    public void addSubtask(int id, String subtaskName) {
+        Subtask subtask = new Subtask(id, subtaskName);
         subtaskViewModel.insert(subtask);
     }
 

@@ -71,7 +71,7 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
 //    RelativeLayout.LayoutParams editTextParams;
 //    FrameLayout.LayoutParams rootParams;
 //    RelativeLayout.LayoutParams toolbarParams;
-    private Subtask subtask;
+    private Task task;
 
     private SubtaskViewModel subtaskViewModel;
     private SubtasksPresenter subtasksActivityPresenter;
@@ -89,8 +89,8 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
         subtasksActivityPresenter = new SubtasksPresenterImpl
                 (SubtasksActivity.this, subtaskViewModel, getApplicationContext());
 
-        //Getting the task to which the subtasks are related
-        subtask = getIntent().getParcelableExtra("subtask");
+        //Getting the parent task to which the subtasks are related
+        task = getIntent().getParcelableExtra("task");
         keyboard = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         checklistEditText = findViewById(R.id.checklistEditText);
         checklistView = findViewById(R.id.theChecklist);
@@ -289,19 +289,21 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
                 if (actionId == EditorInfo.IME_ACTION_DONE && !subTaskBeingEdited) {
 
                     //Getting user data
-                    String checklistTaskName = checklistEditText.getText().toString();
+                    String subtaskName = checklistEditText.getText().toString();
 
                     //Clear text from text box
                     checklistEditText.setText("");
 
                     //Don't allow blank tasks
-                    if(!checklistTaskName.equals("")) {
+                    if(!subtaskName.equals("")) {
 
                         vibrate.vibrate(50);
 
                         if(!mute) {
                             blip.start();
                         }
+
+                        subtasksActivityPresenter.addSubtask(task.getId(), subtaskName);
 
                         //adding data to arraylists
 //                        checklist.add(checklistTaskName);
