@@ -11,12 +11,11 @@ public class SubtaskViewModel extends AndroidViewModel {
 
     SubtaskRepository subtaskRepository;
     //TODO see if LiveData is needed
-    private LiveData<List<Subtask>> allTasks;
+//    private LiveData<List<Subtask>> allSubtasks;
 
     public SubtaskViewModel(@NonNull Application application) {
         super(application);
-        subtaskRepository = new SubtaskRepository(application);
-        allTasks = subtaskRepository.getAllSubtasks();
+        this.subtaskRepository = new SubtaskRepository(application);
     }
 
     public void insert(Subtask subtask){subtaskRepository.insert(subtask);}
@@ -24,6 +23,7 @@ public class SubtaskViewModel extends AndroidViewModel {
     public void delete(Subtask subtask){subtaskRepository.delete(subtask);}
 
     //TODO see if LiveData is needed
-    public LiveData<List<Subtask>> getAllSubtasks(){return allTasks;}
+//    public LiveData<List<Subtask>> getAllSubtasks(){return allTasks;}
+    public LiveData<List<Subtask>> getAllSubtasks(int parentId){return subtaskRepository.getAllSubtasks(parentId);}
 
 }

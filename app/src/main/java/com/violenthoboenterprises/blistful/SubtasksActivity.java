@@ -115,13 +115,13 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
         recyclerView.setHasFixedSize(true);
 
         //setting up the adapter
-        final SubtasksAdapter subtasksAdapter = new SubtasksAdapter(this, /*subtasksPresenter, */subtasksRootView, subtaskViewModel);
+        final SubtasksAdapter subtasksAdapter = new SubtasksAdapter(this, /*subtasksPresenter, */subtasksRootView, subtaskViewModel, task);
         recyclerView.setAdapter(subtasksAdapter);
 
         //observing the recycler view items for changes
         //TODO find out if observer is necessary
         subtaskViewModel = ViewModelProviders.of(this).get(SubtaskViewModel.class);
-        subtaskViewModel.getAllSubtasks().observe(this, new Observer<List<Subtask>>(){
+        subtaskViewModel.getAllSubtasks(task.getId()).observe(this, new Observer<List<Subtask>>(){
             @Override
             public void onChanged(@Nullable List<Subtask> subtasks){
                 subtasksAdapter.setSubtasks(subtasks);

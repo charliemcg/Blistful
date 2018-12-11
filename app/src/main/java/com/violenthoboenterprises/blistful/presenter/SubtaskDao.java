@@ -27,8 +27,8 @@ public interface SubtaskDao {
     @Delete
     void delete(Subtask subtask);
 
-    @Query("SELECT * FROM subtask_table ORDER BY timeCreated DESC")
+    @Query("SELECT * FROM subtask_table WHERE parentId = :parentId ORDER BY timeCreated DESC")
         //TODO see if LiveData is needed
-    LiveData<List<Subtask>> getAllTasks();
+    LiveData<List<Subtask>> getAllTasks(int parentId);
 
 }

@@ -28,8 +28,9 @@ public class SubtasksAdapter extends RecyclerView.Adapter<SubtasksAdapter.Subtas
 //    private SubtasksPresenter subtasksPresenter;
     private View subtasksRootView;
     private SubtaskViewModel subtaskViewModel;
+    private Task parentTask;
 
-    public SubtasksAdapter(Context context, /*SubtasksPresenter subtasksPresenter, */View subtasksRootView, SubtaskViewModel subtaskViewModel) {
+    public SubtasksAdapter(Context context, /*SubtasksPresenter subtasksPresenter, */View subtasksRootView, SubtaskViewModel subtaskViewModel, Task parentTask) {
         this.context = context;
 //        this.subtasksPresenter = subtasksPresenter;
         this.subtasksRootView = subtasksRootView;

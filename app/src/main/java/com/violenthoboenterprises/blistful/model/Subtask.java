@@ -14,7 +14,7 @@ public class Subtask {
     private int id;
 
     //id of the parent task
-    private int taskId;
+    private int parentId;
 
     //name of the subtask
     @NonNull
@@ -26,8 +26,8 @@ public class Subtask {
     //when the subtask was created
     private int timeCreated;
 
-    public Subtask(int id, @NonNull String subtask) {
-        this.id = id;
+    public Subtask(int parentId, @NonNull String subtask) {
+        this.parentId = parentId;
         this.subtask = subtask;
     }
 
@@ -39,12 +39,12 @@ public class Subtask {
         this.id = id;
     }
 
-    public int getTaskId() {
-        return taskId;
+    public int getParentId() {
+        return parentId;
     }
 
-    public void setTaskId(int taskId) {
-        this.taskId = taskId;
+    public void setTaskId(int parentId) {
+        this.parentId = parentId;
     }
 
     @NonNull
