@@ -52,6 +52,7 @@ import com.violenthoboenterprises.blistful.view.MainActivityView;
 import com.violenthoboenterprises.blistful.view.ReminderView;
 
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 public class ReminderActivity extends MainActivity implements ReminderView {
@@ -299,6 +300,10 @@ public class ReminderActivity extends MainActivity implements ReminderView {
         } else if (task.getRepeatInterval().equals(REPEAT_MONTH)) {
             monthlyLight.setVisibility(View.INVISIBLE);
             monthly.setVisibility(View.VISIBLE);
+        }
+
+        if(reminderInstance.getHour() != 0 || reminderInstance.getYear() != 0 || task.getRepeatInterval() != null){
+            killAlarm.setVisible(true);
         }
 
         //Actions to occur when user selects to set/change date
@@ -585,7 +590,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
         //Resetting alarm to off
         //TODO find out if return statements are necessary
-        if ((id == R.id.killAlarmItem) && (timePicked || datePicked || !repeat.equals("none"))) {
+        if (/*(*/id == R.id.killAlarmItem/*) && (timePicked || datePicked || !repeat.equals("none"))*/) {
 
             final Handler handler = new Handler();
 
@@ -607,75 +612,88 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
                                     killAlarm.setVisible(false);
 
-                                    //getting task data
-                                    dbTaskId = "";
-                                    Cursor dbTaskResult = MainActivity.db.getUniversalData();
-                                    while (dbTaskResult.moveToNext()) {
-                                        dbTaskId = dbTaskResult.getString(4);
-                                    }
-                                    dbTaskResult.close();
-
+//                                    //getting task data
+//                                    dbTaskId = "";
+//                                    Cursor dbTaskResult = MainActivity.db.getUniversalData();
+//                                    while (dbTaskResult.moveToNext()) {
+//                                        dbTaskId = dbTaskResult.getString(4);
+//                                    }
+//                                    dbTaskResult.close();
+//
                                     vibrate.vibrate(50);
 
                                     if (!mute) {
                                         trash.start();
                                     }
 
-                                    repeat = "none";
+                                    task.setRepeatInterval(REPEAT_NONE);
+                                    task.setTimestamp(0);
+                                    reminderPresenter.update(task);
 
-                                    repeating = false;
+                                    reminderInstance.setYear(0);
+                                    reminderInstance.setMonth(0);
+                                    reminderInstance.setDay(0);
+                                    reminderInstance.setHour(0);
+                                    reminderInstance.setMinute(0);
+                                    reminderPresenter.updateReminder(reminderInstance);
 
-                                    db.updateDue(dbTaskId, false);
-
-                                    db.updateTimestamp(dbTaskId, "0");
-
-                                    db.updateRepeatInterval(dbTaskId, "");
-
-                                    db.updateRepeat(dbTaskId, false);
-
-                                    db.updateOverdue(dbTaskId, false);
-
-                                    db.updateSnooze(dbTaskId, false);
-
-                                    db.updateKilledEarly(dbTaskId, false);
-
-                                    db.updateManualKill(dbTaskId, false);
-
-                                    pendIntent = PendingIntent.getBroadcast(getApplicationContext(),
-                                            Integer.valueOf(dbTaskId),
-                                            alertIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                                    alarmManager.cancel(MainActivity.pendIntent);
-
-                                    db.updateAlarmData(dbTaskId, "", "", "",
-                                            "", "", "");
-
-                                    db.updateSnoozeData(dbTaskId, "", "", "",
-                                            "", "", "");
-
-                                    setDue = false;
-                                    datePicked = false;
-                                    timePicked = false;
-
-                                    time.setVisibility(View.GONE);
-                                    calendar.setVisibility(View.GONE);
-
+//                                    repeat = "none";
+//
+//                                    repeating = false;
+//
+//                                    db.updateDue(dbTaskId, false);
+//
+//                                    db.updateTimestamp(dbTaskId, "0");
+//
+//                                    db.updateRepeatInterval(dbTaskId, "");
+//
+//                                    db.updateRepeat(dbTaskId, false);
+//
+//                                    db.updateOverdue(dbTaskId, false);
+//
+//                                    db.updateSnooze(dbTaskId, false);
+//
+//                                    db.updateKilledEarly(dbTaskId, false);
+//
+//                                    db.updateManualKill(dbTaskId, false);
+//
+//                                    pendIntent = PendingIntent.getBroadcast(getApplicationContext(),
+//                                            Integer.valueOf(dbTaskId),
+//                                            alertIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//
+//                                    alarmManager.cancel(MainActivity.pendIntent);
+//
+//                                    db.updateAlarmData(dbTaskId, "", "", "",
+//                                            "", "", "");
+//
+//                                    db.updateSnoozeData(dbTaskId, "", "", "",
+//                                            "", "", "");
+//
+//                                    setDue = false;
+//                                    datePicked = false;
+//                                    timePicked = false;
+//
+//                                    time.setVisibility(View.GONE);
+//                                    calendar.setVisibility(View.GONE);
+//
                                     calendarFadedLight.setVisibility(View.VISIBLE);
+                                    calendar.setVisibility(View.INVISIBLE);
                                     timeFadedLight.setVisibility(View.VISIBLE);
-
-                                    dateTextView.setText(R.string.addDate);
-                                    timeTextView.setText(R.string.addTime);
-                                    if (screenSize == 3) {
-                                        dateTextView.setTextSize(25);
-                                        timeTextView.setTextSize(25);
-                                    } else if (screenSize == 4) {
-                                        dateTextView.setTextSize(35);
-                                        timeTextView.setTextSize(35);
-                                    } else {
-                                        dateTextView.setTextSize(15);
-                                        timeTextView.setTextSize(15);
-                                    }
-
+                                    time.setVisibility(View.INVISIBLE);
+//
+//                                    dateTextView.setText(R.string.addDate);
+//                                    timeTextView.setText(R.string.addTime);
+//                                    if (screenSize == 3) {
+//                                        dateTextView.setTextSize(25);
+//                                        timeTextView.setTextSize(25);
+//                                    } else if (screenSize == 4) {
+//                                        dateTextView.setTextSize(35);
+//                                        timeTextView.setTextSize(35);
+//                                    } else {
+//                                        dateTextView.setTextSize(15);
+//                                        timeTextView.setTextSize(15);
+//                                    }
+//
                                     cancelRepeatLight.setVisibility(View.INVISIBLE);
                                     cancelRepeat.setVisibility(View.VISIBLE);
                                     dailyLight.setVisibility(View.VISIBLE);
@@ -1129,6 +1147,15 @@ public class ReminderActivity extends MainActivity implements ReminderView {
     @Override
     //Return to main screen when back pressed
     public void onBackPressed() {
+
+        Calendar calendar = new GregorianCalendar();
+        calendar.set(Calendar.YEAR, reminderInstance.getYear());
+        calendar.set(Calendar.MONTH, reminderInstance.getMonth());
+        calendar.set(Calendar.DAY_OF_MONTH, reminderInstance.getMinute());
+        calendar.set(Calendar.HOUR, reminderInstance.getHour());
+        calendar.set(Calendar.MINUTE, reminderInstance.getMinute());
+        task.setTimestamp((int) calendar.getTimeInMillis());
+        reminderPresenter.update(task);
 
         //updating the alarm in myAdapter
 //        if(setDue) {

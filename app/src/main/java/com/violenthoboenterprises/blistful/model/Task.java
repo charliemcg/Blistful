@@ -24,7 +24,7 @@ public class Task implements Parcelable {
     private boolean subtasks;
 
     //when the task is due if there is a due date
-    private long timestamp;
+    private int timestamp;
 
     //task name
     @NonNull
@@ -110,7 +110,7 @@ public class Task implements Parcelable {
         id = in.readInt();
         note = in.readString();
         subtasks = in.readByte() != 0;
-        timestamp = in.readLong();
+        timestamp = in.readInt();
         task = in.readString();
         due = in.readByte() != 0;
         killed = in.readByte() != 0;
@@ -166,11 +166,11 @@ public class Task implements Parcelable {
         this.subtasks = subtasks;
     }
 
-    public long getTimestamp() {
+    public int getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(long timestamp) {
+    public void setTimestamp(int timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -320,7 +320,7 @@ public class Task implements Parcelable {
         parcel.writeInt(id);
         parcel.writeString(note);
         parcel.writeByte((byte) (subtasks ? 1 : 0));
-        parcel.writeLong(timestamp);
+        parcel.writeInt(timestamp);
         parcel.writeString(task);
         parcel.writeByte((byte) (due ? 1 : 0));
         parcel.writeByte((byte) (killed ? 1 : 0));

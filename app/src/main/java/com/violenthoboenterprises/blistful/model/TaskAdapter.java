@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +26,7 @@ import java.util.List;
 /*
  * Adding tasks to the recycler view
  */
-public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder>{
+public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
 
     private final static String TAG = "TaskAdapter";
     private List<Task> tasks = new ArrayList<>();
@@ -57,56 +58,57 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder>{
         final Task currentTask = tasks.get(position);
         holder.tvTask.setText(currentTask.getTask());
         //checking if any status icons need to be displayed
-        if(currentTask.getNote() != null){
+        if (currentTask.getNote() != null) {
             holder.noteIcon.setVisibility(View.VISIBLE);
         }
         //checking for existence of subtasks
         List<Subtask> subtasks = subtasksPresenter.getSubtasksByParent(currentTask.getId());
         int subtasksSize = subtasks.size();
-        if(subtasksSize > 0){
+        if (subtasksSize > 0) {
             holder.subtasksIcon.setVisibility(View.VISIBLE);
         }
-        if(currentTask.getRepeatInterval() != null){
-            if(!currentTask.getRepeatInterval().equals("none")) {
+        if (currentTask.getRepeatInterval() != null) {
+            if (!currentTask.getRepeatInterval().equals("none")) {
                 holder.repeatIcon.setVisibility(View.VISIBLE);
             }
         }
-        if(currentTask.getTimeCreated() != null){
+        Log.d(TAG, "timestamp: " + currentTask.getTimestamp());
+        if (currentTask.getTimestamp() > 0) {
             holder.dueIcon.setVisibility(View.VISIBLE);
         }
         //show properties on click
-        holder.taskLayout.setOnClickListener(new View.OnClickListener(){
+        holder.taskLayout.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view){
-                if(holder.taskProperties.getVisibility() == View.VISIBLE) {
+            public void onClick(View view) {
+                if (holder.taskProperties.getVisibility() == View.VISIBLE) {
                     holder.taskProperties.setVisibility(View.GONE);
                     //redrawing the UI to remove properties from view
                     activityRootView.postInvalidate();
-                }else{
+                } else {
                     holder.taskProperties.setVisibility(View.VISIBLE);
                 }
             }
         });
         //buttons should open respective activities
-        holder.btnAlarm.setOnClickListener(new View.OnClickListener(){
+        holder.btnAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view){
+            public void onClick(View view) {
                 Intent intent = new Intent(context, ReminderActivity.class);
                 intent.putExtra("task", currentTask);
                 context.startActivity(intent);
             }
         });
-        holder.btnSubtasks.setOnClickListener(new View.OnClickListener(){
+        holder.btnSubtasks.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view){
+            public void onClick(View view) {
                 Intent intent = new Intent(context, SubtasksActivity.class);
                 intent.putExtra("task", currentTask);
                 context.startActivity(intent);
             }
         });
-        holder.btnNote.setOnClickListener(new View.OnClickListener(){
+        holder.btnNote.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view){
+            public void onClick(View view) {
                 Intent intent = new Intent(context, NoteActivity.class);
                 intent.putExtra("task", currentTask);
                 context.startActivity(intent);
@@ -119,12 +121,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder>{
         return tasks.size();
     }
 
-    public void setTasks(List<Task> tasks){
+    public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
         notifyDataSetChanged();
     }
 
-    public Task getTaskAt(int position){return tasks.get(position);}
+    public Task getTaskAt(int position) {
+        return tasks.get(position);
+    }
 
     //Building the item view
     class TaskHolder extends RecyclerView.ViewHolder {
@@ -138,6 +142,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder>{
         private ImageView subtasksIcon;
         private ImageView repeatIcon;
         private ImageView dueIcon;
+
         public TaskHolder(final View itemView) {
             super(itemView);
             tvTask = itemView.findViewById(R.id.tvTask);
@@ -150,11 +155,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder>{
             subtasksIcon = itemView.findViewById(R.id.checklistClearWhite);
             repeatIcon = itemView.findViewById(R.id.repeatClearWhite);
             dueIcon = itemView.findViewById(R.id.dueClearWhite);
-            itemView.setOnClickListener(new View.OnClickListener(){
+            itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view){
+                public void onClick(View view) {
                     int position = getAdapterPosition();
-                    if (listener != null && position != RecyclerView.NO_POSITION){
+                    if (listener != null && position != RecyclerView.NO_POSITION) {
                         listener.onItemClick(tasks.get(position));
                     }
                 }
@@ -162,10 +167,12 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder>{
         }
     }
 
-    public interface OnItemClickListener{
+    public interface OnItemClickListener {
         void onItemClick(Task task);
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener){this.listener = listener;}
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
 
 }
