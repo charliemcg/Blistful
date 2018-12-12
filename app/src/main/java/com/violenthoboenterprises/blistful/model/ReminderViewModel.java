@@ -20,4 +20,5 @@ public class ReminderViewModel extends AndroidViewModel {
     public Reminder getReminderByParent(int parentId) {
         return reminderRepository.getReminderByParent(parentId);
     }
+
 }

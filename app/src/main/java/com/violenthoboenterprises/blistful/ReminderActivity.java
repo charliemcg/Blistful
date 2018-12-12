@@ -41,9 +41,11 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.violenthoboenterprises.blistful.model.Reminder;
+import com.violenthoboenterprises.blistful.model.ReminderPresenterImpl;
 import com.violenthoboenterprises.blistful.model.ReminderViewModel;
 import com.violenthoboenterprises.blistful.model.Task;
 import com.violenthoboenterprises.blistful.model.TaskViewModel;
+import com.violenthoboenterprises.blistful.presenter.ReminderPresenter;
 import com.violenthoboenterprises.blistful.view.ReminderView;
 
 import java.util.Calendar;
@@ -71,6 +73,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
     static int screenSize;
     String dbRepeatInterval;
     private ReminderViewModel reminderViewModel;
+    private ReminderPresenter reminderPresenter;
     private Task task;
     private Reminder reminderInstance;
 
@@ -83,11 +86,18 @@ public class ReminderActivity extends MainActivity implements ReminderView {
         setSupportActionBar(dueToolbar);
 
         reminderViewModel = ViewModelProviders.of(this).get(ReminderViewModel.class);
+        reminderPresenter = new ReminderPresenterImpl
+                (ReminderActivity.this, reminderViewModel, getApplicationContext());
         //getting the task to which this note is related
         task = getIntent().getParcelableExtra("task");
         reminderInstance = reminderViewModel.getReminderByParent(task.getId());
+        if(reminderInstance == null){
 
-        Log.d(TAG, "reminderInstance: " + reminderInstance);
+            reminderPresenter.addReminder(task.getId());
+            reminderInstance = reminderViewModel.getReminderByParent(task.getId());
+            Log.d(TAG, "reminderInstance: " + reminderInstance);
+
+        }
 
         repeat = "none";
         setDue = false;
@@ -672,18 +682,18 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             int month;
             int day;
 
-            Cursor alarmResult = MainActivity.db.getAlarmData
-                    (Integer.parseInt(dbTaskId));
-            String alarmDay = "";
-            String alarmMonth = "";
-            String alarmYear = "";
-            while(alarmResult.moveToNext()){
-                alarmDay = alarmResult.getString(4);
-                alarmMonth = alarmResult.getString(5);
-                alarmYear = alarmResult.getString(6);
-            }
-
-            alarmResult.close();
+//            Cursor alarmResult = MainActivity.db.getAlarmData
+//                    (Integer.parseInt(dbTaskId));
+//            String alarmDay = "";
+//            String alarmMonth = "";
+//            String alarmYear = "";
+//            while(alarmResult.moveToNext()){
+//                alarmDay = alarmResult.getString(4);
+//                alarmMonth = alarmResult.getString(5);
+//                alarmYear = alarmResult.getString(6);
+//            }
+//
+//            alarmResult.close();
 
             //getting universal data
             Cursor uniResult = MainActivity.db.getUniversalData();
@@ -703,10 +713,10 @@ public class ReminderActivity extends MainActivity implements ReminderView {
                 month = uniMonth;
                 day = uniDay;
             //If user previously picked a date but then left the activity
-            }else if(!alarmDay.equals("") && !alarmMonth.equals("") && !alarmYear.equals("")){
-                year = Integer.parseInt(alarmYear);
-                month = Integer.parseInt(alarmMonth);
-                day = Integer.parseInt(alarmDay);
+//            }else if(!alarmDay.equals("") && !alarmMonth.equals("") && !alarmYear.equals("")){
+//                year = Integer.parseInt(alarmYear);
+//                month = Integer.parseInt(alarmMonth);
+//                day = Integer.parseInt(alarmDay);
             //If no date set
             }else{
                 year = calendar.get(Calendar.YEAR);

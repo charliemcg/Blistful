@@ -29,8 +29,7 @@ public class Reminder implements Parcelable {
 
     private int day;
 
-    public Reminder(int id, @NonNull int parentId) {
-        this.id = id;
+    public Reminder(int parentId) {
         this.parentId = parentId;
     }
 
