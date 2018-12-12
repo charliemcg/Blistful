@@ -33,4 +33,7 @@ public interface SubtaskDao {
 
     @Query("SELECT * FROM subtask_table WHERE parentId = :parentId AND id = :subtaskId")
     Subtask getSubtask(Integer parentId, Integer subtaskId);
+
+    @Query("SELECT * FROM subtask_table WHERE parentId = :parentId")
+    List<Subtask> getSubtasksByParent(int parentId);
 }

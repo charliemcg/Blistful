@@ -2,6 +2,8 @@ package com.violenthoboenterprises.blistful.presenter;
 
 import com.violenthoboenterprises.blistful.model.Subtask;
 
+import java.util.List;
+
 public interface SubtasksPresenter {
 
     void addSubtask(int parentId, String subtask);
@@ -10,4 +12,5 @@ public interface SubtasksPresenter {
 
     void update(Subtask subtask);
 
+    List<Subtask> getSubtasksByParent(int parentId);
 }

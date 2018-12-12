@@ -28,4 +28,8 @@ public class SubtaskViewModel extends AndroidViewModel {
     public Subtask getSubtask(int parentId, int subtaskId) {
         return subtaskRepository.getSubtask(parentId, subtaskId);
     }
+
+    public List<Subtask> getSubtasksByParent(int parentId) {
+        return subtaskRepository.getSubtasksByParent(parentId);
+    }
 }

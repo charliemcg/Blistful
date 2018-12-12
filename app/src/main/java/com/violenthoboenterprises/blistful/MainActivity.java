@@ -52,10 +52,13 @@ import com.anjlab.android.iab.v3.BillingProcessor;
 import com.anjlab.android.iab.v3.TransactionDetails;
 import com.google.android.gms.ads.MobileAds;
 import com.violenthoboenterprises.blistful.model.MainActivityPresenterImpl;
+import com.violenthoboenterprises.blistful.model.SubtaskViewModel;
+import com.violenthoboenterprises.blistful.model.SubtasksPresenterImpl;
 import com.violenthoboenterprises.blistful.model.Task;
 import com.violenthoboenterprises.blistful.model.TaskAdapter;
 import com.violenthoboenterprises.blistful.model.TaskViewModel;
 import com.violenthoboenterprises.blistful.presenter.MainActivityPresenter;
+import com.violenthoboenterprises.blistful.presenter.SubtasksPresenter;
 import com.violenthoboenterprises.blistful.view.MainActivityView;
 
 import java.util.ArrayList;
@@ -270,10 +273,12 @@ public class MainActivity extends AppCompatActivity implements
     static BillingProcessor bp;
 
     private TaskViewModel taskViewModel;
+    private SubtaskViewModel subtaskViewModel;
 
     FloatingActionButton fab;
 
     private MainActivityPresenter mainActivityPresenter;
+    private SubtasksPresenter subtasksPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -294,8 +299,11 @@ public class MainActivity extends AppCompatActivity implements
         setSupportActionBar(toolbarLight);
 
         taskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
+        subtaskViewModel = ViewModelProviders.of(this).get(SubtaskViewModel.class);
         mainActivityPresenter = new MainActivityPresenterImpl
                 (MainActivity.this, taskViewModel, getApplicationContext());
+        subtasksPresenter = new SubtasksPresenterImpl
+                (null, subtaskViewModel, getApplicationContext());
 
         //Initialising variables
         taskPropertiesShowing = false;
@@ -388,7 +396,7 @@ public class MainActivity extends AppCompatActivity implements
         recyclerView.setHasFixedSize(true);
 
         //setting up the adapter
-        final TaskAdapter adapter = new TaskAdapter(this, mainActivityPresenter, activityRootView, taskViewModel);
+        final TaskAdapter adapter = new TaskAdapter(this, mainActivityPresenter, subtasksPresenter, activityRootView, taskViewModel);
         recyclerView.setAdapter(adapter);
 
         //observing the recycler view items for changes

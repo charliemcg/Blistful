@@ -47,6 +47,21 @@ public class SubtaskRepository {
         Subtask subtask;
         try {
             subtask = result.get();
+            return subtask;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<Subtask> getSubtasksByParent(int parentId) {
+        AsyncTask<Integer, Void, List<Subtask>> result = new GetSubtasksByParentAsynTask(subtaskDao).execute(parentId);
+        List<Subtask> subtasks;
+        try {
+            subtasks = result.get();
+            return subtasks;
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -112,6 +127,18 @@ public class SubtaskRepository {
         @Override
         protected Subtask doInBackground(Integer... integers) {
             return subtaskDao.getSubtask(integers[0], integers[1]);
+        }
+    }
+
+    private class GetSubtasksByParentAsynTask extends AsyncTask<Integer, Void, List<Subtask>>{
+        private SubtaskDao subtaskDao;
+        public GetSubtasksByParentAsynTask(SubtaskDao subtaskDao) {
+            this.subtaskDao = subtaskDao;
+        }
+
+        @Override
+        protected List<Subtask> doInBackground(Integer... integers) {
+            return subtaskDao.getSubtasksByParent(integers[0]);
         }
     }
 }

@@ -5,13 +5,16 @@ import android.content.Context;
 import com.violenthoboenterprises.blistful.presenter.SubtasksPresenter;
 import com.violenthoboenterprises.blistful.view.SubtasksView;
 
+import java.util.List;
+
 public class SubtasksPresenterImpl implements SubtasksPresenter {
 
     private SubtaskViewModel subtaskViewModel;
     private SubtasksView subtasksView;
     private Context context;
 
-    public SubtasksPresenterImpl(SubtasksView subtasksView, SubtaskViewModel subtaskViewModel, Context context) {
+    public SubtasksPresenterImpl(SubtasksView subtasksView,
+                                 SubtaskViewModel subtaskViewModel, Context context) {
         this.subtaskViewModel = subtaskViewModel;
         this.subtasksView = subtasksView;
         this.context = context;
@@ -31,6 +34,11 @@ public class SubtasksPresenterImpl implements SubtasksPresenter {
     @Override
     public void update(Subtask subtask) {
         subtaskViewModel.update(subtask);
+    }
+
+    @Override
+    public List<Subtask> getSubtasksByParent(int parentId) {
+        return subtaskViewModel.getSubtasksByParent(parentId);
     }
 
 }

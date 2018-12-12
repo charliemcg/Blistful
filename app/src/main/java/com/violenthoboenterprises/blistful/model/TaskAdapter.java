@@ -11,11 +11,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.violenthoboenterprises.blistful.MainActivity;
 import com.violenthoboenterprises.blistful.SubtasksActivity;
 import com.violenthoboenterprises.blistful.NoteActivity;
 import com.violenthoboenterprises.blistful.R;
 import com.violenthoboenterprises.blistful.SetDue;
 import com.violenthoboenterprises.blistful.presenter.MainActivityPresenter;
+import com.violenthoboenterprises.blistful.presenter.SubtasksPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,12 +32,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder>{
     private OnItemClickListener listener;
     private Context context;
     private MainActivityPresenter mainActivityPresenter;
+    private SubtasksPresenter subtasksPresenter;
     private View activityRootView;
     private TaskViewModel taskViewModel;
 
-    public TaskAdapter(Context context, MainActivityPresenter mainActivityPresenter, View activityRootView, TaskViewModel taskViewModel) {
+    public TaskAdapter(Context context, MainActivityPresenter mainActivityPresenter, SubtasksPresenter subtasksPresenter, View activityRootView, TaskViewModel taskViewModel) {
         this.context = context;
         this.mainActivityPresenter = mainActivityPresenter;
+        this.subtasksPresenter = subtasksPresenter;
         this.activityRootView = activityRootView;
         this.taskViewModel = taskViewModel;
     }
@@ -56,14 +60,17 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder>{
         if(currentTask.getNote() != null){
             holder.noteIcon.setVisibility(View.VISIBLE);
         }
-        if(currentTask.getSubtasksSize() != 0){
-            holder.noteIcon.setVisibility(View.VISIBLE);
+        //checking for existence of subtasks
+        List<Subtask> subtasks = subtasksPresenter.getSubtasksByParent(currentTask.getId());
+        int subtasksSize = subtasks.size();
+        if(subtasksSize > 0){
+            holder.subtasksIcon.setVisibility(View.VISIBLE);
         }
         if(currentTask.getRepeatInterval() != null){
-            holder.noteIcon.setVisibility(View.VISIBLE);
+            holder.repeatIcon.setVisibility(View.VISIBLE);
         }
         if(currentTask.getTimeCreated() != null){
-            holder.noteIcon.setVisibility(View.VISIBLE);
+            holder.dueIcon.setVisibility(View.VISIBLE);
         }
         //show properties on click
         holder.taskLayout.setOnClickListener(new View.OnClickListener(){
