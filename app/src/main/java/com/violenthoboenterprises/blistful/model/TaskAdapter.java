@@ -11,11 +11,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.violenthoboenterprises.blistful.MainActivity;
+import com.violenthoboenterprises.blistful.ReminderActivity;
 import com.violenthoboenterprises.blistful.SubtasksActivity;
 import com.violenthoboenterprises.blistful.NoteActivity;
 import com.violenthoboenterprises.blistful.R;
-import com.violenthoboenterprises.blistful.SetDue;
 import com.violenthoboenterprises.blistful.presenter.MainActivityPresenter;
 import com.violenthoboenterprises.blistful.presenter.SubtasksPresenter;
 
@@ -89,7 +88,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder>{
         holder.btnAlarm.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                Intent intent = new Intent(context, SetDue.class);
+                Intent intent = new Intent(context, ReminderActivity.class);
+                intent.putExtra("task", currentTask);
                 context.startActivity(intent);
             }
         });
@@ -105,7 +105,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder>{
             @Override
             public void onClick(View view){
                 Intent intent = new Intent(context, NoteActivity.class);
-                intent.putExtra("task", tasks.get(position));
+                intent.putExtra("task", currentTask);
                 context.startActivity(intent);
             }
         });

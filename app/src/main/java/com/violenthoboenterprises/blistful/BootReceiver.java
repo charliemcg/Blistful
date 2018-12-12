@@ -18,7 +18,7 @@ public class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        //Alarm data is lost when device powered down. Need to know when device is booted up again
+        //Reminder data is lost when device powered down. Need to know when device is booted up again
         //in order to set all alarms again.
         if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
 

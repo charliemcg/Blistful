@@ -61,7 +61,7 @@ class MyAdapter extends ArrayAdapter<String> {
         final TextView theTextView = taskView.findViewById(R.id.tvTask);
         final Intent intent = new Intent(getContext(), SubtasksActivity.class);
         final Intent noteIntent = new Intent(getContext(), NoteActivity.class);
-        final Intent dueIntent = new Intent(getContext(), SetDue.class);
+        final Intent dueIntent = new Intent(getContext(), ReminderActivity.class);
         //This row changes content depending on what needs to be displayed
         final TableRow propertyRow = taskView.findViewById(R.id.properties);
         //Part of the task view which displays the task name
@@ -458,7 +458,7 @@ class MyAdapter extends ArrayAdapter<String> {
 
         }
 
-        //using data set in SetDue to set the alarm
+        //using data set in ReminderActivity to set the alarm
         if (uniSetAlarm && (position == MainActivity.activeTask)) {
             setAlarm(position, uniYear, uniMonth, uniDay, uniHour, uniMinute,
                     uniAmPm, uniInterval, uniOriginalDayTemp, uniRepeatTemp);

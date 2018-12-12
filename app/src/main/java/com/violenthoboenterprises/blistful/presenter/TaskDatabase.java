@@ -8,19 +8,21 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
+import com.violenthoboenterprises.blistful.model.Reminder;
 import com.violenthoboenterprises.blistful.model.Subtask;
 import com.violenthoboenterprises.blistful.model.Task;
 
 /*
  * This is where the database is built
  */
-@Database(entities = {Task.class, Subtask.class}, version = 1)
+@Database(entities = {Task.class, Subtask.class, Reminder.class}, version = 1)
 public abstract class TaskDatabase extends RoomDatabase {
 
     private static TaskDatabase instance;
 
     public abstract TaskDao taskDao();
     public abstract SubtaskDao subtaskDao();
+    public abstract ReminderDao reminderDao();
 
     //Instance
     public static synchronized TaskDatabase getInstance(Context context){

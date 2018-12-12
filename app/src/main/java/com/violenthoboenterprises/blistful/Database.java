@@ -38,7 +38,7 @@ public class Database extends SQLiteOpenHelper {
     private static final String COL21 = "ORIGINALDAY";
     private static final String COL22 = "SNOOZEDTIMESTAMP";
 
-    //Alarm Table
+    //Reminder Table
     private static final String ATABLE = "alarms_table";
     private static final String ACOL1 = "ID";
     private static final String ACOL2 = "HOUR";

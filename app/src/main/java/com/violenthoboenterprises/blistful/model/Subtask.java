@@ -14,6 +14,7 @@ public class Subtask {
     private int id;
 
     //id of the parent task
+    @NonNull
     private int parentId;
 
     //name of the subtask

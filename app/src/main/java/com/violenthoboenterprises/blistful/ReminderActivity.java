@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -39,10 +40,16 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.violenthoboenterprises.blistful.model.Reminder;
+import com.violenthoboenterprises.blistful.model.ReminderViewModel;
+import com.violenthoboenterprises.blistful.model.Task;
+import com.violenthoboenterprises.blistful.model.TaskViewModel;
+import com.violenthoboenterprises.blistful.view.ReminderView;
+
 import java.util.Calendar;
 import java.util.Locale;
 
-public class SetDue extends MainActivity {
+public class ReminderActivity extends MainActivity implements ReminderView {
 
     String TAG = this.getClass().getSimpleName();
     private Toolbar dueToolbar;
@@ -63,6 +70,9 @@ public class SetDue extends MainActivity {
     static boolean datePicked, timePicked;
     static int screenSize;
     String dbRepeatInterval;
+    private ReminderViewModel reminderViewModel;
+    private Task task;
+    private Reminder reminderInstance;
 
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -71,6 +81,13 @@ public class SetDue extends MainActivity {
         overridePendingTransition( R.anim.enter_from_left, R.anim.enter_from_left);
         dueToolbar = findViewById(R.id.dueToolbar);
         setSupportActionBar(dueToolbar);
+
+        reminderViewModel = ViewModelProviders.of(this).get(ReminderViewModel.class);
+        //getting the task to which this note is related
+        task = getIntent().getParcelableExtra("task");
+        reminderInstance = reminderViewModel.getReminderByParent(task.getId());
+
+        Log.d(TAG, "reminderInstance: " + reminderInstance);
 
         repeat = "none";
         setDue = false;
@@ -105,26 +122,26 @@ public class SetDue extends MainActivity {
 //        dbTask = "";
 //        boolean dbRepeat = false;
 //        boolean dbOverdue = false;
-        Cursor dbTaskResult = MainActivity.db.getUniversalData();
-        while (dbTaskResult.moveToNext()) {
+//        Cursor dbTaskResult = MainActivity.db.getUniversalData();
+//        while (dbTaskResult.moveToNext()) {
 //            dbTaskId = dbTaskResult.getString(4);
-        }
+//        }
 //        dbTaskResult = db.getData(Integer.parseInt(dbTaskId));
-        while (dbTaskResult.moveToNext()) {
+//        while (dbTaskResult.moveToNext()) {
 //            dbDueTime = dbTaskResult.getString(3);
 //            dbTask = dbTaskResult.getString(4);
 //            dbRepeat = dbTaskResult.getInt(8) > 0;
 //            dbOverdue = dbTaskResult.getInt(9) > 0;
 //            dbRepeatInterval = dbTaskResult.getString(13);
-        }
-        dbTaskResult.close();
+//        }
+//        dbTaskResult.close();
 
         onCreateOptionsMenu(dueToolbar.getMenu());
 
         //Inform user that they can set an alarm
 //        if(dbDueTime.equals("0")){
             dateTextView.setText(R.string.addDate);
-//            timeTextView.setText(R.string.addTime);
+            timeTextView.setText(R.string.addTime);
 
 //                calendarFadedLight.setVisibility(View.VISIBLE);
 //                timeFadedLight.setVisibility(View.VISIBLE);
@@ -237,6 +254,10 @@ public class SetDue extends MainActivity {
             lightRepeat.setVisibility(View.VISIBLE);
 
         //Highlight the repeat type or highlight No Repeat if none exists
+        if(reminderInstance == null){
+            cancelRepeatLight.setVisibility(View.INVISIBLE);
+            cancelRepeat.setVisibility(View.VISIBLE);
+        }
 //        if(!dbRepeat){
 //            cancelRepeatLight.setVisibility(View.GONE);
 //            cancelRepeat.setVisibility(View.VISIBLE);
@@ -297,13 +318,13 @@ public class SetDue extends MainActivity {
 
                 //Show user which button they selected by highlighting it
                 cancelRepeatLight.setVisibility(View.VISIBLE);
-                cancelRepeat.setVisibility(View.GONE);
-                dailyLight.setVisibility(View.GONE);
+                cancelRepeat.setVisibility(View.INVISIBLE);
+                dailyLight.setVisibility(View.INVISIBLE);
                 daily.setVisibility(View.VISIBLE);
                 weeklyLight.setVisibility(View.VISIBLE);
-                weekly.setVisibility(View.GONE);
+                weekly.setVisibility(View.INVISIBLE);
                 monthlyLight.setVisibility(View.VISIBLE);
-                monthly.setVisibility(View.GONE);
+                monthly.setVisibility(View.INVISIBLE);
 
                 repeatInterval = AlarmManager.INTERVAL_DAY;
                 db.updateRepeatIntervalTemp(String.valueOf(AlarmManager.INTERVAL_DAY));
@@ -334,13 +355,13 @@ public class SetDue extends MainActivity {
 
                 //Show user which button they selected by highlighting it
                 cancelRepeatLight.setVisibility(View.VISIBLE);
-                cancelRepeat.setVisibility(View.GONE);
+                cancelRepeat.setVisibility(View.INVISIBLE);
                 dailyLight.setVisibility(View.VISIBLE);
-                daily.setVisibility(View.GONE);
-                weeklyLight.setVisibility(View.GONE);
+                daily.setVisibility(View.INVISIBLE);
+                weeklyLight.setVisibility(View.INVISIBLE);
                 weekly.setVisibility(View.VISIBLE);
                 monthlyLight.setVisibility(View.VISIBLE);
-                monthly.setVisibility(View.GONE);
+                monthly.setVisibility(View.INVISIBLE);
 
                 repeatInterval = AlarmManager.INTERVAL_DAY * 7;
 
@@ -370,12 +391,12 @@ public class SetDue extends MainActivity {
 
                 //Show user which button they selected by highlighting it
                 cancelRepeatLight.setVisibility(View.VISIBLE);
-                cancelRepeat.setVisibility(View.GONE);
+                cancelRepeat.setVisibility(View.INVISIBLE);
                 dailyLight.setVisibility(View.VISIBLE);
-                daily.setVisibility(View.GONE);
+                daily.setVisibility(View.INVISIBLE);
                 weeklyLight.setVisibility(View.VISIBLE);
-                weekly.setVisibility(View.GONE);
-                monthlyLight.setVisibility(View.GONE);
+                weekly.setVisibility(View.INVISIBLE);
+                monthlyLight.setVisibility(View.INVISIBLE);
                 monthly.setVisibility(View.VISIBLE);
 
                 repeat = "month";
@@ -403,14 +424,14 @@ public class SetDue extends MainActivity {
 
                 vibrate.vibrate(50);
 
-                cancelRepeatLight.setVisibility(View.GONE);
+                cancelRepeatLight.setVisibility(View.INVISIBLE);
                 cancelRepeat.setVisibility(View.VISIBLE);
                 dailyLight.setVisibility(View.VISIBLE);
-                daily.setVisibility(View.GONE);
+                daily.setVisibility(View.INVISIBLE);
                 weeklyLight.setVisibility(View.VISIBLE);
-                weekly.setVisibility(View.GONE);
+                weekly.setVisibility(View.INVISIBLE);
                 monthlyLight.setVisibility(View.VISIBLE);
-                monthly.setVisibility(View.GONE);
+                monthly.setVisibility(View.INVISIBLE);
 
                 repeat = "none";
 
@@ -613,14 +634,14 @@ public class SetDue extends MainActivity {
                                         timeTextView.setTextSize(15);
                                     }
 
-                                    cancelRepeatLight.setVisibility(View.GONE);
+                                    cancelRepeatLight.setVisibility(View.INVISIBLE);
                                     cancelRepeat.setVisibility(View.VISIBLE);
                                     dailyLight.setVisibility(View.VISIBLE);
-                                    daily.setVisibility(View.GONE);
+                                    daily.setVisibility(View.INVISIBLE);
                                     weeklyLight.setVisibility(View.VISIBLE);
-                                    weekly.setVisibility(View.GONE);
+                                    weekly.setVisibility(View.INVISIBLE);
                                     monthlyLight.setVisibility(View.VISIBLE);
-                                    monthly.setVisibility(View.GONE);
+                                    monthly.setVisibility(View.INVISIBLE);
 
                                 }
                             };
@@ -1044,6 +1065,10 @@ public class SetDue extends MainActivity {
 
         super.onResume();
 
+
+        calendarFadedLight.setVisibility(View.VISIBLE);
+        timeFadedLight.setVisibility(View.VISIBLE);
+
     }
 
     @Override
@@ -1244,49 +1269,49 @@ public class SetDue extends MainActivity {
 
     }
 
-    private void getDateFromDB() {
-        Cursor alarmResult = MainActivity.db.getAlarmData
-                (Integer.parseInt(dbTaskId));
-        String alarmDay = "";
-        String alarmMonth = "";
-        String alarmYear = "";
-        while(alarmResult.moveToNext()){
-            alarmDay = alarmResult.getString(4);
-            alarmMonth = alarmResult.getString(5);
-            alarmYear = alarmResult.getString(6);
-        }
-        alarmResult.close();
-        if(!alarmDay.equals("")) {
-            Cursor dbTaskResult = db.getData(Integer.parseInt(dbTaskId));
-            String dbOriginalDay = "";
-            while (dbTaskResult.moveToNext()) {
-                dbOriginalDay = dbTaskResult.getString(20);
-            }
-            dbTaskResult.close();
-            db.updateDay(Integer.parseInt(alarmDay));
-            db.updateOriginalDayTemp(String.valueOf(dbOriginalDay));
-            db.updateMonth(Integer.parseInt(alarmMonth));
-            db.updateYear(Integer.parseInt(alarmYear));
-        }
-    }
+//    private void getDateFromDB() {
+//        Cursor alarmResult = MainActivity.db.getAlarmData
+//                (Integer.parseInt(dbTaskId));
+//        String alarmDay = "";
+//        String alarmMonth = "";
+//        String alarmYear = "";
+//        while(alarmResult.moveToNext()){
+//            alarmDay = alarmResult.getString(4);
+//            alarmMonth = alarmResult.getString(5);
+//            alarmYear = alarmResult.getString(6);
+//        }
+//        alarmResult.close();
+//        if(!alarmDay.equals("")) {
+//            Cursor dbTaskResult = db.getData(Integer.parseInt(dbTaskId));
+//            String dbOriginalDay = "";
+//            while (dbTaskResult.moveToNext()) {
+//                dbOriginalDay = dbTaskResult.getString(20);
+//            }
+//            dbTaskResult.close();
+//            db.updateDay(Integer.parseInt(alarmDay));
+//            db.updateOriginalDayTemp(String.valueOf(dbOriginalDay));
+//            db.updateMonth(Integer.parseInt(alarmMonth));
+//            db.updateYear(Integer.parseInt(alarmYear));
+//        }
+//    }
 
-    private void getTimeFromDB() {
-        Cursor alarmResult = MainActivity.db.getAlarmData
-                (Integer.parseInt(dbTaskId));
-        String alarmMinute = "";
-        String alarmHour = "";
-        String alarmAmPm = "";
-        while(alarmResult.moveToNext()){
-            alarmHour = alarmResult.getString(1);
-            alarmMinute = alarmResult.getString(2);
-            alarmAmPm = alarmResult.getString(3);
-        }
-        alarmResult.close();
-        if(!alarmMinute.equals("")) {
-            db.updateMinute(Integer.parseInt(alarmMinute));
-            db.updateHour(Integer.parseInt(alarmHour));
-            db.updateAmPm(Integer.parseInt(alarmAmPm));
-        }
-    }
+//    private void getTimeFromDB() {
+//        Cursor alarmResult = MainActivity.db.getAlarmData
+//                (Integer.parseInt(dbTaskId));
+//        String alarmMinute = "";
+//        String alarmHour = "";
+//        String alarmAmPm = "";
+//        while(alarmResult.moveToNext()){
+//            alarmHour = alarmResult.getString(1);
+//            alarmMinute = alarmResult.getString(2);
+//            alarmAmPm = alarmResult.getString(3);
+//        }
+//        alarmResult.close();
+//        if(!alarmMinute.equals("")) {
+//            db.updateMinute(Integer.parseInt(alarmMinute));
+//            db.updateHour(Integer.parseInt(alarmHour));
+//            db.updateAmPm(Integer.parseInt(alarmAmPm));
+//        }
+//    }
 
 }
