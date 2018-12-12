@@ -93,7 +93,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder>{
             public void onClick(View view){
                 Intent intent = new Intent(context, ReminderActivity.class);
                 intent.putExtra("task", currentTask);
-//                intent.putExtra("mainActivityPresenter", mainActivityPresenter);
                 context.startActivity(intent);
             }
         });

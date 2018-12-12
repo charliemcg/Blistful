@@ -32,4 +32,9 @@ public class ReminderPresenterImpl implements ReminderPresenter {
         taskViewModel.update(task);
     }
 
+    @Override
+    public void updateReminder(Reminder reminder) {
+        reminderViewModel.update(reminder);
+    }
+
 }

@@ -77,21 +77,21 @@ public class ReminderActivity extends MainActivity implements ReminderView {
     String dbRepeatInterval;
     private ReminderViewModel reminderViewModel;
     private TaskViewModel taskViewModel;
-    private ReminderPresenter reminderPresenter;
+    private static ReminderPresenter reminderPresenter;
     private Task task;
-//    private MainActivityPresenter mainActivityPresenter;
-    private Reminder reminderInstance;
+    //    private MainActivityPresenter mainActivityPresenter;
+    private static Reminder reminderInstance;
     private String REPEAT_NONE = "none";
     private String REPEAT_DAY = "day";
     private String REPEAT_WEEK = "week";
     private String REPEAT_MONTH = "month";
 
 
-    public void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-            setContentView(R.layout.due_picker);
+        setContentView(R.layout.due_picker);
 
-        overridePendingTransition( R.anim.enter_from_left, R.anim.enter_from_left);
+        overridePendingTransition(R.anim.enter_from_left, R.anim.enter_from_left);
         dueToolbar = findViewById(R.id.dueToolbar);
         setSupportActionBar(dueToolbar);
 
@@ -103,11 +103,12 @@ public class ReminderActivity extends MainActivity implements ReminderView {
         //getting the task to which this note is related
         task = getIntent().getParcelableExtra("task");
         reminderInstance = reminderViewModel.getReminderByParent(task.getId());
-        if(reminderInstance == null){
+
+        //Create a reminder instance if there isn't one already
+        if (reminderInstance == null) {
 
             reminderPresenter.addReminder(task.getId());
             reminderInstance = reminderViewModel.getReminderByParent(task.getId());
-            Log.d(TAG, "reminderInstance: " + reminderInstance);
 
         }
 
@@ -162,15 +163,15 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
         //Inform user that they can set an alarm
 //        if(dbDueTime.equals("0")){
-            dateTextView.setText(R.string.addDate);
-            timeTextView.setText(R.string.addTime);
+        dateTextView.setText(R.string.addDate);
+        timeTextView.setText(R.string.addTime);
 
 //                calendarFadedLight.setVisibility(View.VISIBLE);
 //                timeFadedLight.setVisibility(View.VISIBLE);
 
         //Showing existing due date and time
 //        }else{
-            //getting alarm data
+        //getting alarm data
 //            Cursor alarmResult = MainActivity.db.getAlarmData
 //                    (Integer.parseInt(dbTaskId));
 //            String alarmHour = "";
@@ -187,45 +188,49 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 //            }
 //            alarmResult.close();
 
-            String formattedMonth = "";
+        String formattedMonth = "";
 
-//            int intMonth = Integer.valueOf(alarmMonth) + 1;
-//            if(intMonth == 1){
-//                formattedMonth = getString(R.string.jan);
-//            }else if(intMonth == 2){
-//                formattedMonth = getString(R.string.feb);
-//            }else if(intMonth == 3){
-//                formattedMonth = getString(R.string.mar);
-//            }else if(intMonth == 4){
-//                formattedMonth = getString(R.string.apr);
-//            }else if(intMonth == 5){
-//                formattedMonth = getString(R.string.may);
-//            }else if(intMonth == 6){
-//                formattedMonth = getString(R.string.jun);
-//            }else if(intMonth == 7){
-//                formattedMonth = getString(R.string.jul);
-//            }else if(intMonth == 8){
-//                formattedMonth = getString(R.string.aug);
-//            }else if(intMonth == 9){
-//                formattedMonth = getString(R.string.sep);
-//            }else if(intMonth == 10){
-//                formattedMonth = getString(R.string.oct);
-//            }else if(intMonth == 11){
-//                formattedMonth = getString(R.string.nov);
-//            }else if(intMonth == 12){
-//                formattedMonth = getString(R.string.dec);
-//            }
+        if(reminderInstance.getYear() != 0) {
+            calendarFadedLight.setVisibility(View.INVISIBLE);
+            calendar.setVisibility(View.VISIBLE);
 
-//            String lang = String.valueOf(Locale.getDefault());
-//            if(lang.equals("en_AS") || lang.equals("en_BM")
-//                    || lang.equals("en_CA") || lang.equals("en_GU")
-//                    || lang.equals("en_PH")
-//                    || lang.equals("en_PR") || lang.equals("en_UM")
-//                    || lang.equals("en_US") || lang.equals("en_VI")) {
-////                dateTextView.setText(formattedMonth + " " + alarmDay);
-//            }else{
-////                dateTextView.setText(alarmDay + " " + formattedMonth);
-//            }
+            int intMonth = Integer.valueOf(reminderInstance.getMonth()) + 1;
+            if (intMonth == 1) {
+                formattedMonth = getString(R.string.jan);
+            } else if (intMonth == 2) {
+                formattedMonth = getString(R.string.feb);
+            } else if (intMonth == 3) {
+                formattedMonth = getString(R.string.mar);
+            } else if (intMonth == 4) {
+                formattedMonth = getString(R.string.apr);
+            } else if (intMonth == 5) {
+                formattedMonth = getString(R.string.may);
+            } else if (intMonth == 6) {
+                formattedMonth = getString(R.string.jun);
+            } else if (intMonth == 7) {
+                formattedMonth = getString(R.string.jul);
+            } else if (intMonth == 8) {
+                formattedMonth = getString(R.string.aug);
+            } else if (intMonth == 9) {
+                formattedMonth = getString(R.string.sep);
+            } else if (intMonth == 10) {
+                formattedMonth = getString(R.string.oct);
+            } else if (intMonth == 11) {
+                formattedMonth = getString(R.string.nov);
+            } else if (intMonth == 12) {
+                formattedMonth = getString(R.string.dec);
+            }
+
+            String lang = String.valueOf(Locale.getDefault());
+            if (lang.equals("en_AS") || lang.equals("en_BM")
+                    || lang.equals("en_CA") || lang.equals("en_GU")
+                    || lang.equals("en_PH")
+                    || lang.equals("en_PR") || lang.equals("en_UM")
+                    || lang.equals("en_US") || lang.equals("en_VI")) {
+                dateTextView.setText(formattedMonth + " " + reminderInstance.getDay());
+            } else {
+                dateTextView.setText(reminderInstance.getDay() + " " + formattedMonth);
+            }
 
 //            String adjustedAmPm = String.valueOf(alarmAmPm)/*getString(R.string.am)*/;
 //            String adjustedHour = String.valueOf(alarmHour);
@@ -267,25 +272,31 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 //                dateTextView.setTextSize(25);
 //                timeTextView.setTextSize(25);
 //            }
-//
-//        }
 
-            dueToolbar.setSubtitleTextColor(Color.parseColor("#666666"));
-            dateTextView.setTextColor(Color.parseColor("#000000"));
-            timeTextView.setTextColor(Color.parseColor("#000000"));
-            lightRepeat.setVisibility(View.VISIBLE);
+        }
+
+        if(reminderInstance.getHour() != 0){
+            timeFadedLight.setVisibility(View.INVISIBLE);
+            time.setVisibility(View.VISIBLE);
+            timeTextView.setText(reminderInstance.getHour() + ":" + reminderInstance.getMinute());
+        }
+
+        dueToolbar.setSubtitleTextColor(Color.parseColor("#666666"));
+        dateTextView.setTextColor(Color.parseColor("#000000"));
+        timeTextView.setTextColor(Color.parseColor("#000000"));
+        lightRepeat.setVisibility(View.VISIBLE);
 
         //Highlight the repeat type or highlight No Repeat if none exists
-        if(task.getRepeatInterval() == null || task.getRepeatInterval().equals(REPEAT_NONE)){
+        if (task.getRepeatInterval() == null || task.getRepeatInterval().equals(REPEAT_NONE)) {
             cancelRepeatLight.setVisibility(View.INVISIBLE);
             cancelRepeat.setVisibility(View.VISIBLE);
-        }else if(task.getRepeatInterval().equals(REPEAT_DAY)){
+        } else if (task.getRepeatInterval().equals(REPEAT_DAY)) {
             dailyLight.setVisibility(View.INVISIBLE);
             daily.setVisibility(View.VISIBLE);
-        }else if(task.getRepeatInterval().equals(REPEAT_WEEK)){
+        } else if (task.getRepeatInterval().equals(REPEAT_WEEK)) {
             weeklyLight.setVisibility(View.INVISIBLE);
             weekly.setVisibility(View.VISIBLE);
-        }else if(task.getRepeatInterval().equals(REPEAT_MONTH)){
+        } else if (task.getRepeatInterval().equals(REPEAT_MONTH)) {
             monthlyLight.setVisibility(View.INVISIBLE);
             monthly.setVisibility(View.VISIBLE);
         }
@@ -329,7 +340,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             @Override
             public void onClick(View v) {
 
-                if(!mute && !repeat.equals("none")){
+                if (!mute && !repeat.equals("none")) {
                     blip.start();
                 }
 
@@ -348,7 +359,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
                 setDue = false;
 
-                if(!timePicked && !datePicked) {
+                if (!timePicked && !datePicked) {
 
                     killAlarm.setVisible(false);
 
@@ -435,7 +446,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             @Override
             public void onClick(View v) {
 
-                if(!mute && !repeat.equals("day")){
+                if (!mute && !repeat.equals("day")) {
                     blip.start();
                 }
 
@@ -456,7 +467,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
                 repeat = "day";
 
-                repeating =true;
+                repeating = true;
 
                 setDue = true;
 
@@ -475,7 +486,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             @Override
             public void onClick(View v) {
 
-                if(!mute && !repeat.equals("week")){
+                if (!mute && !repeat.equals("week")) {
                     blip.start();
                 }
 
@@ -495,7 +506,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
                 repeat = "week";
 
-                repeating =true;
+                repeating = true;
 
                 setDue = true;
 
@@ -514,7 +525,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             @Override
             public void onClick(View v) {
 
-                if(!mute && !repeat.equals("month")){
+                if (!mute && !repeat.equals("month")) {
                     blip.start();
                 }
 
@@ -532,7 +543,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
                 repeat = "month";
 
-                repeating =true;
+                repeating = true;
 
                 setDue = true;
 
@@ -549,7 +560,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if(!menu.hasVisibleItems()) {
+        if (!menu.hasVisibleItems()) {
             getMenuInflater().inflate(R.menu.menu_alarm, dueToolbar.getMenu());
             killAlarm = this.dueToolbar.getMenu().findItem(R.id.killAlarmItem);
             trashAlarmOpen = this.dueToolbar.getMenu().findItem(R.id.trashAlarmOpen);
@@ -561,7 +572,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 //                killAlarm.setVisible(true);
 //            }
             return true;
-        }else {
+        } else {
             killAlarm.setEnabled(true);
             return false;
         }
@@ -585,8 +596,8 @@ public class ReminderActivity extends MainActivity implements ReminderView {
                     trashAlarmOpen.setVisible(true);
 
                     final Handler handler2 = new Handler();
-                    final Runnable runnable2 = new Runnable(){
-                        public void run(){
+                    final Runnable runnable2 = new Runnable() {
+                        public void run() {
                             killAlarm.setVisible(true);
                             trashAlarmOpen.setVisible(false);
                             final Handler handler3 = new Handler();
@@ -606,7 +617,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
                                     vibrate.vibrate(50);
 
-                                    if(!mute) {
+                                    if (!mute) {
                                         trash.start();
                                     }
 
@@ -649,18 +660,18 @@ public class ReminderActivity extends MainActivity implements ReminderView {
                                     time.setVisibility(View.GONE);
                                     calendar.setVisibility(View.GONE);
 
-                                        calendarFadedLight.setVisibility(View.VISIBLE);
-                                        timeFadedLight.setVisibility(View.VISIBLE);
+                                    calendarFadedLight.setVisibility(View.VISIBLE);
+                                    timeFadedLight.setVisibility(View.VISIBLE);
 
                                     dateTextView.setText(R.string.addDate);
                                     timeTextView.setText(R.string.addTime);
-                                    if(screenSize == 3){
+                                    if (screenSize == 3) {
                                         dateTextView.setTextSize(25);
                                         timeTextView.setTextSize(25);
-                                    }else if(screenSize == 4){
+                                    } else if (screenSize == 4) {
                                         dateTextView.setTextSize(35);
                                         timeTextView.setTextSize(35);
-                                    }else {
+                                    } else {
                                         dateTextView.setTextSize(15);
                                         timeTextView.setTextSize(15);
                                     }
@@ -692,10 +703,10 @@ public class ReminderActivity extends MainActivity implements ReminderView {
     }
 
     public static class DatePickerDialogFrag extends DialogFragment
-            implements DatePickerDialog.OnDateSetListener{
+            implements DatePickerDialog.OnDateSetListener {
 
         @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState){
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
 
             //Set default values of date picker to current date
             final Calendar calendar = Calendar.getInstance();
@@ -717,39 +728,43 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 //            alarmResult.close();
 
             //getting universal data
-            Cursor uniResult = MainActivity.db.getUniversalData();
-            int uniYear = 0;
-            int uniMonth = 0;
-            int uniDay = 0;
-            while(uniResult.moveToNext()){
-                uniYear = uniResult.getInt(11);
-                uniMonth = uniResult.getInt(12);
-                uniDay = uniResult.getInt(13);
-            }
-            uniResult.close();
+//            Cursor uniResult = MainActivity.db.getUniversalData();
+//            int uniYear = 0;
+//            int uniMonth = 0;
+//            int uniDay = 0;
+//            while (uniResult.moveToNext()) {
+//                uniYear = uniResult.getInt(11);
+//                uniMonth = uniResult.getInt(12);
+//                uniDay = uniResult.getInt(13);
+//            }
+//            uniResult.close();
 
             //If previously picked a date without leaving the activity
-            if(datePicked && (uniYear != 0)){
-                year = uniYear;
-                month = uniMonth;
-                day = uniDay;
-            //If user previously picked a date but then left the activity
+//            if (datePicked && (uniYear != 0)) {
+//                year = uniYear;
+//                month = uniMonth;
+//                day = uniDay;
+                //If user previously picked a date but then left the activity
 //            }else if(!alarmDay.equals("") && !alarmMonth.equals("") && !alarmYear.equals("")){
 //                year = Integer.parseInt(alarmYear);
 //                month = Integer.parseInt(alarmMonth);
 //                day = Integer.parseInt(alarmDay);
-            //If no date set
-            }else{
-                year = calendar.get(Calendar.YEAR);
-                month = calendar.get(Calendar.MONTH);
-                day = calendar.get(Calendar.DAY_OF_MONTH);
-            }
+                //If no date set
+//            } else {
+//                year = calendar.get(Calendar.YEAR);
+//                month = calendar.get(Calendar.MONTH);
+//                day = calendar.get(Calendar.DAY_OF_MONTH);
+//            }
 
             DatePickerDialog datePickerDialog;
 
+            year = calendar.get(Calendar.YEAR);
+            month = calendar.get(Calendar.MONTH);
+            day = calendar.get(Calendar.DAY_OF_MONTH);
+
             //Initialise date picker based on light or dark mode
             datePickerDialog = new DatePickerDialog(getActivity(),
-                AlertDialog.THEME_DEVICE_DEFAULT_LIGHT, this, year, month, day);
+                    AlertDialog.THEME_DEVICE_DEFAULT_LIGHT, this, year, month, day);
 
             //Make so all previous dates are inactive.
             // User shouldn't be able to set due date to in the past
@@ -758,9 +773,9 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             return datePickerDialog;
         }
 
-        public void onDateSet(DatePicker view, int year, int month, int day){
+        public void onDateSet(DatePicker view, int year, int month, int day) {
 
-            if(!mute){
+            if (!mute) {
                 blip.start();
             }
 
@@ -770,53 +785,53 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             String formattedMonth = "";
 
             int intMonth = Integer.valueOf(month) + 1;
-            if(intMonth == 1){
+            if (intMonth == 1) {
                 formattedMonth = getString(R.string.jan);
-            }else if(intMonth == 2){
+            } else if (intMonth == 2) {
                 formattedMonth = getString(R.string.feb);
-            }else if(intMonth == 3){
+            } else if (intMonth == 3) {
                 formattedMonth = getString(R.string.mar);
-            }else if(intMonth == 4){
+            } else if (intMonth == 4) {
                 formattedMonth = getString(R.string.apr);
-            }else if(intMonth == 5){
+            } else if (intMonth == 5) {
                 formattedMonth = getString(R.string.may);
-            }else if(intMonth == 6){
+            } else if (intMonth == 6) {
                 formattedMonth = getString(R.string.jun);
-            }else if(intMonth == 7){
+            } else if (intMonth == 7) {
                 formattedMonth = getString(R.string.jul);
-            }else if(intMonth == 8){
+            } else if (intMonth == 8) {
                 formattedMonth = getString(R.string.aug);
-            }else if(intMonth == 9){
+            } else if (intMonth == 9) {
                 formattedMonth = getString(R.string.sep);
-            }else if(intMonth == 10){
+            } else if (intMonth == 10) {
                 formattedMonth = getString(R.string.oct);
-            }else if(intMonth == 11){
+            } else if (intMonth == 11) {
                 formattedMonth = getString(R.string.nov);
-            }else if(intMonth == 12){
+            } else if (intMonth == 12) {
                 formattedMonth = getString(R.string.dec);
             }
 
             String lang = String.valueOf(Locale.getDefault());
-            if(lang.equals("en_AS") || lang.equals("en_BM")
+            if (lang.equals("en_AS") || lang.equals("en_BM")
                     || lang.equals("en_CA") || lang.equals("en_GU")
                     || lang.equals("en_PH")
                     || lang.equals("en_PR") || lang.equals("en_UM")
                     || lang.equals("en_US") || lang.equals("en_VI")) {
                 dateTextView.setText(formattedMonth + " " + day);
-            }else{
+            } else {
                 dateTextView.setText(day + " " + formattedMonth);
             }
 
             vibrate.vibrate(50);
 
             //Updating the database
-            db.updateYear(year);
-            db.updateMonth(month);
-            db.updateDay(day);
-            db.updateOriginalDayTemp(String.valueOf(day));
+//            db.updateYear(year);
+//            db.updateMonth(month);
+//            db.updateDay(day);
+//            db.updateOriginalDayTemp(String.valueOf(day));
 
             //Set default time values if user not selected time values already
-            if(!timePicked){
+            if (!timePicked) {
                 Calendar calendar = Calendar.getInstance();
                 int minute = calendar.get(Calendar.MINUTE);
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
@@ -825,15 +840,15 @@ public class ReminderActivity extends MainActivity implements ReminderView {
                 int currentMonth = calendar.get(Calendar.MONTH);
                 int currentYear = calendar.get(Calendar.YEAR);
 
-                if((currentYear == year) && (currentMonth == month) && (currentDay == day)
+                if ((currentYear == year) && (currentMonth == month) && (currentDay == day)
                         && (hour >= 10)) {
-                    if(hour == 23){
+                    if (hour == 23) {
                         db.updateHour(11);
-                    }else if(hour >= 13) {
+                    } else if (hour >= 13) {
                         db.updateHour(hour - 11);
-                    }else if(hour == 12){
+                    } else if (hour == 12) {
                         db.updateHour(1);
-                    }else{
+                    } else {
                         db.updateHour(hour + 1);
                         if (hour == 11) {
                             ampm = 1;
@@ -841,23 +856,23 @@ public class ReminderActivity extends MainActivity implements ReminderView {
                     }
                     db.updateAmPm(ampm);
                     db.updateMinute(minute);
-                }else if(hour >= 10){
-                    if(hour == 23){
+                } else if (hour >= 10) {
+                    if (hour == 23) {
                         db.updateHour(11);
-                    }else if(hour >= 13) {
+                    } else if (hour >= 13) {
                         db.updateHour(hour - 12);
-                    }else{
+                    } else {
                         db.updateHour(hour);
                     }
                     db.updateAmPm(ampm);
                     db.updateMinute(minute);
-                }else{
+                } else {
                     db.updateHour(10);
                     db.updateAmPm(ampm);
                     db.updateMinute(0);
                 }
 
-            }else{
+            } else {
 //                Cursor alarmResult = MainActivity.db.getAlarmData
 //                        (Integer.parseInt(dbTaskId));
 //                String alarmMinute = "";
@@ -879,28 +894,33 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             setDue = true;
             datePicked = true;
 
-                calendarFadedLight.setVisibility(View.GONE);
+            calendarFadedLight.setVisibility(View.GONE);
 
             calendar.setVisibility(View.VISIBLE);
 
-            if(screenSize == 3){
+            if (screenSize == 3) {
                 dateTextView.setTextSize(65);
-            }else if(screenSize == 4){
+            } else if (screenSize == 4) {
                 dateTextView.setTextSize(85);
-            }else{
+            } else {
                 dateTextView.setTextSize(25);
             }
 
             killAlarm.setVisible(true);
 
+            reminderInstance.setYear(year);
+            reminderInstance.setMonth(month);
+            reminderInstance.setDay(day);
+            reminderPresenter.updateReminder(reminderInstance);
+
         }
 
     }
 
-    public static class TimePickerDialogFrag extends DialogFragment implements TimePickerDialog.OnTimeSetListener{
+    public static class TimePickerDialogFrag extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
 
         @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState){
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
 
             //Set default values of date picker to current date
             final Calendar calendar = Calendar.getInstance();
@@ -957,31 +977,31 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 //                    defaultTimePickerHour = hour;
 //                }
 //            }else{
-                minute = calendar.get(Calendar.MINUTE);
-                hour = calendar.get(Calendar.HOUR_OF_DAY);
-                defaultTimePickerHour = hour;
+            minute = calendar.get(Calendar.MINUTE);
+            hour = calendar.get(Calendar.HOUR_OF_DAY);
+            defaultTimePickerHour = hour;
 //            }
 
             TimePickerDialog timePickerDialog;
 
             //Initialising time picker based on light or dark
 
-                if(getResources().getConfiguration().orientation
-                        == Configuration.ORIENTATION_LANDSCAPE) {
-                    timePickerDialog = new TimePickerDialog(this.getActivity(),
-                            AlertDialog.THEME_HOLO_LIGHT, this,
-                            defaultTimePickerHour, minute, false);
-                }else {
-                    timePickerDialog = new TimePickerDialog(getActivity(),
-                            AlertDialog.THEME_DEVICE_DEFAULT_LIGHT,
-                            this, defaultTimePickerHour, minute, false);
-                }
+            if (getResources().getConfiguration().orientation
+                    == Configuration.ORIENTATION_LANDSCAPE) {
+                timePickerDialog = new TimePickerDialog(this.getActivity(),
+                        AlertDialog.THEME_HOLO_LIGHT, this,
+                        defaultTimePickerHour, minute, false);
+            } else {
+                timePickerDialog = new TimePickerDialog(getActivity(),
+                        AlertDialog.THEME_DEVICE_DEFAULT_LIGHT,
+                        this, defaultTimePickerHour, minute, false);
+            }
 
             return timePickerDialog;
 
         }
 
-        public void onTimeSet(TimePicker view, int hour, int minute){
+        public void onTimeSet(TimePicker view, int hour, int minute) {
 
             TextView timeTextView = getActivity().findViewById(R.id.timeTextView);
 
@@ -990,28 +1010,28 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             String adjustedHour = String.valueOf(hour);
             String adjustedMinute;
 
-            if(!mute){
+            if (!mute) {
                 blip.start();
             }
 
-            if(hour == 0) {
+            if (hour == 0) {
                 adjustedHour = String.valueOf(12);
                 db.updateAmPm(0);
-            }else if(hour == 12){
+            } else if (hour == 12) {
                 adjustedAmPm = "pm";
                 db.updateAmPm(1);
-            }else if(hour > 12){
+            } else if (hour > 12) {
                 adjustedHour = String.valueOf(hour - 12);
                 adjustedAmPm = "pm";
                 db.updateAmPm(1);
-            }else{
+            } else {
                 adjustedHour = String.valueOf(hour);
                 db.updateAmPm(0);
             }
 
-            if(minute < 10){
+            if (minute < 10) {
                 adjustedMinute = ":0" + minute;
-            }else{
+            } else {
                 adjustedMinute = ":" + minute;
             }
 
@@ -1025,7 +1045,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             db.updateMinute(minute);
 
             //set default date values if user not already selected
-            if(!datePicked){
+            if (!datePicked) {
                 Calendar calendar = Calendar.getInstance();
                 int day = calendar.get(Calendar.DAY_OF_MONTH);
                 int month = calendar.get(Calendar.MONTH);
@@ -1035,7 +1055,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
                 db.updateMonth(month);
                 db.updateYear(year);
 
-            }else{
+            } else {
 //                Cursor alarmResult = MainActivity.db.getAlarmData
 //                        (Integer.parseInt(dbTaskId));
 //                String alarmDay = "";
@@ -1063,29 +1083,33 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
             setDue = true;
             timePicked = true;
-                timeFadedLight.setVisibility(View.GONE);
+            timeFadedLight.setVisibility(View.GONE);
 
             time.setVisibility(View.VISIBLE);
 
             int screenSize = getResources().getConfiguration().screenLayout &
                     Configuration.SCREENLAYOUT_SIZE_MASK;
 
-            if(screenSize == 3){
+            if (screenSize == 3) {
                 timeTextView.setTextSize(65);
-            }else if(screenSize == 4){
+            } else if (screenSize == 4) {
                 timeTextView.setTextSize(85);
-            }else {
+            } else {
                 timeTextView.setTextSize(25);
             }
 
             killAlarm.setVisible(true);
+
+            reminderInstance.setHour(hour);
+            reminderInstance.setMinute(minute);
+            reminderPresenter.updateReminder(reminderInstance);
 
         }
 
     }
 
     @Override
-    protected void onPause(){
+    protected void onPause() {
 
         super.onPause();
 
