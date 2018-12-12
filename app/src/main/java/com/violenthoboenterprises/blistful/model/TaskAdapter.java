@@ -2,6 +2,7 @@ package com.violenthoboenterprises.blistful.model;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
@@ -66,7 +67,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder>{
             holder.subtasksIcon.setVisibility(View.VISIBLE);
         }
         if(currentTask.getRepeatInterval() != null){
-            holder.repeatIcon.setVisibility(View.VISIBLE);
+            if(!currentTask.getRepeatInterval().equals("none")) {
+                holder.repeatIcon.setVisibility(View.VISIBLE);
+            }
         }
         if(currentTask.getTimeCreated() != null){
             holder.dueIcon.setVisibility(View.VISIBLE);
@@ -90,6 +93,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder>{
             public void onClick(View view){
                 Intent intent = new Intent(context, ReminderActivity.class);
                 intent.putExtra("task", currentTask);
+//                intent.putExtra("mainActivityPresenter", mainActivityPresenter);
                 context.startActivity(intent);
             }
         });

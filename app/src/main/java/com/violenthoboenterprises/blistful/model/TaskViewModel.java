@@ -3,6 +3,8 @@ package com.violenthoboenterprises.blistful.model;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import com.violenthoboenterprises.blistful.model.Task;

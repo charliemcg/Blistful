@@ -40,12 +40,15 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.violenthoboenterprises.blistful.model.MainActivityPresenterImpl;
 import com.violenthoboenterprises.blistful.model.Reminder;
 import com.violenthoboenterprises.blistful.model.ReminderPresenterImpl;
 import com.violenthoboenterprises.blistful.model.ReminderViewModel;
 import com.violenthoboenterprises.blistful.model.Task;
 import com.violenthoboenterprises.blistful.model.TaskViewModel;
+import com.violenthoboenterprises.blistful.presenter.MainActivityPresenter;
 import com.violenthoboenterprises.blistful.presenter.ReminderPresenter;
+import com.violenthoboenterprises.blistful.view.MainActivityView;
 import com.violenthoboenterprises.blistful.view.ReminderView;
 
 import java.util.Calendar;
@@ -73,9 +76,16 @@ public class ReminderActivity extends MainActivity implements ReminderView {
     static int screenSize;
     String dbRepeatInterval;
     private ReminderViewModel reminderViewModel;
+    private TaskViewModel taskViewModel;
     private ReminderPresenter reminderPresenter;
     private Task task;
+//    private MainActivityPresenter mainActivityPresenter;
     private Reminder reminderInstance;
+    private String REPEAT_NONE = "none";
+    private String REPEAT_DAY = "day";
+    private String REPEAT_WEEK = "week";
+    private String REPEAT_MONTH = "month";
+
 
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -85,9 +95,11 @@ public class ReminderActivity extends MainActivity implements ReminderView {
         dueToolbar = findViewById(R.id.dueToolbar);
         setSupportActionBar(dueToolbar);
 
+//        mainActivityPresenter = getIntent().getParcelableExtra("mainActivityPresenter");
         reminderViewModel = ViewModelProviders.of(this).get(ReminderViewModel.class);
+        taskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
         reminderPresenter = new ReminderPresenterImpl
-                (ReminderActivity.this, reminderViewModel, getApplicationContext());
+                (ReminderActivity.this, taskViewModel, reminderViewModel, getApplicationContext());
         //getting the task to which this note is related
         task = getIntent().getParcelableExtra("task");
         reminderInstance = reminderViewModel.getReminderByParent(task.getId());
@@ -264,23 +276,19 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             lightRepeat.setVisibility(View.VISIBLE);
 
         //Highlight the repeat type or highlight No Repeat if none exists
-        if(reminderInstance == null){
+        if(task.getRepeatInterval() == null || task.getRepeatInterval().equals(REPEAT_NONE)){
             cancelRepeatLight.setVisibility(View.INVISIBLE);
             cancelRepeat.setVisibility(View.VISIBLE);
+        }else if(task.getRepeatInterval().equals(REPEAT_DAY)){
+            dailyLight.setVisibility(View.INVISIBLE);
+            daily.setVisibility(View.VISIBLE);
+        }else if(task.getRepeatInterval().equals(REPEAT_WEEK)){
+            weeklyLight.setVisibility(View.INVISIBLE);
+            weekly.setVisibility(View.VISIBLE);
+        }else if(task.getRepeatInterval().equals(REPEAT_MONTH)){
+            monthlyLight.setVisibility(View.INVISIBLE);
+            monthly.setVisibility(View.VISIBLE);
         }
-//        if(!dbRepeat){
-//            cancelRepeatLight.setVisibility(View.GONE);
-//            cancelRepeat.setVisibility(View.VISIBLE);
-//        }else if(dbRepeatInterval.equals("day")){
-//            dailyLight.setVisibility(View.GONE);
-//            daily.setVisibility(View.VISIBLE);
-//        }else if(dbRepeatInterval.equals("week")){
-//            weeklyLight.setVisibility(View.GONE);
-//            weekly.setVisibility(View.VISIBLE);
-//        }else if(dbRepeatInterval.equals("month")){
-//            monthlyLight.setVisibility(View.GONE);
-//            monthly.setVisibility(View.VISIBLE);
-//        }
 
         //Actions to occur when user selects to set/change date
         dateButton.setOnClickListener(new View.OnClickListener() {
@@ -309,113 +317,6 @@ public class ReminderActivity extends MainActivity implements ReminderView {
                 DialogFragment dialogfragment = new TimePickerDialogFrag();
 
                 dialogfragment.show(getFragmentManager(), "Time");
-
-            }
-
-        });
-
-                //Actions to occur if user selects to set a daily recurring alarm
-        dailyLight.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                if(!mute && !repeat.equals("day")){
-                    blip.start();
-                }
-
-                vibrate.vibrate(50);
-
-                //Show user which button they selected by highlighting it
-                cancelRepeatLight.setVisibility(View.VISIBLE);
-                cancelRepeat.setVisibility(View.INVISIBLE);
-                dailyLight.setVisibility(View.INVISIBLE);
-                daily.setVisibility(View.VISIBLE);
-                weeklyLight.setVisibility(View.VISIBLE);
-                weekly.setVisibility(View.INVISIBLE);
-                monthlyLight.setVisibility(View.VISIBLE);
-                monthly.setVisibility(View.INVISIBLE);
-
-                repeatInterval = AlarmManager.INTERVAL_DAY;
-                db.updateRepeatIntervalTemp(String.valueOf(AlarmManager.INTERVAL_DAY));
-
-                repeat = "day";
-
-                repeating =true;
-
-                setDue = true;
-
-                killAlarm.setVisible(true);
-
-            }
-
-        });
-
-        //Actions to occur if user selects to set a weekly recurring alarm
-        weeklyLight.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                if(!mute && !repeat.equals("week")){
-                    blip.start();
-                }
-
-                vibrate.vibrate(50);
-
-                //Show user which button they selected by highlighting it
-                cancelRepeatLight.setVisibility(View.VISIBLE);
-                cancelRepeat.setVisibility(View.INVISIBLE);
-                dailyLight.setVisibility(View.VISIBLE);
-                daily.setVisibility(View.INVISIBLE);
-                weeklyLight.setVisibility(View.INVISIBLE);
-                weekly.setVisibility(View.VISIBLE);
-                monthlyLight.setVisibility(View.VISIBLE);
-                monthly.setVisibility(View.INVISIBLE);
-
-                repeatInterval = AlarmManager.INTERVAL_DAY * 7;
-
-                repeat = "week";
-
-                repeating =true;
-
-                setDue = true;
-
-                killAlarm.setVisible(true);
-
-            }
-
-        });
-
-        //Actions to occur if user selects to set a monthly  recurring alarm
-        monthlyLight.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                if(!mute && !repeat.equals("month")){
-                    blip.start();
-                }
-
-                vibrate.vibrate(50);
-
-                //Show user which button they selected by highlighting it
-                cancelRepeatLight.setVisibility(View.VISIBLE);
-                cancelRepeat.setVisibility(View.INVISIBLE);
-                dailyLight.setVisibility(View.VISIBLE);
-                daily.setVisibility(View.INVISIBLE);
-                weeklyLight.setVisibility(View.VISIBLE);
-                weekly.setVisibility(View.INVISIBLE);
-                monthlyLight.setVisibility(View.INVISIBLE);
-                monthly.setVisibility(View.VISIBLE);
-
-                repeat = "month";
-
-                repeating =true;
-
-                setDue = true;
-
-                killAlarm.setVisible(true);
 
             }
 
@@ -452,6 +353,10 @@ public class ReminderActivity extends MainActivity implements ReminderView {
                     killAlarm.setVisible(false);
 
                 }
+
+                task.setRepeatInterval(REPEAT_NONE);
+                reminderPresenter.update(task);
+//                mainActivityPresenter.update(task);
 
 //                if(finalDbOverdue && dbRepeatInterval.equals("day")){
 //                    db.updateTimestamp(dbTaskId, String.valueOf(Integer.parseInt(dbDueTime) - 86400));
@@ -519,6 +424,122 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
                 db.updateRepeatInterval(dbTaskId, "");
                 db.updateRepeat(dbTaskId, false);
+
+            }
+
+        });
+
+        //Actions to occur if user selects to set a daily recurring alarm
+        dailyLight.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                if(!mute && !repeat.equals("day")){
+                    blip.start();
+                }
+
+                vibrate.vibrate(50);
+
+                //Show user which button they selected by highlighting it
+                cancelRepeatLight.setVisibility(View.VISIBLE);
+                cancelRepeat.setVisibility(View.INVISIBLE);
+                dailyLight.setVisibility(View.INVISIBLE);
+                daily.setVisibility(View.VISIBLE);
+                weeklyLight.setVisibility(View.VISIBLE);
+                weekly.setVisibility(View.INVISIBLE);
+                monthlyLight.setVisibility(View.VISIBLE);
+                monthly.setVisibility(View.INVISIBLE);
+
+                repeatInterval = AlarmManager.INTERVAL_DAY;
+                db.updateRepeatIntervalTemp(String.valueOf(AlarmManager.INTERVAL_DAY));
+
+                repeat = "day";
+
+                repeating =true;
+
+                setDue = true;
+
+                killAlarm.setVisible(true);
+
+                task.setRepeatInterval(REPEAT_DAY);
+                reminderPresenter.update(task);
+
+            }
+
+        });
+
+        //Actions to occur if user selects to set a weekly recurring alarm
+        weeklyLight.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                if(!mute && !repeat.equals("week")){
+                    blip.start();
+                }
+
+                vibrate.vibrate(50);
+
+                //Show user which button they selected by highlighting it
+                cancelRepeatLight.setVisibility(View.VISIBLE);
+                cancelRepeat.setVisibility(View.INVISIBLE);
+                dailyLight.setVisibility(View.VISIBLE);
+                daily.setVisibility(View.INVISIBLE);
+                weeklyLight.setVisibility(View.INVISIBLE);
+                weekly.setVisibility(View.VISIBLE);
+                monthlyLight.setVisibility(View.VISIBLE);
+                monthly.setVisibility(View.INVISIBLE);
+
+                repeatInterval = AlarmManager.INTERVAL_DAY * 7;
+
+                repeat = "week";
+
+                repeating =true;
+
+                setDue = true;
+
+                killAlarm.setVisible(true);
+
+                task.setRepeatInterval(REPEAT_WEEK);
+                reminderPresenter.update(task);
+
+            }
+
+        });
+
+        //Actions to occur if user selects to set a monthly  recurring alarm
+        monthlyLight.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                if(!mute && !repeat.equals("month")){
+                    blip.start();
+                }
+
+                vibrate.vibrate(50);
+
+                //Show user which button they selected by highlighting it
+                cancelRepeatLight.setVisibility(View.VISIBLE);
+                cancelRepeat.setVisibility(View.INVISIBLE);
+                dailyLight.setVisibility(View.VISIBLE);
+                daily.setVisibility(View.INVISIBLE);
+                weeklyLight.setVisibility(View.VISIBLE);
+                weekly.setVisibility(View.INVISIBLE);
+                monthlyLight.setVisibility(View.INVISIBLE);
+                monthly.setVisibility(View.VISIBLE);
+
+                repeat = "month";
+
+                repeating =true;
+
+                setDue = true;
+
+                killAlarm.setVisible(true);
+
+                task.setRepeatInterval(REPEAT_MONTH);
+                reminderPresenter.update(task);
 
             }
 
@@ -837,22 +858,22 @@ public class ReminderActivity extends MainActivity implements ReminderView {
                 }
 
             }else{
-                Cursor alarmResult = MainActivity.db.getAlarmData
-                        (Integer.parseInt(dbTaskId));
-                String alarmMinute = "";
-                String alarmHour = "";
-                String alarmAmPm = "";
-                while(alarmResult.moveToNext()){
-                    alarmHour = alarmResult.getString(1);
-                    alarmMinute = alarmResult.getString(2);
-                    alarmAmPm = alarmResult.getString(3);
-                }
-                alarmResult.close();
-                if(!alarmMinute.equals("")) {
-                    db.updateMinute(Integer.parseInt(alarmMinute));
-                    db.updateHour(Integer.parseInt(alarmHour));
-                    db.updateAmPm(Integer.parseInt(alarmAmPm));
-                }
+//                Cursor alarmResult = MainActivity.db.getAlarmData
+//                        (Integer.parseInt(dbTaskId));
+//                String alarmMinute = "";
+//                String alarmHour = "";
+//                String alarmAmPm = "";
+//                while(alarmResult.moveToNext()){
+//                    alarmHour = alarmResult.getString(1);
+//                    alarmMinute = alarmResult.getString(2);
+//                    alarmAmPm = alarmResult.getString(3);
+//                }
+//                alarmResult.close();
+//                if(!alarmMinute.equals("")) {
+//                    db.updateMinute(Integer.parseInt(alarmMinute));
+//                    db.updateHour(Integer.parseInt(alarmHour));
+//                    db.updateAmPm(Integer.parseInt(alarmAmPm));
+//                }
             }
 
             setDue = true;
@@ -1015,29 +1036,29 @@ public class ReminderActivity extends MainActivity implements ReminderView {
                 db.updateYear(year);
 
             }else{
-                Cursor alarmResult = MainActivity.db.getAlarmData
-                        (Integer.parseInt(dbTaskId));
-                String alarmDay = "";
-                String alarmMonth = "";
-                String alarmYear = "";
-                while(alarmResult.moveToNext()){
-                    alarmDay = alarmResult.getString(4);
-                    alarmMonth = alarmResult.getString(5);
-                    alarmYear = alarmResult.getString(6);
-                }
-                alarmResult.close();
-                Cursor dbTaskResult = db.getData(Integer.parseInt(dbTaskId));
-                String dbOriginalDay = "";
-                while (dbTaskResult.moveToNext()) {
-                    dbOriginalDay = dbTaskResult.getString(20);
-                }
-                dbTaskResult.close();
-                if(!alarmDay.equals("")) {
-                    db.updateDay(Integer.parseInt(alarmDay));
-                    db.updateOriginalDayTemp(String.valueOf(dbOriginalDay));
-                    db.updateMonth(Integer.parseInt(alarmMonth));
-                    db.updateYear(Integer.parseInt(alarmYear));
-                }
+//                Cursor alarmResult = MainActivity.db.getAlarmData
+//                        (Integer.parseInt(dbTaskId));
+//                String alarmDay = "";
+//                String alarmMonth = "";
+//                String alarmYear = "";
+//                while(alarmResult.moveToNext()){
+//                    alarmDay = alarmResult.getString(4);
+//                    alarmMonth = alarmResult.getString(5);
+//                    alarmYear = alarmResult.getString(6);
+//                }
+//                alarmResult.close();
+//                Cursor dbTaskResult = db.getData(Integer.parseInt(dbTaskId));
+//                String dbOriginalDay = "";
+//                while (dbTaskResult.moveToNext()) {
+//                    dbOriginalDay = dbTaskResult.getString(20);
+//                }
+//                dbTaskResult.close();
+//                if(!alarmDay.equals("")) {
+//                    db.updateDay(Integer.parseInt(alarmDay));
+//                    db.updateOriginalDayTemp(String.valueOf(dbOriginalDay));
+//                    db.updateMonth(Integer.parseInt(alarmMonth));
+//                    db.updateYear(Integer.parseInt(alarmYear));
+//                }
             }
 
             setDue = true;

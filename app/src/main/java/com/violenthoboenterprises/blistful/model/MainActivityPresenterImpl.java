@@ -1,7 +1,10 @@
 package com.violenthoboenterprises.blistful.model;
 
+import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.violenthoboenterprises.blistful.MainActivity;
 import com.violenthoboenterprises.blistful.presenter.MainActivityPresenter;
@@ -23,6 +26,11 @@ public class MainActivityPresenterImpl implements MainActivityPresenter {
     public void addTask(String taskName) {
         Task task = new Task(taskName);
         taskViewModel.insert(task);
+    }
+
+    @Override
+    public void update(Task task) {
+        taskViewModel.update(task);
     }
 
 }

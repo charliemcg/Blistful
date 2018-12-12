@@ -23,84 +23,85 @@
         android:id="@+id/calendarFadedLight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="96dp"
         android:contentDescription="@string/accessGrayedOutCalendar"
         android:elevation="100dp"
         android:src="@drawable/calendar_faded_light"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/timeBtn"
-        app:layout_constraintEnd_toEndOf="@+id/timeBtn"
-        app:layout_constraintHorizontal_bias="0.139"
-        app:layout_constraintStart_toStartOf="@+id/timeBtn"
-        app:layout_constraintTop_toTopOf="@+id/timeBtn"
-        app:layout_constraintVertical_bias="0.533" />
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/dateBtn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/dateBtn"
+        app:layout_constraintVertical_bias="0.516" />
 
     <ImageView
         android:id="@+id/calendar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="96dp"
         android:contentDescription="@string/accessCalendar"
         android:elevation="100dp"
         android:src="@drawable/calendar"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/timeBtn"
-        app:layout_constraintEnd_toEndOf="@+id/timeBtn"
-        app:layout_constraintHorizontal_bias="0.134"
-        app:layout_constraintStart_toStartOf="@+id/timeBtn"
-        app:layout_constraintTop_toTopOf="@+id/timeBtn"
-        app:layout_constraintVertical_bias="0.533" />
+        app:layout_constraintBottom_toBottomOf="@+id/dateBtn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/dateBtn"
+        app:layout_constraintVertical_bias="0.516" />
 
     <TextView
         android:id="@+id/dateTextView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:elevation="100dp"
         android:gravity="center"
         android:textSize="15sp"
-        app:layout_constraintBottom_toBottomOf="@+id/timeBtn"
-        app:layout_constraintEnd_toEndOf="@+id/timeBtn"
-        app:layout_constraintHorizontal_bias="0.717"
-        app:layout_constraintStart_toStartOf="@+id/timeBtn"
-        app:layout_constraintTop_toTopOf="@+id/timeBtn"
-        app:layout_constraintVertical_bias="0.524" />
+        app:layout_constraintBottom_toBottomOf="@+id/dateBtn"
+        app:layout_constraintEnd_toEndOf="@+id/dateBtn"
+        app:layout_constraintStart_toEndOf="@+id/calendarFadedLight"
+        app:layout_constraintTop_toTopOf="@+id/dateBtn" />
 
     <View
         android:id="@+id/dateBtn"
         android:layout_width="match_parent"
         android:layout_height="285dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/color_picker_border_white"
+        app:layout_constraintBottom_toTopOf="@+id/timeBtn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/timeBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/dueToolbar" />
 
     <ImageView
         android:id="@+id/timeFadedLight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="96dp"
         android:contentDescription="@string/accessGrayedOutClock"
         android:src="@drawable/time_faded_light"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/dateBtn"
-        app:layout_constraintEnd_toEndOf="@+id/calendar"
-        app:layout_constraintStart_toStartOf="@+id/calendar"
-        app:layout_constraintTop_toTopOf="@+id/dateBtn" />
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/timeBtn"
+        android:elevation="100dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/timeBtn"
+        app:layout_constraintVertical_bias="0.516" />
 
     <ImageView
         android:id="@+id/time"
         android:layout_width="127dp"
         android:layout_height="130dp"
+        android:layout_marginStart="96dp"
         android:contentDescription="@string/accessClock"
+        android:elevation="100dp"
         android:src="@drawable/time"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/dateBtn"
-        app:layout_constraintEnd_toEndOf="@+id/calendar"
-        app:layout_constraintStart_toStartOf="@+id/calendar"
-        app:layout_constraintTop_toTopOf="@+id/dateBtn" />
+        app:layout_constraintBottom_toBottomOf="@+id/timeBtn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/timeBtn"
+        app:layout_constraintVertical_bias="0.516" />
 
     <TextView
         android:id="@+id/timeTextView"
@@ -108,26 +109,24 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:gravity="center"
+        android:elevation="100dp"
         android:textSize="15sp"
-        app:layout_constraintBottom_toBottomOf="@+id/dateBtn"
-        app:layout_constraintEnd_toEndOf="@+id/dateBtn"
-        app:layout_constraintHorizontal_bias="0.761"
-        app:layout_constraintStart_toStartOf="@+id/dateBtn"
-        app:layout_constraintTop_toTopOf="@+id/dateBtn"
-        app:layout_constraintVertical_bias="0.516" />
+        app:layout_constraintBottom_toBottomOf="@+id/timeBtn"
+        app:layout_constraintEnd_toEndOf="@+id/timeBtn"
+        app:layout_constraintStart_toEndOf="@+id/timeFadedLight"
+        app:layout_constraintTop_toTopOf="@+id/timeBtn" />
 
     <View
         android:id="@+id/timeBtn"
         android:layout_width="match_parent"
         android:layout_height="285dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
         android:layout_marginEnd="8dp"
         android:background="@drawable/color_picker_border_white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dueToolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/dateBtn"
+        app:layout_constraintBottom_toTopOf="@id/lightRepeatLayout"/>
 
     <ImageView
         android:id="@+id/cancelRepeatLight"
