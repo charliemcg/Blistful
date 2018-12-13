@@ -97,7 +97,6 @@ public class ReminderActivity extends MainActivity implements ReminderView {
         dueToolbar = findViewById(R.id.dueToolbar);
         setSupportActionBar(dueToolbar);
 
-//        mainActivityPresenter = getIntent().getParcelableExtra("mainActivityPresenter");
         reminderViewModel = ViewModelProviders.of(this).get(ReminderViewModel.class);
         taskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
         reminderPresenter = new ReminderPresenterImpl
@@ -373,7 +372,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
                 setDue = false;
 
-                if (!timePicked && !datePicked) {
+                if (reminderInstance.getYear() == 0 && reminderInstance.getHour() == 0) {
 
                     killAlarm.setVisible(false);
 
@@ -585,6 +584,11 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 //            }else {
 //                killAlarm.setVisible(true);
 //            }
+            if(reminderInstance.getYear() == 0){
+                killAlarm.setVisible(false);
+            }else{
+                killAlarm.setVisible(true);
+            }
             return true;
         } else {
             killAlarm.setEnabled(true);
@@ -1113,7 +1117,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
             setDue = true;
             timePicked = true;
-            timeFadedLight.setVisibility(View.GONE);
+            timeFadedLight.setVisibility(View.INVISIBLE);
 
             time.setVisibility(View.VISIBLE);
 
@@ -1150,8 +1154,14 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
         super.onResume();
 
-        calendarFadedLight.setVisibility(View.VISIBLE);
-        timeFadedLight.setVisibility(View.VISIBLE);
+        Log.d(TAG, "In onResume");
+
+        if(reminderInstance.getYear() == 0) {
+            calendarFadedLight.setVisibility(View.VISIBLE);
+        }
+        if(reminderInstance.getHour() == 0) {
+            timeFadedLight.setVisibility(View.VISIBLE);
+        }
 
     }
 
@@ -1159,31 +1169,31 @@ public class ReminderActivity extends MainActivity implements ReminderView {
     //Return to main screen when back pressed
     public void onBackPressed() {
 
-        Log.d(TAG, "task name: " + task.getTask());
+        //Timestamp needs to be saved if user has set a reminder
         if(reminderInstance.getYear() != 0 || reminderInstance.getHour() != 0 || task.getRepeatInterval() != null) {
 
             Calendar calendar = new GregorianCalendar();
             //set current date if date wasn't picked
             if (reminderInstance.getYear() == 0) {
-                reminderInstance.setYear(Calendar.YEAR);
-                reminderInstance.setMonth(Calendar.MONTH);
-                reminderInstance.setDay(Calendar.DAY_OF_MONTH);
-            } else {
-                calendar.set(Calendar.YEAR, reminderInstance.getYear());
-                calendar.set(Calendar.MONTH, reminderInstance.getMonth());
-                calendar.set(Calendar.DAY_OF_MONTH, reminderInstance.getMinute());
+                reminderInstance.setYear(calendar.get(Calendar.YEAR));
+                reminderInstance.setMonth(calendar.get(Calendar.MONTH));
+                reminderInstance.setDay(calendar.get(Calendar.DAY_OF_MONTH));
             }
             //set current time if time wasn't picked
             if (reminderInstance.getHour() == 0) {
-                reminderInstance.setHour(Calendar.HOUR);
-                reminderInstance.setMinute(Calendar.MINUTE);
-            } else {
-                calendar.set(Calendar.HOUR, reminderInstance.getHour());
-                calendar.set(Calendar.MINUTE, reminderInstance.getMinute());
+                reminderInstance.setHour(calendar.get(Calendar.HOUR));
+                reminderInstance.setMinute(calendar.get(Calendar.MINUTE));
             }
+            //updating the reminder
             reminderPresenter.updateReminder(reminderInstance);
             //Setting timestamp of the reminder
+            calendar.set(Calendar.YEAR, reminderInstance.getYear());
+            calendar.set(Calendar.MONTH, reminderInstance.getMonth());
+            calendar.set(Calendar.DAY_OF_MONTH, reminderInstance.getDay());
+            calendar.set(Calendar.HOUR, reminderInstance.getHour());
+            calendar.set(Calendar.MINUTE, reminderInstance.getMinute());
             task.setTimestamp(calendar.getTimeInMillis());
+            //Updating the task
             reminderPresenter.update(task);
 
         }

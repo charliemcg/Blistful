@@ -9,7 +9,7 @@ import android.support.annotation.NonNull;
 import java.io.Serializable;
 
 /*
- * This is where the task table is defined
+ * This is where the task table is defined. It's serializable to facility passing between activities
  */
 @Entity(tableName = "task_table")
 public class Task implements Serializable {
