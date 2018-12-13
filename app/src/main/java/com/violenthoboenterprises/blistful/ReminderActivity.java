@@ -5,53 +5,30 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.database.Cursor;
 import android.graphics.Color;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.constraint.ConstraintLayout;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
-import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.animation.AnimationUtils;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
-import com.violenthoboenterprises.blistful.model.MainActivityPresenterImpl;
 import com.violenthoboenterprises.blistful.model.Reminder;
 import com.violenthoboenterprises.blistful.model.ReminderPresenterImpl;
 import com.violenthoboenterprises.blistful.model.ReminderViewModel;
 import com.violenthoboenterprises.blistful.model.Task;
 import com.violenthoboenterprises.blistful.model.TaskViewModel;
-import com.violenthoboenterprises.blistful.presenter.MainActivityPresenter;
 import com.violenthoboenterprises.blistful.presenter.ReminderPresenter;
-import com.violenthoboenterprises.blistful.view.MainActivityView;
 import com.violenthoboenterprises.blistful.view.ReminderView;
 
-import java.io.Serializable;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
@@ -443,7 +420,6 @@ public class ReminderActivity extends MainActivity implements ReminderView {
         int id = item.getItemId();
 
         //Resetting alarm to off
-        //TODO find out if return statements are necessary
         if (id == R.id.killAlarmItem) {
 
             final Handler handler = new Handler();
