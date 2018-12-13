@@ -6,11 +6,13 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
+import java.io.Serializable;
+
 /*
  * This is where the task table is defined
  */
 @Entity(tableName = "task_table")
-public class Task implements Parcelable {
+public class Task implements Serializable {
 
     private static final String TAG = "Task";
 
@@ -24,7 +26,7 @@ public class Task implements Parcelable {
     private boolean subtasks;
 
     //when the task is due if there is a due date
-    private int timestamp;
+    private long timestamp;
 
     //task name
     @NonNull
@@ -58,7 +60,8 @@ public class Task implements Parcelable {
     private boolean ignored;
 
     //timestamp of when the task was created
-    private String timeCreated;
+    @NonNull
+    private long timeCreated;
 
     //
     private int sortedIndex;
@@ -78,9 +81,9 @@ public class Task implements Parcelable {
     //when the snooze alarm is due
     private long snoozedTimestamp;
 
-    public Task(/*int id, String note, boolean subtasks, long timestamp, */String task/*, boolean due,
+    public Task(/*int id, String note, boolean subtasks, long timestamp, */String task,/* boolean due,
                 boolean killed, boolean repeat, boolean overdue, boolean snoozed, boolean showonce,
-                int interval, String repeatInterval, boolean ignored, String timeCreated,
+                int interval, String repeatInterval, boolean ignored, */long timeCreated/*,
                 int sortedIndex, int subtasksSize, boolean manualKill, boolean killedEarly,
                 int originalDay, long snoozedTimestamp*/) {
 //        this.id = id;
@@ -97,7 +100,7 @@ public class Task implements Parcelable {
 //        this.interval = interval;
 //        this.repeatInterval = repeatInterval;
 //        this.ignored = ignored;
-//        this.timeCreated = timeCreated;
+        this.timeCreated = timeCreated;
 //        this.sortedIndex = sortedIndex;
 //        this.subtasksSize = subtasksSize;
 //        this.manualKill = manualKill;
@@ -121,7 +124,7 @@ public class Task implements Parcelable {
         interval = in.readInt();
         repeatInterval = in.readString();
         ignored = in.readByte() != 0;
-        timeCreated = in.readString();
+        timeCreated = in.readLong();
         sortedIndex = in.readInt();
         subtasksSize = in.readInt();
         manualKill = in.readByte() != 0;
@@ -130,17 +133,17 @@ public class Task implements Parcelable {
         snoozedTimestamp = in.readLong();
     }
 
-    public static final Creator<Task> CREATOR = new Creator<Task>() {
-        @Override
-        public Task createFromParcel(Parcel in) {
-            return new Task(in);
-        }
-
-        @Override
-        public Task[] newArray(int size) {
-            return new Task[size];
-        }
-    };
+//    public static final Creator<Task> CREATOR = new Creator<Task>() {
+//        @Override
+//        public Task createFromParcel(Parcel in) {
+//            return new Task(in);
+//        }
+//
+//        @Override
+//        public Task[] newArray(int size) {
+//            return new Task[size];
+//        }
+//    };
 
     public int getId() {
         return id;
@@ -166,11 +169,11 @@ public class Task implements Parcelable {
         this.subtasks = subtasks;
     }
 
-    public int getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(int timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -254,11 +257,11 @@ public class Task implements Parcelable {
         this.ignored = ignored;
     }
 
-    public String getTimeCreated() {
+    public long getTimeCreated() {
         return timeCreated;
     }
 
-    public void setTimeCreated(String timeCreated) {
+    public void setTimeCreated(long timeCreated) {
         this.timeCreated = timeCreated;
     }
 
@@ -310,33 +313,33 @@ public class Task implements Parcelable {
         this.snoozedTimestamp = snoozedTimestamp;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(id);
-        parcel.writeString(note);
-        parcel.writeByte((byte) (subtasks ? 1 : 0));
-        parcel.writeInt(timestamp);
-        parcel.writeString(task);
-        parcel.writeByte((byte) (due ? 1 : 0));
-        parcel.writeByte((byte) (killed ? 1 : 0));
-        parcel.writeByte((byte) (repeat ? 1 : 0));
-        parcel.writeByte((byte) (overdue ? 1 : 0));
-        parcel.writeByte((byte) (snoozed ? 1 : 0));
-        parcel.writeByte((byte) (showonce ? 1 : 0));
-        parcel.writeInt(interval);
-        parcel.writeString(repeatInterval);
-        parcel.writeByte((byte) (ignored ? 1 : 0));
-        parcel.writeString(timeCreated);
-        parcel.writeInt(sortedIndex);
-        parcel.writeInt(subtasksSize);
-        parcel.writeByte((byte) (manualKill ? 1 : 0));
-        parcel.writeByte((byte) (killedEarly ? 1 : 0));
-        parcel.writeInt(originalDay);
-        parcel.writeLong(snoozedTimestamp);
-    }
+//    @Override
+//    public int describeContents() {
+//        return 0;
+//    }
+//
+//    @Override
+//    public void writeToParcel(Parcel parcel, int i) {
+//        parcel.writeInt(id);
+//        parcel.writeString(note);
+//        parcel.writeByte((byte) (subtasks ? 1 : 0));
+//        parcel.writeLong(timestamp);
+//        parcel.writeString(this.task);
+//        parcel.writeByte((byte) (due ? 1 : 0));
+//        parcel.writeByte((byte) (killed ? 1 : 0));
+//        parcel.writeByte((byte) (repeat ? 1 : 0));
+//        parcel.writeByte((byte) (overdue ? 1 : 0));
+//        parcel.writeByte((byte) (snoozed ? 1 : 0));
+//        parcel.writeByte((byte) (showonce ? 1 : 0));
+//        parcel.writeInt(interval);
+//        parcel.writeString(repeatInterval);
+//        parcel.writeByte((byte) (ignored ? 1 : 0));
+//        parcel.writeLong(this.timeCreated);
+//        parcel.writeInt(sortedIndex);
+//        parcel.writeInt(subtasksSize);
+//        parcel.writeByte((byte) (manualKill ? 1 : 0));
+//        parcel.writeByte((byte) (killedEarly ? 1 : 0));
+//        parcel.writeInt(originalDay);
+//        parcel.writeLong(snoozedTimestamp);
+//    }
 }

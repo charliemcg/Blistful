@@ -6,7 +6,7 @@ import com.violenthoboenterprises.blistful.model.Task;
 
 public interface MainActivityPresenter {
 
-    void addTask(String task);
+    void addTask(String task, long timeCreated);
 
     void update(Task task);
 

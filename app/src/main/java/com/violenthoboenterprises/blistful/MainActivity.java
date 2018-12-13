@@ -62,7 +62,9 @@ import com.violenthoboenterprises.blistful.presenter.SubtasksPresenter;
 import com.violenthoboenterprises.blistful.view.MainActivityView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Random;
 
@@ -754,7 +756,8 @@ public class MainActivity extends AppCompatActivity implements
 
                     if (!taskName.equals("")) {
 
-                        mainActivityPresenter.addTask(taskName);
+                        Calendar calendar = new GregorianCalendar().getInstance();
+                        mainActivityPresenter.addTask(taskName, calendar.getTimeInMillis());
 
 //                        Calendar timeNow = new GregorianCalendar();
 

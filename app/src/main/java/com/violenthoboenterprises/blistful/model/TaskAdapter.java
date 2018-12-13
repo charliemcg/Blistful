@@ -72,7 +72,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
                 holder.repeatIcon.setVisibility(View.VISIBLE);
             }
         }
-        Log.d(TAG, "timestamp: " + currentTask.getTimestamp());
         if (currentTask.getTimestamp() > 0) {
             holder.dueIcon.setVisibility(View.VISIBLE);
         }

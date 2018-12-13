@@ -6,11 +6,16 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.violenthoboenterprises.blistful.model.Reminder;
 import com.violenthoboenterprises.blistful.model.Subtask;
 import com.violenthoboenterprises.blistful.model.Task;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 /*
  * This is where the database is built
@@ -18,6 +23,7 @@ import com.violenthoboenterprises.blistful.model.Task;
 @Database(entities = {Task.class, Subtask.class, Reminder.class}, version = 1)
 public abstract class TaskDatabase extends RoomDatabase {
 
+    private static String TAG = "TaskDatabase";
     private static TaskDatabase instance;
 
     public abstract TaskDao taskDao();
@@ -55,9 +61,10 @@ public abstract class TaskDatabase extends RoomDatabase {
         }
         @Override
         protected Void doInBackground(Void... voids){
-            taskDao.insert(new Task("This is a task"));
-            taskDao.insert(new Task("Swipe left or right to delete a task"));
-            taskDao.insert(new Task("Press '+' to add a new task"));
+            Calendar calendar = new GregorianCalendar().getInstance();
+            taskDao.insert(new Task("This is a task", calendar.getTimeInMillis()));
+            taskDao.insert(new Task("Swipe left or right to delete a task", calendar.getTimeInMillis()));
+            taskDao.insert(new Task("Press '+' to add a new task", calendar.getTimeInMillis()));
             return null;
         }
     }
