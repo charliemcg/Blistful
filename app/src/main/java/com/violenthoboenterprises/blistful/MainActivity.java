@@ -8,6 +8,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Rect;
 import android.media.MediaPlayer;
@@ -162,6 +163,8 @@ public class MainActivity extends AppCompatActivity implements
     //timestamp that keeps record of when user downloaded the app.
     // Used for determining when to prompt for a review
     int launchTime;
+    //indicates if the review prompt should be shown
+    int showReviewPrompt;
 
     //Interval between repeating alarms
     static long repeatInterval;
@@ -282,6 +285,18 @@ public class MainActivity extends AppCompatActivity implements
     private MainActivityPresenter mainActivityPresenter;
     private SubtasksPresenter subtasksPresenter;
 
+    //preferences used for persisting app-wide data
+    public SharedPreferences preferences;
+    //keys for shared preferences
+    public String MUTE_KEY = "mute_key";
+    public String ADS_REMOVED_KEY = "ads_removed_key";
+    public String REMINDERS_AVAILABLE_KEY = "reminders_available_key";
+    public String MOTIVATION_KEY = "motivation_key";
+    public String REPEAT_HINT_KEY = "repeat_hint_key";
+    public String RENAME_HINT_KEY = "rename_hint_key";
+    public String REINSTATE_HINT_KEY = "reinstate_hint_key";
+    public String SHOW_REVIEW_KEY = "show_review_key";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -290,7 +305,6 @@ public class MainActivity extends AppCompatActivity implements
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        overridePendingTransition(R.anim.enter_from_right, R.anim.enter_from_right);
 
         String ADKEY = "ca-app-pub-2378583121223638~3855319141";
         //App ID for AdMob
@@ -299,6 +313,17 @@ public class MainActivity extends AppCompatActivity implements
         toolbarLight = findViewById(R.id.toolbar_light);
         toolbarLight.setTitle("");
         setSupportActionBar(toolbarLight);
+
+        preferences = this.getSharedPreferences("com.violenthoboenterprises.blistful",
+                Context.MODE_PRIVATE);
+        mute = preferences.getBoolean(MUTE_KEY, false);
+        adsRemoved = preferences.getBoolean(ADS_REMOVED_KEY, false);
+        remindersAvailable = preferences.getBoolean(REMINDERS_AVAILABLE_KEY, false);
+        showMotivation = preferences.getBoolean(MOTIVATION_KEY, true);
+        repeatHint = preferences.getInt(REPEAT_HINT_KEY, 0);
+        renameHint = preferences.getInt(RENAME_HINT_KEY, 0);
+        reinstateHint = preferences.getInt(REINSTATE_HINT_KEY, 0);
+        showReviewPrompt = preferences.getInt(SHOW_REVIEW_KEY, 0);
 
         taskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
         subtaskViewModel = ViewModelProviders.of(this).get(SubtaskViewModel.class);
@@ -342,11 +367,8 @@ public class MainActivity extends AppCompatActivity implements
         chime = MediaPlayer.create(this, R.raw.chime);
         trash = MediaPlayer.create(this, R.raw.trash);
         hint = MediaPlayer.create(this, R.raw.hint);
-        mute = false;
         String BILLINGKEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0tgG+jdhW6GSpvOiNrY58CConsEH9S6iYxyaRxp7a3+9CPzhXohy0LIJxZFZPAkLC0PSJnlA3N2JUHfGSdE5hY/7nXwHas+a8XUaQLHdYaA9usOBUEWs24MZFVNrpg4LnshBuFdM6eJ737ReMvCZAz9/lfoACrRx8ABgYEPs74Y+Ms1697DrQ/OPJFT4BRVuSDBIWmEc8GY4dAlh3/C3DK6FsofsKhkC1+bztIUa2n0XNm5UTJZO4sj4d6K/5A4Qo5qUMvWUFQ08L+1DbNif40y/j4ps8yDn3EW/LNPKbZ9m5avE4j6lLdXMRZ22a8OYhv//MVPhoCJ0/yeXcuOCwQIDAQAB";
         bp = new BillingProcessor(this, BILLINGKEY, this);
-        adsRemoved = false;
-        remindersAvailable = false;
         motivation = new String[]{getString(R.string.getItDone),
                 getString(R.string.smashThatTask), getString(R.string.beAWinner),
                 getString(R.string.onlyWimpsGiveUp), getString(R.string.dontBeAFailure),
@@ -365,10 +387,7 @@ public class MainActivity extends AppCompatActivity implements
         deviceWidth = displayMetrics.widthPixels;
         deviceheight = displayMetrics.heightPixels;
         duesSet = 0;
-        showMotivation = false;
         showDueDates = true;
-        repeatHint = 0;
-        renameHint = 0;
         launchTime = 0;
         reviewOne = false;
         reviewTwo = false;
@@ -1011,10 +1030,12 @@ public class MainActivity extends AppCompatActivity implements
             if (mute) {
                 mute = false;
                 item.setChecked(true);
+                preferences.edit().putBoolean(MUTE_KEY, false).apply();
 //                db.updateMute(false);
             } else {
                 mute = true;
                 item.setChecked(false);
+                preferences.edit().putBoolean(MUTE_KEY, true).apply();
 //                db.updateMute(true);
             }
 
