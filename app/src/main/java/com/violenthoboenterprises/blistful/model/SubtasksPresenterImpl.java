@@ -48,4 +48,10 @@ public class SubtasksPresenterImpl implements SubtasksPresenter {
         return task.getId();
     }
 
+    @Override
+    public void rename(Subtask subtaskBeingEdited, String subtaskName) {
+        subtaskBeingEdited.setSubtask(subtaskName);
+        update(subtaskBeingEdited);
+    }
+
 }

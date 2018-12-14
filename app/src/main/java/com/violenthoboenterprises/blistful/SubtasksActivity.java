@@ -54,16 +54,14 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
     private String TAG = this.getClass().getSimpleName();
     private static InputMethodManager keyboard;
     private static EditText etSubtask;
-    //flag used for determining if subtask is being edited or new task being created
-    private static boolean subTaskBeingEdited;
+    //The subtask being renamed
+    private Subtask subTaskBeingEdited;
     //The parent task to which the subtasks belong
     private Task task;
-    //subtask that's being edited
-    private Subtask subtaskEditing;
     private SubtaskViewModel subtaskViewModel;
     private SubtasksPresenter subtasksPresenter;
 
-    public void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.checklist_layout);
         Toolbar subTasksToolbar = findViewById(R.id.subTasksToolbar);
@@ -83,16 +81,16 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
         recyclerView.setHasFixedSize(true);
 
         //setting up the adapter
-        final SubtasksAdapter subtasksAdapter = new SubtasksAdapter();
+        final SubtasksAdapter subtasksAdapter = new SubtasksAdapter(this);
         recyclerView.setAdapter(subtasksAdapter);
 
         //observing the recycler view items for changes
         //TODO find out if observer is necessary
         subtaskViewModel = ViewModelProviders.of(this).get(SubtaskViewModel.class);
         //need to specifically get subtasks belonging to parent task
-        subtaskViewModel.getAllSubtasks(subtasksPresenter.getId()).observe(this, new Observer<List<Subtask>>(){
+        subtaskViewModel.getAllSubtasks(subtasksPresenter.getId()).observe(this, new Observer<List<Subtask>>() {
             @Override
-            public void onChanged(@Nullable List<Subtask> subtasks){
+            public void onChanged(@Nullable List<Subtask> subtasks) {
                 subtasksAdapter.setSubtasks(subtasks);
             }
         });
@@ -114,30 +112,11 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
             }
         }).attachToRecyclerView(recyclerView);
 
-        //edit subtask on long click
-        subtasksAdapter.setOnItemClickListener(new SubtasksAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Subtask subtask) {
-
-                keyboard.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
-
-                //Indicates that a task is being edited
-                subTaskBeingEdited = true;
-
-                //setting subtask name in the edit text
-                etSubtask.setText(subtask.getSubtask());
-
-                //keeping a reference to the subtask which is being edited
-                subtaskEditing = subtask;
-
-            }
-        });
-
         //setting text in toolbar
         subTasksToolbar.setTitle(R.string.subTasks);
 
         //Actions to occur when keyboard's 'Done' button is pressed
-        etSubtask.setOnEditorActionListener(new TextView.OnEditorActionListener(){
+        etSubtask.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -146,7 +125,7 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
                 etSubtask.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
 
                 //Actions to occur when user submits new sub task
-                if (actionId == EditorInfo.IME_ACTION_DONE && !subTaskBeingEdited) {
+                if (actionId == EditorInfo.IME_ACTION_DONE && subTaskBeingEdited == null) {
 
                     //Getting user data
                     String subtaskName = etSubtask.getText().toString();
@@ -155,11 +134,11 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
                     etSubtask.setText("");
 
                     //Don't allow blank tasks
-                    if(!subtaskName.equals("")) {
+                    if (!subtaskName.equals("")) {
 
                         vibrate.vibrate(50);
 
-                        if(!boolMute) {
+                        if (!boolMute) {
                             mpBlip.start();
                         }
 
@@ -170,12 +149,12 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
                     return true;
 
                 //Actions to occur when editing sub tasks
-                }else if(actionId == EditorInfo.IME_ACTION_DONE){
+                } else if (actionId == EditorInfo.IME_ACTION_DONE) {
 
                     vibrate.vibrate(50);
 
                     //Hide keyboard
-                    keyboard.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY,0);
+                    keyboard.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
 
                     //Getting user data
                     String subtaskName = etSubtask.getText().toString();
@@ -184,22 +163,17 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
                     etSubtask.setText("");
 
                     //Don't allow blank tasks
-                    if(!subtaskName.equals("")) {
+                    if (!subtaskName.equals("")) {
 
-                        //updating the subtask with the new name
-                        subtaskEditing.setSubtask(subtaskName);
-                        subtasksPresenter.update(subtaskEditing);
+                        subtasksPresenter.rename(subTaskBeingEdited, subtaskName);
 
-                        subTaskBeingEdited = false;
+                        subTaskBeingEdited = null;
 
                     }
 
                     return true;
 
                 }
-
-                //Marking editing as complete
-                subTaskBeingEdited = false;
 
                 return true;
 
@@ -221,6 +195,22 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
                 })
                 .setActionTextColor(getResources().getColor(R.color.purple))
                 .show();
+    }
+
+    @Override
+    public void editSubtask(Subtask currentSubtask) {
+
+        keyboard.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+
+        //Indicates that a task is being edited
+        subTaskBeingEdited = currentSubtask;
+
+        //setting subtask name in the edit text
+        etSubtask.setText(currentSubtask.getSubtask());
+
+        //keeping a reference to the subtask which is being edited
+        subTaskBeingEdited = currentSubtask;
+
     }
 
 }

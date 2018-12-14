@@ -15,4 +15,6 @@ public interface SubtasksPresenter {
     List<Subtask> getSubtasksByParent(int parentId);
 
     int getId();
+
+    void rename(Subtask subtaskBeingEdited, String subtaskName);
 }

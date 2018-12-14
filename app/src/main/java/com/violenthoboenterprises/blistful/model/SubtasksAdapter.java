@@ -1,19 +1,14 @@
 package com.violenthoboenterprises.blistful.model;
 
-import android.content.Context;
-import android.content.Intent;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.violenthoboenterprises.blistful.R;
-import com.violenthoboenterprises.blistful.SubtasksActivity;
-import com.violenthoboenterprises.blistful.presenter.MainActivityPresenter;
-import com.violenthoboenterprises.blistful.presenter.SubtasksPresenter;
+import com.violenthoboenterprises.blistful.view.SubtasksView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +21,11 @@ public class SubtasksAdapter extends RecyclerView.Adapter<SubtasksAdapter.Subtas
     private final static String TAG = "SubtasksAdapter";
     private List<Subtask> subtasks = new ArrayList<>();
     private SubtasksAdapter.OnItemClickListener listener;
+    private SubtasksView subtaskView;
+
+    public SubtasksAdapter(SubtasksView subtaskView) {
+        this.subtaskView = subtaskView;
+    }
 
     @Override
     public SubtasksAdapter.SubtaskHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -37,8 +37,16 @@ public class SubtasksAdapter extends RecyclerView.Adapter<SubtasksAdapter.Subtas
     @Override
     public void onBindViewHolder(SubtasksAdapter.SubtaskHolder holder, int position) {
         //setting the subtask name in the item
-        Subtask currentSubtask = subtasks.get(position);
+        final Subtask currentSubtask = subtasks.get(position);
         holder.tvSubtask.setText(currentSubtask.getSubtask());
+        //rename subtask on long click
+        holder.subtaskLayout.setOnLongClickListener(new View.OnLongClickListener(){
+            @Override
+            public boolean onLongClick(View view){
+                subtaskView.editSubtask(currentSubtask);
+                return true;
+            }
+        });
     }
 
     @Override
@@ -56,9 +64,11 @@ public class SubtasksAdapter extends RecyclerView.Adapter<SubtasksAdapter.Subtas
     //Building the item view
     class SubtaskHolder extends RecyclerView.ViewHolder {
         private TextView tvSubtask;
+        private ConstraintLayout subtaskLayout;
         public SubtaskHolder(final View itemView) {
             super(itemView);
             tvSubtask = itemView.findViewById(R.id.tvSubtask);
+            subtaskLayout = itemView.findViewById(R.id.subtask_layout);
             itemView.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View view){
@@ -66,6 +76,16 @@ public class SubtasksAdapter extends RecyclerView.Adapter<SubtasksAdapter.Subtas
                     if (listener != null && position != RecyclerView.NO_POSITION){
                         listener.onItemClick(subtasks.get(position));
                     }
+                }
+            });
+            itemView.setOnLongClickListener(new View.OnLongClickListener(){
+                @Override
+                public boolean onLongClick(View view){
+                    int position = getAdapterPosition();
+                    if (listener != null && position != RecyclerView.NO_POSITION){
+                        listener.onItemClick(subtasks.get(position));
+                    }
+                    return true;
                 }
             });
         }

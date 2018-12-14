@@ -96,7 +96,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         holder.taskLayout.setOnLongClickListener(new View.OnLongClickListener(){
             @Override
             public boolean onLongClick(View view){
-                Log.d(TAG, "Long click detected");
                 mainActivityView.addTask(currentTask);
                 return true;
             }
