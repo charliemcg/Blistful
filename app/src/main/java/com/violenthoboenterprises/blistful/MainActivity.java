@@ -824,7 +824,9 @@ public class MainActivity extends AppCompatActivity implements
             //Update values so that app appears to be in 'pro mode'
 
             boolAdsRemoved = true;
+            preferences.edit().putBoolean(ADS_REMOVED_KEY, true).apply();
             boolRemindersAvailable = true;
+            preferences.edit().putBoolean(REMINDERS_AVAILABLE_KEY, true).apply();
             miPro.setVisible(false);
 
         }
