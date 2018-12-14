@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.violenthoboenterprises.blistful.ReminderActivity;
 import com.violenthoboenterprises.blistful.SubtasksActivity;
@@ -19,6 +20,7 @@ import com.violenthoboenterprises.blistful.NoteActivity;
 import com.violenthoboenterprises.blistful.R;
 import com.violenthoboenterprises.blistful.presenter.MainActivityPresenter;
 import com.violenthoboenterprises.blistful.presenter.SubtasksPresenter;
+import com.violenthoboenterprises.blistful.view.MainActivityView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,15 +37,17 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
     private MainActivityPresenter mainActivityPresenter;
     private SubtasksPresenter subtasksPresenter;
     private View activityRootView;
+    private MainActivityView mainActivityView;
     private TaskViewModel taskViewModel;
 
     public TaskAdapter(Context context, MainActivityPresenter mainActivityPresenter,
                        SubtasksPresenter subtasksPresenter, View activityRootView,
-                       TaskViewModel taskViewModel) {
+                       MainActivityView mainActivityView, TaskViewModel taskViewModel) {
         this.context = context;
         this.mainActivityPresenter = mainActivityPresenter;
         this.subtasksPresenter = subtasksPresenter;
         this.activityRootView = activityRootView;
+        this.mainActivityView = mainActivityView;
         this.taskViewModel = taskViewModel;
     }
 
@@ -86,6 +90,15 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
                 } else {
                     holder.taskProperties.setVisibility(View.VISIBLE);
                 }
+            }
+        });
+        //rename task on long click
+        holder.taskLayout.setOnLongClickListener(new View.OnLongClickListener(){
+            @Override
+            public boolean onLongClick(View view){
+                Log.d(TAG, "Long click detected");
+                mainActivityView.addTask(currentTask);
+                return true;
             }
         });
         //buttons should open respective activities
@@ -161,6 +174,16 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
                     if (listener != null && position != RecyclerView.NO_POSITION) {
                         listener.onItemClick(tasks.get(position));
                     }
+                }
+            });
+            itemView.setOnLongClickListener(new View.OnLongClickListener(){
+                @Override
+                public boolean onLongClick(View view) {
+                    int position = getAdapterPosition();
+                    if(listener != null && position != RecyclerView.NO_POSITION){
+                        listener.onItemClick(tasks.get(position));
+                    }
+                    return true;
                 }
             });
         }

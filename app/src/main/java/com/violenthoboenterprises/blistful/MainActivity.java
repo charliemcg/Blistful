@@ -1,15 +1,11 @@
 package com.violenthoboenterprises.blistful;
 
-import android.app.AlarmManager;
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.PendingIntent;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Rect;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -39,13 +35,9 @@ import android.view.Window;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -63,14 +55,10 @@ import com.violenthoboenterprises.blistful.presenter.MainActivityPresenter;
 import com.violenthoboenterprises.blistful.presenter.SubtasksPresenter;
 import com.violenthoboenterprises.blistful.view.MainActivityView;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Random;
-
-import static android.database.DatabaseUtils.queryNumEntries;
 
 public class MainActivity extends AppCompatActivity implements
         BillingProcessor.IBillingHandler, MainActivityView {
@@ -85,8 +73,6 @@ public class MainActivity extends AppCompatActivity implements
     private boolean boolRemindersAvailable;
     //used to determine whether or not to show motivational toasts
     private boolean boolShowMotivation;
-    //don't show due dates until after ids have been reordered
-    private boolean boolShowDueDates;
 
     //indicates how many due dates are set because free users have a limitation
     private int intDuesSet;
@@ -132,9 +118,6 @@ public class MainActivity extends AppCompatActivity implements
     //Allow phone to vibrate
     public static Vibrator vibrate;
 
-    //Inflater for checklists
-    private LayoutInflater inflater;
-
     //for generating random number to select toast phrases
     private Random random = new Random();
 
@@ -154,18 +137,17 @@ public class MainActivity extends AppCompatActivity implements
     //The action bar
     private Toolbar toolbarLight;
 
-    //Action bar options
-    private MenuItem miMute;
     private MenuItem miPro;
-    private MenuItem miMotivation;
 
     static BillingProcessor billingProcessor;
 
     private TaskViewModel taskViewModel;
 
-    FloatingActionButton fab;
+    private FloatingActionButton fab;
 
     private MainActivityPresenter mainActivityPresenter;
+
+    private Task taskBeingEdited;
 
     //preferences used for persisting app-wide data
     public SharedPreferences preferences;
@@ -216,7 +198,8 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         taskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
-        SubtaskViewModel subtaskViewModel = ViewModelProviders.of(this).get(SubtaskViewModel.class);
+        SubtaskViewModel subtaskViewModel =
+                ViewModelProviders.of(this).get(SubtaskViewModel.class);
         mainActivityPresenter = new MainActivityPresenterImpl
                 (MainActivity.this, taskViewModel, getApplicationContext());
         SubtasksPresenter subtasksPresenter = new SubtasksPresenterImpl
@@ -226,7 +209,6 @@ public class MainActivity extends AppCompatActivity implements
         etTask = findViewById(R.id.taskNameEditText);
         keyboard = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         vibrate = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        inflater = LayoutInflater.from(getApplicationContext());
         activityRootView = findViewById(R.id.activityRoot);
         strLastToast = "";
         strLastKilledToast = "";
@@ -252,14 +234,13 @@ public class MainActivity extends AppCompatActivity implements
         this.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         deviceheight = displayMetrics.heightPixels;
         intDuesSet = 0;
-        boolShowDueDates = true;
         imgNoTasks = findViewById(R.id.imgNoTasks);
 
         fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addTask();
+                addTask(null);
             }
         });
 
@@ -269,7 +250,8 @@ public class MainActivity extends AppCompatActivity implements
         recyclerView.setHasFixedSize(true);
 
         //setting up the adapter
-        final TaskAdapter adapter = new TaskAdapter(this, mainActivityPresenter, subtasksPresenter, activityRootView, taskViewModel);
+        final TaskAdapter adapter = new TaskAdapter(this, mainActivityPresenter,
+                subtasksPresenter, activityRootView, this, taskViewModel);
         recyclerView.setAdapter(adapter);
 
         //observing the recycler view items for changes
@@ -286,6 +268,14 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         });
+
+//        recyclerView.setOnLongClickListener(new View.OnLongClickListener(){
+//            @Override
+//            public boolean onLongClick(View view){
+//                Log.d(TAG, "Long click detected");
+//                return true;
+//            }
+//        });
 
         //detect swipes
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
@@ -311,7 +301,7 @@ public class MainActivity extends AppCompatActivity implements
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 
                 //Actions to take when creating new task
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                if (actionId == EditorInfo.IME_ACTION_DONE && taskBeingEdited == null) {
 
                     if (!boolMute) {
                         mpBlip.start();
@@ -404,7 +394,7 @@ public class MainActivity extends AppCompatActivity implements
                                 }
                             }
                             intRenameHint++;
-                            preferences.edit().putInt(RENAME_HINT_KEY, intRenameHint);
+                            preferences.edit().putInt(RENAME_HINT_KEY, intRenameHint).apply();
                         } else {
 
                             if (boolShowMotivation) {
@@ -450,28 +440,40 @@ public class MainActivity extends AppCompatActivity implements
                 //Actions to take when editing existing task
                 } else if (actionId == EditorInfo.IME_ACTION_DONE) {
 
-//                    if (!mute) {
-//                        blip.start();
-//                    }
-//
-//                    vibrate.vibrate(50);
-//
-//                    taskNameEditText.setVisibility(View.GONE);
-//
-//                    //Hide keyboard
-//                    keyboard.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-//
-//                    //Getting user data
-//                    String editedTaskString = taskNameEditText.getText().toString();
-//
+                    Toast.makeText(MainActivity.this, "Editing task", Toast.LENGTH_SHORT).show();
+
+                    if (!boolMute) {
+                        mpBlip.start();
+                    }
+
+                    vibrate.vibrate(50);
+
+                    etTask.setVisibility(View.GONE);
+
+                    //Hide keyboard
+                    keyboard.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+
+                    //Getting user data
+                    String editedTaskString = etTask.getText().toString();
+
+                    etTask.setText("");
+
+                    if(!editedTaskString.equals("")){
+
+                        mainActivityPresenter.setTask(taskBeingEdited, editedTaskString);
+
+                    }
+
 //                    createTask(editedTaskString, taskList, taskBeingEdited);
-//
+
 //                    theListView.setAdapter(theAdapter[0]);
-//
+
 //                    tasksAreClickable = true;
-//
-//                    //Marking editing as complete
+
+                    //Marking editing as complete
 //                    taskBeingEdited = false;
+
+                    taskBeingEdited = null;
 
                     return true;
 
@@ -486,7 +488,10 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     //Actions to occur when fab clicked
-    private void addTask() {
+    public void addTask(Task task) {
+
+        //track the task which is being edited. This is null when creating a new task
+        taskBeingEdited = task;
 
         vibrate.vibrate(50);
 
@@ -526,8 +531,9 @@ public class MainActivity extends AppCompatActivity implements
         if (!menu.hasVisibleItems()) {
             getMenuInflater().inflate(R.menu.menu_main, menu);
             miPro = this.toolbarLight.getMenu().findItem(R.id.buy);
-            miMotivation = this.toolbarLight.getMenu().findItem(R.id.motivation);
-            miMute = this.toolbarLight.getMenu().findItem(R.id.mute);
+            MenuItem miMotivation = this.toolbarLight.getMenu().findItem(R.id.motivation);
+            //Action bar options
+            MenuItem miMute = this.toolbarLight.getMenu().findItem(R.id.mute);
             if (boolShowMotivation) {
                 miMotivation.setChecked(true);
             }
@@ -693,7 +699,8 @@ public class MainActivity extends AppCompatActivity implements
     //Actions to occur when keyboard is showing
     void checkKeyboardShowing() {
 
-        activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        activityRootView.getViewTreeObserver().addOnGlobalLayoutListener
+                (new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
 
@@ -762,7 +769,8 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
 
-                //show review prompt no more than four times. Setting times shown to five means it'll no long be shown
+                //show review prompt no more than four times. Setting times
+                //shown to five means it'll no long be shown
                 intShowReviewPrompt = 5;
                 preferences.edit().putInt(SHOW_REVIEW_KEY, intShowReviewPrompt).apply();
                 String URL = "https://play.google.com/store/apps/details?id=com.violenthoboenterprises.blistful";

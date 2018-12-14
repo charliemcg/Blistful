@@ -37,6 +37,12 @@ public class MainActivityPresenterImpl implements MainActivityPresenter {
     }
 
     @Override
+    public void setTask(Task taskBeingEdited, String editedTaskString) {
+        taskBeingEdited.setTask(editedTaskString);
+        update(taskBeingEdited);
+    }
+
+    @Override
     public boolean showReviewPrompt(int intShowReviewPrompt, long lngTimeInstalled) {
         Calendar calendar = new GregorianCalendar().getInstance();
         //show review prompt after three days
