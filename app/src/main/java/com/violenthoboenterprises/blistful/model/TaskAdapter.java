@@ -37,7 +37,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
     private View activityRootView;
     private TaskViewModel taskViewModel;
 
-    public TaskAdapter(Context context, MainActivityPresenter mainActivityPresenter, SubtasksPresenter subtasksPresenter, View activityRootView, TaskViewModel taskViewModel) {
+    public TaskAdapter(Context context, MainActivityPresenter mainActivityPresenter,
+                       SubtasksPresenter subtasksPresenter, View activityRootView,
+                       TaskViewModel taskViewModel) {
         this.context = context;
         this.mainActivityPresenter = mainActivityPresenter;
         this.subtasksPresenter = subtasksPresenter;

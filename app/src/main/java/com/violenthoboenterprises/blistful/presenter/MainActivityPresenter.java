@@ -10,4 +10,5 @@ public interface MainActivityPresenter {
 
     void update(Task task);
 
+    boolean showReviewPrompt(int intShowReviewPrompt, long lngTimeInstalled);
 }

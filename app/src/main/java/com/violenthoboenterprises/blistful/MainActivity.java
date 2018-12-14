@@ -581,9 +581,11 @@ public class MainActivity extends AppCompatActivity implements
             if (boolShowMotivation) {
                 boolShowMotivation = false;
                 item.setChecked(false);
+                preferences.edit().putBoolean(MOTIVATION_KEY, false).apply();
             } else {
                 boolShowMotivation = true;
                 item.setChecked(true);
+                preferences.edit().putBoolean(MOTIVATION_KEY, false).apply();
             }
 
             return true;
@@ -739,31 +741,10 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void showPrompt() {
-
-        Calendar calendar = new GregorianCalendar().getInstance();
-        //show review prompt after three days
-        if(intShowReviewPrompt == 0 && (lngTimeInstalled
-                <= (calendar.getTimeInMillis() - 259200000))){
-            preferences.edit().putInt(SHOW_REVIEW_KEY, ++intShowReviewPrompt).apply();
-            prompt();
-        //show review prompt after one week
-        }else if (intShowReviewPrompt == 1 && (lngTimeInstalled
-                <= (calendar.getTimeInMillis() - 604800000))){
-            preferences.edit().putInt(SHOW_REVIEW_KEY, ++intShowReviewPrompt).apply();
-            prompt();
-        //show review prompt after one month
-        //numbers getting too long. converting from milliseconds to seconds
-        }else if (intShowReviewPrompt == 2 && ((lngTimeInstalled / 1000)
-                <= ((calendar.getTimeInMillis() / 1000) - 2635200))){
-            preferences.edit().putInt(SHOW_REVIEW_KEY, ++intShowReviewPrompt).apply();
-            prompt();
-        //show review prompt after two months
-        }else if (intShowReviewPrompt == 3 && ((lngTimeInstalled / 1000)
-                <= ((calendar.getTimeInMillis() / 1000) - 5270400))){
+        if(mainActivityPresenter.showReviewPrompt(intShowReviewPrompt, lngTimeInstalled)){
             preferences.edit().putInt(SHOW_REVIEW_KEY, ++intShowReviewPrompt).apply();
             prompt();
         }
-
     }
 
     private void prompt() {
