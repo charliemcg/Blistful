@@ -31,7 +31,6 @@ import com.violenthoboenterprises.blistful.view.ReminderView;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Locale;
 
 public class ReminderActivity extends MainActivity implements ReminderView {
 
@@ -57,21 +56,21 @@ public class ReminderActivity extends MainActivity implements ReminderView {
         dueToolbar = findViewById(R.id.dueToolbar);
         setSupportActionBar(dueToolbar);
 
-        ReminderViewModel reminderViewModel =
-                ViewModelProviders.of(this).get(ReminderViewModel.class);
-        TaskViewModel taskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
-        reminderPresenter = new ReminderPresenterImpl(ReminderActivity.this,
-                taskViewModel, reminderViewModel, getApplicationContext());
         //getting the task to which this note is related
         task = (Task) getIntent().getSerializableExtra("task");
+        ReminderViewModel reminderViewModel =
+                ViewModelProviders.of(this).get(ReminderViewModel.class);
         //getting the instance of the reminder
-        reminder = reminderViewModel.getReminderByParent(task.getId());
+        reminder = reminderViewModel.getReminderByParent(reminderPresenter.getId());
+        TaskViewModel taskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
+        reminderPresenter = new ReminderPresenterImpl(ReminderActivity.this,
+                taskViewModel, reminderViewModel, task, reminder, getApplicationContext());
 
         //Create a reminder instance if there isn't one already
-        if (reminder == null) {
-            reminderPresenter.addReminder(task.getId());
-            reminder = reminderViewModel.getReminderByParent(task.getId());
-        }
+//        if (reminder == null) {
+//            reminderPresenter.addReminder(reminderPresenter.getId());
+//            reminder = reminderViewModel.getReminderByParent(reminderPresenter.getId());
+//        }
 
         imgTime = findViewById(R.id.time);
         imgTimeFaded = findViewById(R.id.timeFadedLight);
@@ -96,65 +95,67 @@ public class ReminderActivity extends MainActivity implements ReminderView {
         onCreateOptionsMenu(dueToolbar.getMenu());
 
         //Inform user that they can set an alarm
-        if (reminder.getYear() == 0) {
+        if (reminderPresenter.getYear() == 0) {
             tvDate.setText(R.string.addDate);
         }
-        if (reminder.getHour() == 0) {
+        if (reminderPresenter.getHour() == 0) {
             tvTime.setText(R.string.addTime);
         }
 
-        String formattedMonth = "";
+//        String formattedMonth = "";
 
-        if (reminder.getYear() != 0) {
+        if (reminderPresenter.getYear() != 0) {
             imgCalendarFaded.setVisibility(View.INVISIBLE);
             imgCalendar.setVisibility(View.VISIBLE);
 
-            int intMonth = reminder.getMonth() + 1;
-            if (intMonth == 1) {
-                formattedMonth = getString(R.string.jan);
-            } else if (intMonth == 2) {
-                formattedMonth = getString(R.string.feb);
-            } else if (intMonth == 3) {
-                formattedMonth = getString(R.string.mar);
-            } else if (intMonth == 4) {
-                formattedMonth = getString(R.string.apr);
-            } else if (intMonth == 5) {
-                formattedMonth = getString(R.string.may);
-            } else if (intMonth == 6) {
-                formattedMonth = getString(R.string.jun);
-            } else if (intMonth == 7) {
-                formattedMonth = getString(R.string.jul);
-            } else if (intMonth == 8) {
-                formattedMonth = getString(R.string.aug);
-            } else if (intMonth == 9) {
-                formattedMonth = getString(R.string.sep);
-            } else if (intMonth == 10) {
-                formattedMonth = getString(R.string.oct);
-            } else if (intMonth == 11) {
-                formattedMonth = getString(R.string.nov);
-            } else if (intMonth == 12) {
-                formattedMonth = getString(R.string.dec);
-            }
+//            int intMonth = reminderPresenter.getMonth() + 1;
+//            if (intMonth == 1) {
+//                formattedMonth = getString(R.string.jan);
+//            } else if (intMonth == 2) {
+//                formattedMonth = getString(R.string.feb);
+//            } else if (intMonth == 3) {
+//                formattedMonth = getString(R.string.mar);
+//            } else if (intMonth == 4) {
+//                formattedMonth = getString(R.string.apr);
+//            } else if (intMonth == 5) {
+//                formattedMonth = getString(R.string.may);
+//            } else if (intMonth == 6) {
+//                formattedMonth = getString(R.string.jun);
+//            } else if (intMonth == 7) {
+//                formattedMonth = getString(R.string.jul);
+//            } else if (intMonth == 8) {
+//                formattedMonth = getString(R.string.aug);
+//            } else if (intMonth == 9) {
+//                formattedMonth = getString(R.string.sep);
+//            } else if (intMonth == 10) {
+//                formattedMonth = getString(R.string.oct);
+//            } else if (intMonth == 11) {
+//                formattedMonth = getString(R.string.nov);
+//            } else if (intMonth == 12) {
+//                formattedMonth = getString(R.string.dec);
+//            }
+//
+//            String lang = String.valueOf(Locale.getDefault());
+//            String formattedDate;
+//            if (lang.equals("en_AS") || lang.equals("en_BM")
+//                    || lang.equals("en_CA") || lang.equals("en_GU")
+//                    || lang.equals("en_PH")
+//                    || lang.equals("en_PR") || lang.equals("en_UM")
+//                    || lang.equals("en_US") || lang.equals("en_VI")) {
+//                formattedDate = formattedMonth + " " + reminderPresenter.getDay();
+//                tvDate.setText(formattedDate);
+//            } else {
+//                formattedDate = reminderPresenter.getDay() + " " + formattedMonth;
+//                tvDate.setText(formattedDate);
+//            }
 
-            String lang = String.valueOf(Locale.getDefault());
-            String formattedDate;
-            if (lang.equals("en_AS") || lang.equals("en_BM")
-                    || lang.equals("en_CA") || lang.equals("en_GU")
-                    || lang.equals("en_PH")
-                    || lang.equals("en_PR") || lang.equals("en_UM")
-                    || lang.equals("en_US") || lang.equals("en_VI")) {
-                formattedDate = formattedMonth + " " + reminder.getDay();
-                tvDate.setText(formattedDate);
-            } else {
-                formattedDate = reminder.getDay() + " " + formattedMonth;
-                tvDate.setText(formattedDate);
-            }
+            tvDate.setText(reminderPresenter.getFormattedDate());
 
             imgTimeFaded.setVisibility(View.INVISIBLE);
             imgTime.setVisibility(View.VISIBLE);
 
-            String formattedTime = adjustTime();
-            tvTime.setText(formattedTime);
+//            String formattedTime = adjustTime();
+            tvTime.setText(reminderPresenter.getFormattedTime());
 
             if (screenSize == 3) {
                 tvDate.setTextSize(65);
@@ -169,21 +170,17 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
         }
 
-        dueToolbar.setSubtitleTextColor(Color.parseColor("#666666"));
-        tvDate.setTextColor(Color.parseColor("#000000"));
-        tvTime.setTextColor(Color.parseColor("#000000"));
-
         //Highlight the repeat type or highlight "No Repeat" if none exists
-        if (task.getRepeatInterval() == null) {
+        if (reminderPresenter.getRepeatInterval() == null) {
             imgCancelRepeat.setVisibility(View.INVISIBLE);
             imgCancelRepeat.setVisibility(View.VISIBLE);
-        } else if (task.getRepeatInterval().equals(REPEAT_DAY)) {
+        } else if (reminderPresenter.getRepeatInterval().equals(REPEAT_DAY)) {
             imgDailyFaded.setVisibility(View.INVISIBLE);
             imgDaily.setVisibility(View.VISIBLE);
-        } else if (task.getRepeatInterval().equals(REPEAT_WEEK)) {
+        } else if (reminderPresenter.getRepeatInterval().equals(REPEAT_WEEK)) {
             imgWeeklyFaded.setVisibility(View.INVISIBLE);
             imgWeekly.setVisibility(View.VISIBLE);
-        } else if (task.getRepeatInterval().equals(REPEAT_MONTH)) {
+        } else if (reminderPresenter.getRepeatInterval().equals(REPEAT_MONTH)) {
             imgMonthlyFaded.setVisibility(View.INVISIBLE);
             imgMonthly.setVisibility(View.VISIBLE);
         }
@@ -226,7 +223,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             @Override
             public void onClick(View v) {
 
-                if (!boolMute && task.getRepeatInterval() == null) {
+                if (!boolMute && reminderPresenter.getRepeatInterval() == null) {
                     mpBlip.start();
                 }
 
@@ -241,14 +238,13 @@ public class ReminderActivity extends MainActivity implements ReminderView {
                 imgMonthlyFaded.setVisibility(View.VISIBLE);
                 imgMonthly.setVisibility(View.INVISIBLE);
 
-                if (reminder.getYear() == 0 && reminder.getHour() == 0) {
+                if (reminderPresenter.getYear() == 0 && reminderPresenter.getHour() == 0) {
 
                     killReminder.setVisible(false);
 
                 }
 
-                task.setRepeatInterval(null);
-                reminderPresenter.update(task);
+                reminderPresenter.setRepeatInterval(null);
 
             }
 
@@ -260,8 +256,8 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             @Override
             public void onClick(View v) {
 
-                if (!boolMute && task.getRepeatInterval() != null) {
-                    if (!task.getRepeatInterval().equals(REPEAT_DAY)) {
+                if (!boolMute && reminderPresenter.getRepeatInterval() != null) {
+                    if (!reminderPresenter.getRepeatInterval().equals(REPEAT_DAY)) {
                         mpBlip.start();
                     }
                 }
@@ -280,8 +276,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
                 killReminder.setVisible(true);
 
-                task.setRepeatInterval(REPEAT_DAY);
-                reminderPresenter.update(task);
+                reminderPresenter.setRepeatInterval(REPEAT_DAY);
 
             }
 
@@ -293,8 +288,8 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             @Override
             public void onClick(View v) {
 
-                if (!boolMute && task.getRepeatInterval() != null) {
-                    if (!task.getRepeatInterval().equals(REPEAT_WEEK)) {
+                if (!boolMute && reminderPresenter.getRepeatInterval() != null) {
+                    if (!reminderPresenter.getRepeatInterval().equals(REPEAT_WEEK)) {
                         mpBlip.start();
                     }
                 }
@@ -313,8 +308,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
                 killReminder.setVisible(true);
 
-                task.setRepeatInterval(REPEAT_WEEK);
-                reminderPresenter.update(task);
+                reminderPresenter.setRepeatInterval(REPEAT_WEEK);
 
             }
 
@@ -326,8 +320,8 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             @Override
             public void onClick(View v) {
 
-                if (!boolMute && task.getRepeatInterval() != null) {
-                    if (!task.getRepeatInterval().equals(REPEAT_MONTH)) {
+                if (!boolMute && reminderPresenter.getRepeatInterval() != null) {
+                    if (!reminderPresenter.getRepeatInterval().equals(REPEAT_MONTH)) {
                         mpBlip.start();
                     }
                 }
@@ -346,8 +340,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
                 killReminder.setVisible(true);
 
-                task.setRepeatInterval(REPEAT_MONTH);
-                reminderPresenter.update(task);
+                reminderPresenter.setRepeatInterval(REPEAT_MONTH);
 
             }
 
@@ -356,32 +349,32 @@ public class ReminderActivity extends MainActivity implements ReminderView {
     }
 
     //Formatting the time into an easy to read string
-    private static String adjustTime() {
-        String adjustedAmPm;
-        int adjustedHour = reminder.getHour();
-        int adjustedMinute = reminder.getMinute();
-        String adjustedMinuteString;
-
-        if (adjustedHour < 12) {
-            adjustedAmPm = "am";
-        } else {
-            adjustedAmPm = "pm";
-        }
-
-        if (adjustedHour == 0) {
-            adjustedHour = 12;
-        } else if (adjustedHour > 12) {
-            adjustedHour -= 12;
-        }
-
-        if (adjustedMinute < 10) {
-            adjustedMinuteString = "0" + adjustedMinute;
-        } else {
-            adjustedMinuteString = String.valueOf(adjustedMinute);
-        }
-
-        return adjustedHour + ":" + adjustedMinuteString + adjustedAmPm;
-    }
+//    private static String adjustTime() {
+//        String adjustedAmPm;
+//        int adjustedHour = reminderPresenter.getHour();
+//        int adjustedMinute = reminderPresenter.getMinute();
+//        String adjustedMinuteString;
+//
+//        if (adjustedHour < 12) {
+//            adjustedAmPm = "am";
+//        } else {
+//            adjustedAmPm = "pm";
+//        }
+//
+//        if (adjustedHour == 0) {
+//            adjustedHour = 12;
+//        } else if (adjustedHour > 12) {
+//            adjustedHour -= 12;
+//        }
+//
+//        if (adjustedMinute < 10) {
+//            adjustedMinuteString = "0" + adjustedMinute;
+//        } else {
+//            adjustedMinuteString = String.valueOf(adjustedMinute);
+//        }
+//
+//        return adjustedHour + ":" + adjustedMinuteString + adjustedAmPm;
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -390,9 +383,9 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             killReminder = this.dueToolbar.getMenu().findItem(R.id.killAlarmItem);
             killReminderOpen = this.dueToolbar.getMenu().findItem(R.id.trashAlarmOpen);
             this.dueToolbar.setTitle(R.string.setDateTime);
-            this.dueToolbar.setSubtitle(task.getTask());
+            this.dueToolbar.setSubtitle(reminderPresenter.getTask());
             //if reminder already exists then delete icon should be present
-            if (reminder.getYear() == 0) {
+            if (reminderPresenter.getYear() == 0) {
                 killReminder.setVisible(false);
             } else {
                 killReminder.setVisible(true);
@@ -438,16 +431,14 @@ public class ReminderActivity extends MainActivity implements ReminderView {
                                         mpTrash.start();
                                     }
 
-                                    task.setRepeatInterval(null);
-                                    task.setTimestamp(0);
-                                    reminderPresenter.update(task);
+                                    reminderPresenter.setRepeatInterval(null);
+                                    reminderPresenter.setTimestamp(0);
 
-                                    reminder.setYear(0);
-                                    reminder.setMonth(0);
-                                    reminder.setDay(0);
-                                    reminder.setHour(0);
-                                    reminder.setMinute(0);
-                                    reminderPresenter.updateReminder(reminder);
+                                    reminderPresenter.setYear(0);
+                                    reminderPresenter.setMonth(0);
+                                    reminderPresenter.setDay(0);
+                                    reminderPresenter.setHour(0);
+                                    reminderPresenter.setMinute(0);
 
                                     imgCalendarFaded.setVisibility(View.VISIBLE);
                                     imgCalendar.setVisibility(View.INVISIBLE);
@@ -534,48 +525,50 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             TextView tvDate = getActivity().findViewById(R.id.dateTextView);
 
             //Format and display chosen date
-            String formattedMonth = "";
+//            String formattedMonth = "";
+//
+//            int intMonth = month + 1;
+//            if (intMonth == 1) {
+//                formattedMonth = getString(R.string.jan);
+//            } else if (intMonth == 2) {
+//                formattedMonth = getString(R.string.feb);
+//            } else if (intMonth == 3) {
+//                formattedMonth = getString(R.string.mar);
+//            } else if (intMonth == 4) {
+//                formattedMonth = getString(R.string.apr);
+//            } else if (intMonth == 5) {
+//                formattedMonth = getString(R.string.may);
+//            } else if (intMonth == 6) {
+//                formattedMonth = getString(R.string.jun);
+//            } else if (intMonth == 7) {
+//                formattedMonth = getString(R.string.jul);
+//            } else if (intMonth == 8) {
+//                formattedMonth = getString(R.string.aug);
+//            } else if (intMonth == 9) {
+//                formattedMonth = getString(R.string.sep);
+//            } else if (intMonth == 10) {
+//                formattedMonth = getString(R.string.oct);
+//            } else if (intMonth == 11) {
+//                formattedMonth = getString(R.string.nov);
+//            } else if (intMonth == 12) {
+//                formattedMonth = getString(R.string.dec);
+//            }
+//
+//            String lang = String.valueOf(Locale.getDefault());
+//            String formattedDate;
+//            if (lang.equals("en_AS") || lang.equals("en_BM")
+//                    || lang.equals("en_CA") || lang.equals("en_GU")
+//                    || lang.equals("en_PH")
+//                    || lang.equals("en_PR") || lang.equals("en_UM")
+//                    || lang.equals("en_US") || lang.equals("en_VI")) {
+//                formattedDate = formattedMonth + " " + day;
+//                tvDate.setText(formattedDate);
+//            } else {
+//                formattedDate = day + " " + formattedMonth;
+//                tvDate.setText(formattedDate);
+//            }
 
-            int intMonth = month + 1;
-            if (intMonth == 1) {
-                formattedMonth = getString(R.string.jan);
-            } else if (intMonth == 2) {
-                formattedMonth = getString(R.string.feb);
-            } else if (intMonth == 3) {
-                formattedMonth = getString(R.string.mar);
-            } else if (intMonth == 4) {
-                formattedMonth = getString(R.string.apr);
-            } else if (intMonth == 5) {
-                formattedMonth = getString(R.string.may);
-            } else if (intMonth == 6) {
-                formattedMonth = getString(R.string.jun);
-            } else if (intMonth == 7) {
-                formattedMonth = getString(R.string.jul);
-            } else if (intMonth == 8) {
-                formattedMonth = getString(R.string.aug);
-            } else if (intMonth == 9) {
-                formattedMonth = getString(R.string.sep);
-            } else if (intMonth == 10) {
-                formattedMonth = getString(R.string.oct);
-            } else if (intMonth == 11) {
-                formattedMonth = getString(R.string.nov);
-            } else if (intMonth == 12) {
-                formattedMonth = getString(R.string.dec);
-            }
-
-            String lang = String.valueOf(Locale.getDefault());
-            String formattedDate;
-            if (lang.equals("en_AS") || lang.equals("en_BM")
-                    || lang.equals("en_CA") || lang.equals("en_GU")
-                    || lang.equals("en_PH")
-                    || lang.equals("en_PR") || lang.equals("en_UM")
-                    || lang.equals("en_US") || lang.equals("en_VI")) {
-                formattedDate = formattedMonth + " " + day;
-                tvDate.setText(formattedDate);
-            } else {
-                formattedDate = day + " " + formattedMonth;
-                tvDate.setText(formattedDate);
-            }
+            tvDate.setText(reminderPresenter.getFormattedDate());
 
             vibrate.vibrate(50);
 
@@ -595,10 +588,9 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
             killReminder.setVisible(true);
 
-            reminder.setYear(year);
-            reminder.setMonth(month);
-            reminder.setDay(day);
-            reminderPresenter.updateReminder(reminder);
+            reminderPresenter.setYear(year);
+            reminderPresenter.setMonth(month);
+            reminderPresenter.setDay(day);
 
         }
 
@@ -660,12 +652,11 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
             killReminder.setVisible(true);
 
-            reminder.setHour(hour);
-            reminder.setMinute(minute);
-            reminderPresenter.updateReminder(reminder);
+            reminderPresenter.setHour(hour);
+            reminderPresenter.setMinute(minute);
 
-            String formattedTime = adjustTime();
-            timeTextView.setText(formattedTime);
+//            String formattedTime = adjustTime();
+            timeTextView.setText(reminderPresenter.getFormattedTime());
 
         }
 
@@ -690,43 +681,42 @@ public class ReminderActivity extends MainActivity implements ReminderView {
     public void onBackPressed() {
 
         //Timestamp needs to be saved if user has set a reminder
-        if (reminder.getYear() != 0 || reminder.getHour() != 0 ||
-                task.getRepeatInterval() != null) {
+        if (reminderPresenter.getYear() != 0 || reminderPresenter.getHour() != 0 ||
+                reminderPresenter.getRepeatInterval() != null) {
 
             Calendar calendar = new GregorianCalendar();
             //set current date if date wasn't picked
-            if (reminder.getYear() == 0) {
-                reminder.setYear(calendar.get(Calendar.YEAR));
-                reminder.setMonth(calendar.get(Calendar.MONTH));
-                reminder.setDay(calendar.get(Calendar.DAY_OF_MONTH));
+            if (reminderPresenter.getYear() == 0) {
+                reminderPresenter.setYear(calendar.get(Calendar.YEAR));
+                reminderPresenter.setMonth(calendar.get(Calendar.MONTH));
+                reminderPresenter.setDay(calendar.get(Calendar.DAY_OF_MONTH));
             }
             //set current time if time wasn't picked
-            if (reminder.getHour() == 0) {
-                reminder.setHour(calendar.get(Calendar.HOUR));
-                reminder.setMinute(calendar.get(Calendar.MINUTE));
+            if (reminderPresenter.getHour() == 0) {
+                reminderPresenter.setHour(calendar.get(Calendar.HOUR));
+                reminderPresenter.setMinute(calendar.get(Calendar.MINUTE));
             }
-            //updating the reminder
-            reminderPresenter.updateReminder(reminder);
             //Setting timestamp of the reminder
-            calendar.set(Calendar.YEAR, reminder.getYear());
-            calendar.set(Calendar.MONTH, reminder.getMonth());
-            calendar.set(Calendar.DAY_OF_MONTH, reminder.getDay());
-            calendar.set(Calendar.HOUR, reminder.getHour());
-            calendar.set(Calendar.MINUTE, reminder.getMinute());
-            task.setTimestamp(calendar.getTimeInMillis());
+            calendar.set(Calendar.YEAR, reminderPresenter.getYear());
+            calendar.set(Calendar.MONTH, reminderPresenter.getMonth());
+            calendar.set(Calendar.DAY_OF_MONTH, reminderPresenter.getDay());
+            calendar.set(Calendar.HOUR, reminderPresenter.getHour());
+            calendar.set(Calendar.MINUTE, reminderPresenter.getMinute());
             //Updating the task
-            reminderPresenter.update(task);
+            reminderPresenter.setTimestamp(calendar.getTimeInMillis());
 
         }
 
         //return to mainActivity
-        Intent intent = new Intent();
+//        Intent intent = new Intent();
+//
+//        intent.setClass(getApplicationContext(), MainActivity.class);
+//
+//        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//
+//        startActivity(intent);
 
-        intent.setClass(getApplicationContext(), MainActivity.class);
-
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        startActivity(intent);
+        super.onBackPressed();
 
     }
 

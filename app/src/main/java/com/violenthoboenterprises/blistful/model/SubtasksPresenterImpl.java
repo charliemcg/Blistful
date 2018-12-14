@@ -11,12 +11,14 @@ public class SubtasksPresenterImpl implements SubtasksPresenter {
 
     private SubtaskViewModel subtaskViewModel;
     private SubtasksView subtasksView;
+    private Task task;
     private Context context;
 
-    public SubtasksPresenterImpl(SubtasksView subtasksView,
-                                 SubtaskViewModel subtaskViewModel, Context context) {
+    public SubtasksPresenterImpl(SubtasksView subtasksView, SubtaskViewModel subtaskViewModel,
+                                 Task task, Context context) {
         this.subtaskViewModel = subtaskViewModel;
         this.subtasksView = subtasksView;
+        this.task = task;
         this.context = context;
     }
 
@@ -26,10 +28,10 @@ public class SubtasksPresenterImpl implements SubtasksPresenter {
         subtaskViewModel.insert(subtask);
     }
 
-    @Override
-    public Subtask getSubtask(int parentId, int subtaskId) {
-        return subtaskViewModel.getSubtask(parentId, subtaskId);
-    }
+//    @Override
+//    public Subtask getSubtask(int parentId, int subtaskId) {
+//        return subtaskViewModel.getSubtask(parentId, subtaskId);
+//    }
 
     @Override
     public void update(Subtask subtask) {
@@ -39,6 +41,11 @@ public class SubtasksPresenterImpl implements SubtasksPresenter {
     @Override
     public List<Subtask> getSubtasksByParent(int parentId) {
         return subtaskViewModel.getSubtasksByParent(parentId);
+    }
+
+    @Override
+    public int getId() {
+        return task.getId();
     }
 
 }

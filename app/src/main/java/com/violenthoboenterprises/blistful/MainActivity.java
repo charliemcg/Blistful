@@ -220,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements
         mainActivityPresenter = new MainActivityPresenterImpl
                 (MainActivity.this, taskViewModel, getApplicationContext());
         SubtasksPresenter subtasksPresenter = new SubtasksPresenterImpl
-                (null, subtaskViewModel, getApplicationContext());
+                (null, subtaskViewModel, null, getApplicationContext());
 
         //Initialising variables
         etTask = findViewById(R.id.taskNameEditText);
@@ -279,6 +279,11 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onChanged(@Nullable List<Task> tasks){
                 adapter.setTasks(tasks);
+                if(adapter.getItemCount() > 0){
+                    imgNoTasks.setVisibility(View.GONE);
+                }else{
+                    imgNoTasks.setVisibility(View.VISIBLE);
+                }
             }
         });
 

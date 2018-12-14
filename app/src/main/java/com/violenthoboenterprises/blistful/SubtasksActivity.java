@@ -68,12 +68,12 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
         setContentView(R.layout.checklist_layout);
         Toolbar subTasksToolbar = findViewById(R.id.subTasksToolbar);
 
-        subtaskViewModel = ViewModelProviders.of(this).get(SubtaskViewModel.class);
-        subtasksPresenter = new SubtasksPresenterImpl
-                (SubtasksActivity.this, subtaskViewModel, getApplicationContext());
-
         //Getting the parent task to which the subtasks are related
         task = (Task) getIntent().getSerializableExtra("task");
+        subtaskViewModel = ViewModelProviders.of(this).get(SubtaskViewModel.class);
+        subtasksPresenter = new SubtasksPresenterImpl(SubtasksActivity.this,
+                subtaskViewModel, task, getApplicationContext());
+
         keyboard = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         etSubtask = findViewById(R.id.checklistEditText);
 
@@ -90,7 +90,7 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
         //TODO find out if observer is necessary
         subtaskViewModel = ViewModelProviders.of(this).get(SubtaskViewModel.class);
         //need to specifically get subtasks belonging to parent task
-        subtaskViewModel.getAllSubtasks(task.getId()).observe(this, new Observer<List<Subtask>>(){
+        subtaskViewModel.getAllSubtasks(subtasksPresenter.getId()).observe(this, new Observer<List<Subtask>>(){
             @Override
             public void onChanged(@Nullable List<Subtask> subtasks){
                 subtasksAdapter.setSubtasks(subtasks);
@@ -163,14 +163,14 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
                             mpBlip.start();
                         }
 
-                        subtasksPresenter.addSubtask(task.getId(), subtaskName);
+                        subtasksPresenter.addSubtask(subtasksPresenter.getId(), subtaskName);
 
                     }
 
                     return true;
 
                 //Actions to occur when editing sub tasks
-                }else if(actionId == EditorInfo.IME_ACTION_DONE && subTaskBeingEdited){
+                }else if(actionId == EditorInfo.IME_ACTION_DONE){
 
                     vibrate.vibrate(50);
 

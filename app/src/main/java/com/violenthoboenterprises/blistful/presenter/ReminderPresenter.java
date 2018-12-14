@@ -7,8 +7,41 @@ public interface ReminderPresenter {
 
     void addReminder(int id);
 
-    void update(Task task);
+    void updateTask(Task task);
 
     void updateReminder(Reminder reminder);
 
+    int getId();
+
+    String getRepeatInterval();
+
+    void setRepeatInterval(String interval);
+
+    String getTask();
+
+    void setTimestamp(long stamp);
+
+    int getYear();
+
+    int getHour();
+
+    int getMonth();
+
+    int getDay();
+
+    void setYear(int year);
+
+    void setMonth(int month);
+
+    void setDay(int day);
+
+    void setHour(int hour);
+
+    void setMinute(int minute);
+
+    int getMinute();
+
+    String getFormattedDate();
+
+    String getFormattedTime();
 }

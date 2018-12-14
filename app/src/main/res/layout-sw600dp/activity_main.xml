@@ -44,16 +44,16 @@
         app:layout_constraintTop_toBottomOf="@+id/toolbar_light"
         tools:listitem="@layout/task_layout" />
 
-    <!--<ImageView-->
-    <!--android:id="@+id/imgNoTasks"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:contentDescription="@string/accessInformUserNoTasks"-->
-    <!--android:src="@drawable/no_tasks_light"-->
-    <!--app:layout_constraintTop_toTopOf="parent"-->
-    <!--app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--app:layout_constraintStart_toStartOf="parent"-->
-    <!--app:layout_constraintEnd_toEndOf="parent"/>-->
+    <ImageView
+        android:id="@+id/imgNoTasks"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/accessInformUserNoTasks"
+        android:src="@drawable/no_tasks_light"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/taskNameEditText"

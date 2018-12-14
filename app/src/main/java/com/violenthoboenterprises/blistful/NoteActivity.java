@@ -44,11 +44,11 @@ public class NoteActivity extends MainActivity implements NoteView {
         noteToolbar = findViewById(R.id.noteToolbar);
         setSupportActionBar(noteToolbar);
 
-        taskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
-        notePresenter = new NotePresenterImpl
-                (NoteActivity.this, taskViewModel, getApplicationContext());
         //getting the task to which this note is related
         task = (Task) getIntent().getSerializableExtra("task");
+        taskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
+        notePresenter = new NotePresenterImpl
+                (NoteActivity.this, taskViewModel, task, getApplicationContext());
 
         tvNote = findViewById(R.id.noteTextView);
         etNote = findViewById(R.id.noteEditText);
@@ -60,11 +60,11 @@ public class NoteActivity extends MainActivity implements NoteView {
         btnSubmitNoteThree = findViewById(R.id.submitNoteTwoHalf);
 
         getSupportActionBar().setTitle(R.string.note);
-        noteToolbar.setSubtitle(task.getTask());
+        noteToolbar.setSubtitle(notePresenter.getTaskName());
 
         tvNote.setMovementMethod(new ScrollingMovementMethod());
 
-        String theNote = task.getNote();
+        String theNote = notePresenter.getNote();
 
         //Display note if there is one
         if (theNote != null) {
@@ -96,8 +96,7 @@ public class NoteActivity extends MainActivity implements NoteView {
 
                 //new note being added
                 String newNote = etNote.getText().toString();
-                task.setNote(newNote);
-                taskViewModel.update(task);
+                notePresenter.update(newNote);
 
                 //display new note in the view
                 tvNote.setText(newNote);
@@ -131,7 +130,7 @@ public class NoteActivity extends MainActivity implements NoteView {
                 keyboard.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 
                 //set text to existing note
-                etNote.setText(task.getNote());
+                etNote.setText(notePresenter.getNote());
 
                 //put cursor at end of text
                 etNote.setSelection(etNote.getText().length());
@@ -276,8 +275,7 @@ public class NoteActivity extends MainActivity implements NoteView {
 
                                     trashNote.setVisible(false);
 
-                                    task.setNote(null);
-                                    taskViewModel.update(task);
+                                    notePresenter.update(null);
 
                                     tvNote.setText("");
 
