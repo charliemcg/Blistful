@@ -226,8 +226,8 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             @Override
             public void onClick(View v) {
 
-                if (!mute && task.getRepeatInterval() == null) {
-                    blip.start();
+                if (!boolMute && task.getRepeatInterval() == null) {
+                    mpBlip.start();
                 }
 
                 vibrate.vibrate(50);
@@ -260,9 +260,9 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             @Override
             public void onClick(View v) {
 
-                if (!mute && task.getRepeatInterval() != null) {
+                if (!boolMute && task.getRepeatInterval() != null) {
                     if (!task.getRepeatInterval().equals(REPEAT_DAY)) {
-                        blip.start();
+                        mpBlip.start();
                     }
                 }
 
@@ -277,10 +277,6 @@ public class ReminderActivity extends MainActivity implements ReminderView {
                 imgWeekly.setVisibility(View.INVISIBLE);
                 imgMonthlyFaded.setVisibility(View.VISIBLE);
                 imgMonthly.setVisibility(View.INVISIBLE);
-
-                repeatInterval = AlarmManager.INTERVAL_DAY;
-
-                repeating = true;
 
                 killReminder.setVisible(true);
 
@@ -297,9 +293,9 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             @Override
             public void onClick(View v) {
 
-                if (!mute && task.getRepeatInterval() != null) {
+                if (!boolMute && task.getRepeatInterval() != null) {
                     if (!task.getRepeatInterval().equals(REPEAT_WEEK)) {
-                        blip.start();
+                        mpBlip.start();
                     }
                 }
 
@@ -314,10 +310,6 @@ public class ReminderActivity extends MainActivity implements ReminderView {
                 imgWeekly.setVisibility(View.VISIBLE);
                 imgMonthlyFaded.setVisibility(View.VISIBLE);
                 imgMonthly.setVisibility(View.INVISIBLE);
-
-                repeatInterval = AlarmManager.INTERVAL_DAY * 7;
-
-                repeating = true;
 
                 killReminder.setVisible(true);
 
@@ -334,9 +326,9 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             @Override
             public void onClick(View v) {
 
-                if (!mute && task.getRepeatInterval() != null) {
+                if (!boolMute && task.getRepeatInterval() != null) {
                     if (!task.getRepeatInterval().equals(REPEAT_MONTH)) {
-                        blip.start();
+                        mpBlip.start();
                     }
                 }
 
@@ -351,8 +343,6 @@ public class ReminderActivity extends MainActivity implements ReminderView {
                 imgWeekly.setVisibility(View.INVISIBLE);
                 imgMonthlyFaded.setVisibility(View.INVISIBLE);
                 imgMonthly.setVisibility(View.VISIBLE);
-
-                repeating = true;
 
                 killReminder.setVisible(true);
 
@@ -444,8 +434,8 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
                                     vibrate.vibrate(50);
 
-                                    if (!mute) {
-                                        trash.start();
+                                    if (!boolMute) {
+                                        mpTrash.start();
                                     }
 
                                     task.setRepeatInterval(null);
@@ -537,8 +527,8 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
         public void onDateSet(DatePicker view, int year, int month, int day) {
 
-            if (!mute) {
-                blip.start();
+            if (!boolMute) {
+                mpBlip.start();
             }
 
             TextView tvDate = getActivity().findViewById(R.id.dateTextView);
@@ -645,8 +635,8 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
             TextView timeTextView = getActivity().findViewById(R.id.timeTextView);
 
-            if (!mute) {
-                blip.start();
+            if (!boolMute) {
+                mpBlip.start();
             }
 
             MainActivity.vibrate.vibrate(50);

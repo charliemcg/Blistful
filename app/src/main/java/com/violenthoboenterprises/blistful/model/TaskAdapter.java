@@ -68,9 +68,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
             holder.subtasksIcon.setVisibility(View.VISIBLE);
         }
         if (currentTask.getRepeatInterval() != null) {
-            if (!currentTask.getRepeatInterval().equals("none")) {
-                holder.repeatIcon.setVisibility(View.VISIBLE);
-            }
+            holder.repeatIcon.setVisibility(View.VISIBLE);
         }
         if (currentTask.getTimestamp() > 0) {
             holder.dueIcon.setVisibility(View.VISIBLE);

@@ -68,8 +68,6 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
         setContentView(R.layout.checklist_layout);
         Toolbar subTasksToolbar = findViewById(R.id.subTasksToolbar);
 
-        activityRootView = findViewById(R.id.subtasksRoot);
-
         subtaskViewModel = ViewModelProviders.of(this).get(SubtaskViewModel.class);
         subtasksPresenter = new SubtasksPresenterImpl
                 (SubtasksActivity.this, subtaskViewModel, getApplicationContext());
@@ -161,8 +159,8 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
 
                         vibrate.vibrate(50);
 
-                        if(!mute) {
-                            blip.start();
+                        if(!boolMute) {
+                            mpBlip.start();
                         }
 
                         subtasksPresenter.addSubtask(task.getId(), subtaskName);

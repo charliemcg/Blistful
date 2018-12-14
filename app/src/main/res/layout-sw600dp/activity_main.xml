@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activityRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.violenthoboenterprises.blistful.MainActivity"
+    android:background="@color/turquoise"
     android:orientation="vertical"
-    android:id="@+id/activityRoot"
-    android:background="@color/turquoise">
+    tools:context="com.violenthoboenterprises.blistful.MainActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar_light"
@@ -45,21 +44,16 @@
         app:layout_constraintTop_toBottomOf="@+id/toolbar_light"
         tools:listitem="@layout/task_layout" />
 
-    <!--<ListView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:id="@+id/theListView"-->
-        <!--android:layout_below="@+id/toolbar_light"-->
-        <!--android:background="@color/turquoise"-->
-        <!--android:descendantFocusability="blocksDescendants"/>-->
-
-    <!--TODO don't delete this-->
     <!--<ImageView-->
+    <!--android:id="@+id/imgNoTasks"-->
     <!--android:layout_width="match_parent"-->
     <!--android:layout_height="match_parent"-->
-    <!--android:id="@+id/noTasksWhite"-->
+    <!--android:contentDescription="@string/accessInformUserNoTasks"-->
     <!--android:src="@drawable/no_tasks_light"-->
-    <!--android:contentDescription="@string/accessInformUserNoTasks"/>-->
+    <!--app:layout_constraintTop_toTopOf="parent"-->
+    <!--app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--app:layout_constraintStart_toStartOf="parent"-->
+    <!--app:layout_constraintEnd_toEndOf="parent"/>-->
 
     <EditText
         android:id="@+id/taskNameEditText"
@@ -100,19 +94,26 @@
         android:id="@+id/toastView"
         android:layout_width="wrap_content"
         android:layout_height="65dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:background="@color/purple"
-        android:visibility="gone">
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/recyclerView"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.845">
 
         <TextView
             android:id="@+id/toast"
             android:layout_width="wrap_content"
             android:layout_height="65dp"
-            android:textColor="@color/dark_gray"
-            android:textSize="17sp"
             android:gravity="center_vertical"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:layout_margin="1dp"/>
+            android:textColor="@color/dark_gray"
+            android:textSize="17sp" />
 
     </RelativeLayout>
 

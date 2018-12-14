@@ -58,7 +58,6 @@ public class NoteActivity extends MainActivity implements NoteView {
         btnSubmitNoteFour = findViewById(R.id.submitNoteTwo);
         btnSubmitNoteTwo = findViewById(R.id.submitNoteOneHalf);
         btnSubmitNoteThree = findViewById(R.id.submitNoteTwoHalf);
-        inNote = true;
 
         getSupportActionBar().setTitle(R.string.note);
         noteToolbar.setSubtitle(task.getTask());
@@ -189,8 +188,8 @@ public class NoteActivity extends MainActivity implements NoteView {
 
                                                 vibrate.vibrate(50);
 
-                                                if (!mute) {
-                                                    blip.start();
+                                                if (!boolMute) {
+                                                    mpBlip.start();
                                                 }
 
                                                 btnSubmitNoteThree.setVisibility(View.GONE);
@@ -260,8 +259,8 @@ public class NoteActivity extends MainActivity implements NoteView {
 
                     vibrate.vibrate(50);
 
-                    if (!mute) {
-                        trash.start();
+                    if (!boolMute) {
+                        mpTrash.start();
                     }
 
                     final Handler handler2 = new Handler();

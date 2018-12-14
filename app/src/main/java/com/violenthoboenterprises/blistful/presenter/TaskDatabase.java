@@ -67,6 +67,7 @@ public abstract class TaskDatabase extends RoomDatabase {
             taskDao.insert(new Task("Press '+' to add a new task", calendar.getTimeInMillis()));
             return null;
         }
+
     }
 
 }
