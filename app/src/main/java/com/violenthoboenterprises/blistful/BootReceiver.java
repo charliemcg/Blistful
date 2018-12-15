@@ -1,27 +1,27 @@
-//package com.violenthoboenterprises.blistful;
-//
-//import android.app.AlarmManager;
-//import android.app.PendingIntent;
-//import android.content.BroadcastReceiver;
-//import android.content.Context;
-//import android.content.Intent;
-//import android.database.Cursor;
-//import android.util.Log;
-//
-//import java.util.ArrayList;
-//import java.util.Calendar;
-//
-//public class BootReceiver extends BroadcastReceiver {
-//
-//    String TAG = this.getClass().getSimpleName();
-//
-//    @Override
-//    public void onReceive(Context context, Intent intent) {
-//
-//        //Reminder data is lost when device powered down. Need to know when device is booted up again
-//        //in order to set all alarms again.
-//        if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
-//
+package com.violenthoboenterprises.blistful;
+
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+
+public class BootReceiver extends BroadcastReceiver {
+
+    String TAG = this.getClass().getSimpleName();
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+
+        //Reminder data is lost when device powered down. Need to know when device is booted up again
+        //in order to set all alarms again.
+        if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
+
 //            Database db = new Database(context);
 //            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 //            Intent alertIntent;
@@ -57,6 +57,6 @@
 //                    alarmManager.set(AlarmManager.RTC, dueTimestamp, pendIntent);
 //                }
 //            }
-//        }
-//    }
-//}
+        }
+    }
+}

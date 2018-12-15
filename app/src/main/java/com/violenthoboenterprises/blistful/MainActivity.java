@@ -1,6 +1,8 @@
 package com.violenthoboenterprises.blistful;
 
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.app.job.JobInfo;
 import android.app.job.JobParameters;
 import android.app.job.JobScheduler;
@@ -160,8 +162,12 @@ public class MainActivity extends AppCompatActivity implements
 
     private Task taskBeingEdited;
 
+    public static PendingIntent pendingIntent;
+    public static Intent alertIntent;
+    public static AlarmManager alarmManager;
+
     //preferences used for persisting app-wide data
-    public SharedPreferences preferences;
+    public static SharedPreferences preferences;
     //keys for shared preferences
     public String MUTE_KEY = "mute_key";
     public String ADS_REMOVED_KEY = "ads_removed_key";
@@ -203,6 +209,8 @@ public class MainActivity extends AppCompatActivity implements
         intReinstateHint = preferences.getInt(REINSTATE_HINT_KEY, 0);
         intShowReviewPrompt = preferences.getInt(SHOW_REVIEW_KEY, 0);
         lngTimeInstalled = preferences.getLong(TIME_INSTALLED_KEY, 0);
+
+        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
         if(lngTimeInstalled == 0){
             long defaultTime = new GregorianCalendar().getInstance().getTimeInMillis();
@@ -296,36 +304,13 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
 
-//                BackgroundJobService backgroundJobService = new BackgroundJobService(/*taskViewModel, adapter, viewHolder*/);
-//                ComponentName componentName = new ComponentName(MainActivity.this, BackgroundJobService.class);
-//                JobInfo info = new JobInfo.Builder(DELETE_TASK_ID, componentName)
-//                        .setRequiresCharging(false)
-//                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
-//                        .setPersisted(true)
-//                        .build();
-//
-//                JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-//                int resultCode = scheduler.schedule(info);
-//                if (resultCode == JobScheduler.RESULT_SUCCESS) {
-//                    Log.d(TAG, "Job scheduled");
-//                } else {
-//                    Log.d(TAG, "Job scheduling failed");
-//                }
-
                 //Saving a temporary instance of the deleted task should it need to be reinstated
                 Task taskToReinstate = adapter.getTaskAt(viewHolder.getAdapterPosition());
                 taskViewModel.delete(adapter.getTaskAt(viewHolder.getAdapterPosition()));
 
                 String stringSnack = "Task deleted";
                 showSnackbar(stringSnack, taskToReinstate);
-//                int refreshMe = preferences.getInt(REFRESH_THIS_ITEM, -1);
-//                if(refreshMe >= 0){
-//                    adapter.notifyItemChanged(refreshMe);
-//                }
-                //TODO only notify the item which was changed
-//                for(int i = 0; i < adapter.getItemCount(); i++) {
-//                    adapter.notifyItemChanged(i);
-//                }
+
             }
         }).attachToRecyclerView(recyclerView);
 

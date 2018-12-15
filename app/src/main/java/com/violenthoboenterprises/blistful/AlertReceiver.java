@@ -1,56 +1,65 @@
-//package com.violenthoboenterprises.blistful;
-//
-//import android.app.AlarmManager;
-//import android.app.NotificationChannel;
-//import android.app.NotificationManager;
-//import android.app.PendingIntent;
-//import android.content.BroadcastReceiver;
-//import android.content.Context;
-//import android.content.Intent;
-//import android.database.Cursor;
-//import android.graphics.BitmapFactory;
-//import android.graphics.Color;
-//import android.os.Build;
-//import android.support.v4.app.NotificationCompat;
-//
-//import android.util.Log;
-//import android.widget.RemoteViews;
-//
-//import java.util.Calendar;
-//
-//public class AlertReceiver extends BroadcastReceiver {
-//
-//    String TAG = this.getClass().getSimpleName();
-//
-//    //Initialising variables for holding values from database
+package com.violenthoboenterprises.blistful;
+
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.os.Build;
+import android.support.v4.app.NotificationCompat;
+
+import android.util.Log;
+import android.widget.RemoteViews;
+
+import com.violenthoboenterprises.blistful.model.Task;
+
+import java.io.Serializable;
+import java.util.Calendar;
+
+public class AlertReceiver extends BroadcastReceiver {
+
+    String TAG = this.getClass().getSimpleName();
+
+    //Initialising variables for holding values from database
 //    Database theDB;
 //    String highlight;
 //    String highlightDec;
 //    boolean remindersAvailable;
 //    int theTaskListSize;
-//
-//    Intent theAlertIntent;
-//    AlarmManager theAlarmManager;
-//
-//    @Override
-//    public void onReceive(Context context, Intent intent) {
-//
-//        //retrieving task properties necessary for setting notification
-//        createNotification(context, "", intent.getIntExtra("broadId", 0),
-//                intent.getBooleanExtra("snoozeStatus", false));
-//
-//    }
-//
-//    public void createNotification(Context context,
-//                                   String msgAlert, int broadId, boolean snoozeStatus) {
-//
-//        //defining intent and action to perform
-//        PendingIntent notificIntent = PendingIntent.getActivity(context, 1,
-//                new Intent(context, MainActivity.class), 0);
-//
-//        NotificationCompat.Builder builder;
-//        RemoteViews remoteViews;
-//
+//    private int intTaskId;
+    private boolean boolSnoozeStatus;
+    private Task task;
+
+    Intent theAlertIntent;
+    AlarmManager theAlarmManager;
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+
+        boolSnoozeStatus = intent.getBooleanExtra("snoozeStatus", false);
+        task = (Task) intent.getSerializableExtra("task");
+
+        //retrieving task properties necessary for setting notification
+        createNotification(context, "", task.getId(), boolSnoozeStatus);
+
+    }
+
+    public void createNotification(Context context,
+                                   String msgAlert, int broadId, boolean snoozeStatus) {
+
+        //defining intent and action to perform
+        PendingIntent notificIntent = PendingIntent.getActivity(context, 1,
+                new Intent(context, MainActivity.class), 0);
+
+        NotificationCompat.Builder builder;
+        RemoteViews remoteViews;
+
 //        if (MainActivity.db == null) {
 //            theDB = new Database(context);
 //            highlight = "#00FF00";
@@ -73,8 +82,8 @@
 //            theAlertIntent = MainActivity.alertIntent;
 //            theAlarmManager = MainActivity.alarmManager;
 //        }
-//
-//        //getting task data
+
+        //getting task data
 //        String dbTimestamp = "";
 //        String dbTask = "";
 //        Boolean dbRepeat = false;
@@ -92,8 +101,8 @@
 //            dbKilledEarly = dbResult.getInt(19) > 0;
 //        }
 //        dbResult.close();
-//
-//        //getting alarm data
+
+        //getting alarm data
 //        Cursor alarmResult = theDB.getAlarmData(broadId);
 //        String alarmDay = "";
 //        String alarmMonth = "";
@@ -104,75 +113,85 @@
 //            alarmYear = alarmResult.getString(6);
 //        }
 //        alarmResult.close();
-//
-//        //allows for notifications
-//        NotificationManager notificationManager = (NotificationManager)
-//                context.getSystemService(Context.NOTIFICATION_SERVICE);
-//
-//        //Setting values to custom notification view
-//        remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_light);
-//        remoteViews.setTextViewText(R.id.notif_title, dbTask);
-//        //randomly generating motivational toast
+
+        //allows for notifications
+        NotificationManager notificationManager = (NotificationManager)
+                context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        //Setting values to custom notification view
+//        remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_light);//TODO use these remote views lines
+//        remoteViews.setTextViewText(R.id.notif_title, task.getTask());
+        //TODO reinstate randomiser
+        //randomly generating motivational toast
 //        int j = MainActivity.random.nextInt(7);
 //        while (MainActivity.motivation[j].equals(MainActivity.lastToast)) {
 //            j = MainActivity.random.nextInt(7);
 //        }
-//
-//        //Setting up notification channel for Oreo
-//        final String notificChannelId = "notification_channel";
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            NotificationChannel notificationChannel = new NotificationChannel(
-//                    notificChannelId, "notifications",
-//                    NotificationManager.IMPORTANCE_DEFAULT);
-//
-//            notificationChannel.setDescription("Notifications about due being due");
-//            notificationChannel.enableLights(true);
-//            notificationChannel.setLightColor(Integer.parseInt(MainActivity.highlightDec));
-//            notificationChannel.enableVibration(true);
-//            notificationManager.createNotificationChannel(notificationChannel);
-//        }
-//
-//        //Building the notification
-//        builder = new NotificationCompat.Builder(context, notificChannelId)
-//                .setSmallIcon(R.drawable.small_notific_icon).setLargeIcon(BitmapFactory
-//                        .decodeResource(context.getResources(), R.drawable.ic_launcher_og))
-//                .setContentTitle(MainActivity.motivation[j]).setTicker(msgAlert)
-//                .setWhen(0).setContentText(dbTask).setStyle(new NotificationCompat.BigTextStyle())
-//                .setColorized(true).setColor(Color.parseColor(highlight))
-//                .setCustomContentView(remoteViews).setLights(Integer.parseInt
+
+        //Setting up notification channel for Oreo
+        final String notificChannelId = "notification_channel";
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(
+                    notificChannelId, "notifications",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+
+            notificationChannel.setDescription("Notifications about due being due");
+            notificationChannel.enableLights(true);
+//            notificationChannel.setLightColor(Integer.parseInt(MainActivity.highlightDec));//TODO find LED colour
+            notificationChannel.enableVibration(true);
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+
+        //Building the notification
+        builder = new NotificationCompat.Builder(context, notificChannelId)
+                .setSmallIcon(R.drawable.small_notific_icon)
+                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher_og))
+//                .setContentTitle(MainActivity.motivation[j])//TODO get randomised string
+                .setTicker(msgAlert)
+                .setWhen(0)
+                .setContentText(task.getTask())
+                .setStyle(new NotificationCompat.BigTextStyle())
+                .setColorized(true)
+//                .setColor(Color.parseColor(highlight))TODO get colour
+//                .setCustomContentView(remoteViews)//TODO use this line
+//                .setLights(Integer.parseInt
 //                        (highlightDec), 500, 500).setDefaults
-//                        (NotificationCompat.DEFAULT_SOUND).setContentIntent(notificIntent)
-//                .setAutoCancel(true);
-//
-//        //Can only show notification if user has feature enabled. Non repeating tasks need
-//        //no further processing than notify()
-//        if (!dbRepeat && remindersAvailable) {
-//
+//                        (NotificationCompat.DEFAULT_SOUND)//TODO get highlight colour
+                .setContentIntent(notificIntent)
+                .setAutoCancel(true);
+
+        notificationManager.notify(1, builder.build());//TODO uncomment the 'notify' stuff below and remove this line
+
+        //Can only show notification if user has feature enabled. Non repeating tasks need
+        //no further processing than notify()
+        if (task.getRepeatInterval() == null
+                && MainActivity.preferences.getBoolean("reminders_available_key", false)) {
+
 //            notificationManager.notify(1, builder.build());
-//
-//        //need to set up next notification for repeating task
-//        } else {
-//
-//            //don't inform user that task is due if they marked it as done
-//            if (!dbKilledEarly && remindersAvailable) {
-//
+
+        //need to set up next notification for repeating task
+        } else {
+
+            //don't inform user that task is due if they marked it as done
+            if (/*!dbKilledEarly && */MainActivity.preferences.getBoolean("reminders_available_key", false)) {//TODO check if killed early
+
 //                notificationManager.notify(1, builder.build());
-//
-//            } else {
-//
+
+            } else {
+
 //                theDB.updateKilledEarly(String.valueOf(broadId), false);
-//
-//            }
-//
-//            //cancelling any snoozed alarm data
+
+            }
+
+            //cancelling any snoozed alarm data
 //            theDB.updateSnoozeData(String.valueOf(broadId), "", "", "",
 //                    "", "", "");
 //            theDB.updateSnoozedTimestamp(String.valueOf(broadId), "0");
 //            theDB.updateSnooze(String.valueOf(broadId), false);
-//
+
 //            theDB.updateIgnored(String.valueOf(broadId), false);
-//
-//            //snoozed notifications cannot corrupt regular repeating notifications
+
+            //snoozed notifications cannot corrupt regular repeating notifications
 //            if (dbRepeatInterval.equals("day") && !snoozeStatus) {
 //
 //                //App crashes if exact duplicate of timestamp is saved in database. Attempting to
@@ -181,8 +200,8 @@
 //                futureStamp = getFutureStamp(futureStamp);
 //
 //                //updating timestamp
-//                theDB.updateTimestamp(String.valueOf(broadId),
-//                        String.valueOf(futureStamp));
+////                theDB.updateTimestamp(String.valueOf(broadId),
+////                        String.valueOf(futureStamp));
 //
 //                //setting the name of the task for which the
 //                // notification is being set
@@ -240,17 +259,17 @@
 //                    }
 //
 //                    //updating due date in database
-//                    theDB.updateAlarmData(String.valueOf(broadId),
-//                            String.valueOf(alarmCalendar.get(Calendar.HOUR)),
-//                            String.valueOf(alarmCalendar.get(Calendar.MINUTE)),
-//                            String.valueOf(alarmCalendar.get(Calendar.AM_PM)),
-//                            String.valueOf(alarmCalendar.get(Calendar.DAY_OF_MONTH)),
-//                            String.valueOf(alarmCalendar.get(Calendar.MONTH)),
-//                            String.valueOf(alarmCalendar.get(Calendar.YEAR)));
+////                    theDB.updateAlarmData(String.valueOf(broadId),
+////                            String.valueOf(alarmCalendar.get(Calendar.HOUR)),
+////                            String.valueOf(alarmCalendar.get(Calendar.MINUTE)),
+////                            String.valueOf(alarmCalendar.get(Calendar.AM_PM)),
+////                            String.valueOf(alarmCalendar.get(Calendar.DAY_OF_MONTH)),
+////                            String.valueOf(alarmCalendar.get(Calendar.MONTH)),
+////                            String.valueOf(alarmCalendar.get(Calendar.YEAR)));
 //
 //                }
 //
-//                theDB.updateManualKill(String.valueOf(broadId), false);
+////                theDB.updateManualKill(String.valueOf(broadId), false);
 //
 //            } else if (dbRepeatInterval.equals("week") && !snoozeStatus) {
 //
@@ -261,7 +280,7 @@
 //                futureStamp = getFutureStamp(futureStamp);
 //
 //                //updating timestamp
-//                theDB.updateTimestamp(String.valueOf(broadId), String.valueOf(futureStamp));
+////                theDB.updateTimestamp(String.valueOf(broadId), String.valueOf(futureStamp));
 //
 //                //setting the name of the task for which the
 //                // notification is being set
@@ -321,17 +340,17 @@
 //                    }
 //
 //                    //updating due date in database
-//                    theDB.updateAlarmData(String.valueOf(broadId),
-//                            String.valueOf(alarmCalendar.get(Calendar.HOUR)),
-//                            String.valueOf(alarmCalendar.get(Calendar.MINUTE)),
-//                            String.valueOf(alarmCalendar.get(Calendar.AM_PM)),
-//                            String.valueOf(alarmCalendar.get(Calendar.DAY_OF_MONTH)),
-//                            String.valueOf(alarmCalendar.get(Calendar.MONTH)),
-//                            String.valueOf(alarmCalendar.get(Calendar.YEAR)));
+////                    theDB.updateAlarmData(String.valueOf(broadId),
+////                            String.valueOf(alarmCalendar.get(Calendar.HOUR)),
+////                            String.valueOf(alarmCalendar.get(Calendar.MINUTE)),
+////                            String.valueOf(alarmCalendar.get(Calendar.AM_PM)),
+////                            String.valueOf(alarmCalendar.get(Calendar.DAY_OF_MONTH)),
+////                            String.valueOf(alarmCalendar.get(Calendar.MONTH)),
+////                            String.valueOf(alarmCalendar.get(Calendar.YEAR)));
 //
 //                }
 //
-//                theDB.updateManualKill(String.valueOf(broadId), false);
+////                theDB.updateManualKill(String.valueOf(broadId), false);
 //
 //            } else if (dbRepeatInterval.equals("month") && !snoozeStatus) {
 //
@@ -383,7 +402,7 @@
 //                futureStamp = getFutureStamp(futureStamp);
 //
 //                futureStamp = Long.parseLong(String.valueOf(futureStamp) + "000");
-//                Cursor origResult = theDB.getData(broadId);
+////                Cursor origResult = theDB.getData(broadId);
 //                String originalDay = "";
 //                while (origResult.moveToNext()) {
 //                    originalDay = origResult.getString(20);
@@ -436,8 +455,8 @@
 //                futureStamp = futureStamp / 1000;
 //
 //                //updating timestamp
-//                theDB.updateTimestamp(String.valueOf(broadId),
-//                        String.valueOf(futureStamp));
+////                theDB.updateTimestamp(String.valueOf(broadId),
+////                        String.valueOf(futureStamp));
 //
 //                //setting the name of the task for which the
 //                // notification is being set
@@ -504,36 +523,36 @@
 //                    }
 //
 //                    //updating due date in database
-//                    theDB.updateAlarmData(String.valueOf(broadId),
-//                            String.valueOf(alarmCalendar.get(Calendar.HOUR)),
-//                            String.valueOf(alarmCalendar.get(Calendar.MINUTE)),
-//                            String.valueOf(alarmCalendar.get(Calendar.AM_PM)),
-//                            String.valueOf(alarmCalendar.get(Calendar.DAY_OF_MONTH)),
-//                            String.valueOf(alarmCalendar.get(Calendar.MONTH)),
-//                            String.valueOf(alarmCalendar.get(Calendar.YEAR)));
+////                    theDB.updateAlarmData(String.valueOf(broadId),
+////                            String.valueOf(alarmCalendar.get(Calendar.HOUR)),
+////                            String.valueOf(alarmCalendar.get(Calendar.MINUTE)),
+////                            String.valueOf(alarmCalendar.get(Calendar.AM_PM)),
+////                            String.valueOf(alarmCalendar.get(Calendar.DAY_OF_MONTH)),
+////                            String.valueOf(alarmCalendar.get(Calendar.MONTH)),
+////                            String.valueOf(alarmCalendar.get(Calendar.YEAR)));
 //
 //                }
 //
-//                theDB.updateManualKill(String.valueOf(broadId), false);
+////                theDB.updateManualKill(String.valueOf(broadId), false);
 //
 //            }
-//        }
-//    }
-//
-//    private long getFutureStamp(long futureStamp) {
-//        String tempTimestamp = "";
+        }
+    }
+
+    private long getFutureStamp(long futureStamp) {
+        String tempTimestamp = "";
 //        for (int i = 0; i < theTaskListSize; i++) {
-//            Cursor tempResult = theDB.getData(i);
-//            while (tempResult.moveToNext()) {
-//                tempTimestamp = tempResult.getString(3);
-//            }
-//            tempResult.close();
+////            Cursor tempResult = theDB.getData(i);
+////            while (tempResult.moveToNext()) {
+////                tempTimestamp = tempResult.getString(3);
+////            }
+////            tempResult.close();
 //            if (futureStamp == Long.parseLong(tempTimestamp)) {
 //                futureStamp++;
 //                i = 0;
 //            }
 //
 //        }
-//        return futureStamp;
-//    }
-//}
+        return futureStamp;
+    }
+}

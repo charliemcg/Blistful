@@ -5,14 +5,20 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -582,9 +588,34 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             //Updating the task
             reminderPresenter.setTimestamp(calendar.getTimeInMillis());
 
+//            if(preferences.getBoolean("reminders_available", false)) {
+            scheduleNotification();
+//            }
+
         }
 
         super.onBackPressed();
+
+    }
+
+    private void scheduleNotification() {
+
+        //TODO see if all these variables really need to be initialised in MainActivity
+        MainActivity.alertIntent = new Intent(getApplicationContext(), AlertReceiver.class);
+        MainActivity.alertIntent.putExtra
+                ("snoozeStatus", false);
+        MainActivity.alertIntent.putExtra("task", task);
+
+        //Setting alarm
+        MainActivity.pendingIntent = PendingIntent.getBroadcast(
+                getApplicationContext(), task.getId(), MainActivity.alertIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        MainActivity.alarmManager.cancel(MainActivity.pendingIntent);
+
+        MainActivity.alarmManager.set(AlarmManager.RTC,
+                task.getTimestamp(),
+                MainActivity.pendingIntent);
 
     }
 
