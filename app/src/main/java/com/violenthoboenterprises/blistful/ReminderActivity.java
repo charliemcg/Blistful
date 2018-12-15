@@ -61,16 +61,10 @@ public class ReminderActivity extends MainActivity implements ReminderView {
         ReminderViewModel reminderViewModel =
                 ViewModelProviders.of(this).get(ReminderViewModel.class);
         //getting the instance of the reminder
-        reminder = reminderViewModel.getReminderByParent(reminderPresenter.getId());
+        reminder = reminderViewModel.getReminderByParent(task.getId());
         TaskViewModel taskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
         reminderPresenter = new ReminderPresenterImpl(ReminderActivity.this,
                 taskViewModel, reminderViewModel, task, reminder, getApplicationContext());
-
-        //Create a reminder instance if there isn't one already
-//        if (reminder == null) {
-//            reminderPresenter.addReminder(reminderPresenter.getId());
-//            reminder = reminderViewModel.getReminderByParent(reminderPresenter.getId());
-//        }
 
         imgTime = findViewById(R.id.time);
         imgTimeFaded = findViewById(R.id.timeFadedLight);
@@ -102,59 +96,15 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             tvTime.setText(R.string.addTime);
         }
 
-//        String formattedMonth = "";
-
         if (reminderPresenter.getYear() != 0) {
             imgCalendarFaded.setVisibility(View.INVISIBLE);
             imgCalendar.setVisibility(View.VISIBLE);
-
-//            int intMonth = reminderPresenter.getMonth() + 1;
-//            if (intMonth == 1) {
-//                formattedMonth = getString(R.string.jan);
-//            } else if (intMonth == 2) {
-//                formattedMonth = getString(R.string.feb);
-//            } else if (intMonth == 3) {
-//                formattedMonth = getString(R.string.mar);
-//            } else if (intMonth == 4) {
-//                formattedMonth = getString(R.string.apr);
-//            } else if (intMonth == 5) {
-//                formattedMonth = getString(R.string.may);
-//            } else if (intMonth == 6) {
-//                formattedMonth = getString(R.string.jun);
-//            } else if (intMonth == 7) {
-//                formattedMonth = getString(R.string.jul);
-//            } else if (intMonth == 8) {
-//                formattedMonth = getString(R.string.aug);
-//            } else if (intMonth == 9) {
-//                formattedMonth = getString(R.string.sep);
-//            } else if (intMonth == 10) {
-//                formattedMonth = getString(R.string.oct);
-//            } else if (intMonth == 11) {
-//                formattedMonth = getString(R.string.nov);
-//            } else if (intMonth == 12) {
-//                formattedMonth = getString(R.string.dec);
-//            }
-//
-//            String lang = String.valueOf(Locale.getDefault());
-//            String formattedDate;
-//            if (lang.equals("en_AS") || lang.equals("en_BM")
-//                    || lang.equals("en_CA") || lang.equals("en_GU")
-//                    || lang.equals("en_PH")
-//                    || lang.equals("en_PR") || lang.equals("en_UM")
-//                    || lang.equals("en_US") || lang.equals("en_VI")) {
-//                formattedDate = formattedMonth + " " + reminderPresenter.getDay();
-//                tvDate.setText(formattedDate);
-//            } else {
-//                formattedDate = reminderPresenter.getDay() + " " + formattedMonth;
-//                tvDate.setText(formattedDate);
-//            }
 
             tvDate.setText(reminderPresenter.getFormattedDate());
 
             imgTimeFaded.setVisibility(View.INVISIBLE);
             imgTime.setVisibility(View.VISIBLE);
 
-//            String formattedTime = adjustTime();
             tvTime.setText(reminderPresenter.getFormattedTime());
 
             if (screenSize == 3) {
@@ -348,34 +298,6 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
     }
 
-    //Formatting the time into an easy to read string
-//    private static String adjustTime() {
-//        String adjustedAmPm;
-//        int adjustedHour = reminderPresenter.getHour();
-//        int adjustedMinute = reminderPresenter.getMinute();
-//        String adjustedMinuteString;
-//
-//        if (adjustedHour < 12) {
-//            adjustedAmPm = "am";
-//        } else {
-//            adjustedAmPm = "pm";
-//        }
-//
-//        if (adjustedHour == 0) {
-//            adjustedHour = 12;
-//        } else if (adjustedHour > 12) {
-//            adjustedHour -= 12;
-//        }
-//
-//        if (adjustedMinute < 10) {
-//            adjustedMinuteString = "0" + adjustedMinute;
-//        } else {
-//            adjustedMinuteString = String.valueOf(adjustedMinute);
-//        }
-//
-//        return adjustedHour + ":" + adjustedMinuteString + adjustedAmPm;
-//    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!menu.hasVisibleItems()) {
@@ -524,50 +446,6 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
             TextView tvDate = getActivity().findViewById(R.id.dateTextView);
 
-            //Format and display chosen date
-//            String formattedMonth = "";
-//
-//            int intMonth = month + 1;
-//            if (intMonth == 1) {
-//                formattedMonth = getString(R.string.jan);
-//            } else if (intMonth == 2) {
-//                formattedMonth = getString(R.string.feb);
-//            } else if (intMonth == 3) {
-//                formattedMonth = getString(R.string.mar);
-//            } else if (intMonth == 4) {
-//                formattedMonth = getString(R.string.apr);
-//            } else if (intMonth == 5) {
-//                formattedMonth = getString(R.string.may);
-//            } else if (intMonth == 6) {
-//                formattedMonth = getString(R.string.jun);
-//            } else if (intMonth == 7) {
-//                formattedMonth = getString(R.string.jul);
-//            } else if (intMonth == 8) {
-//                formattedMonth = getString(R.string.aug);
-//            } else if (intMonth == 9) {
-//                formattedMonth = getString(R.string.sep);
-//            } else if (intMonth == 10) {
-//                formattedMonth = getString(R.string.oct);
-//            } else if (intMonth == 11) {
-//                formattedMonth = getString(R.string.nov);
-//            } else if (intMonth == 12) {
-//                formattedMonth = getString(R.string.dec);
-//            }
-//
-//            String lang = String.valueOf(Locale.getDefault());
-//            String formattedDate;
-//            if (lang.equals("en_AS") || lang.equals("en_BM")
-//                    || lang.equals("en_CA") || lang.equals("en_GU")
-//                    || lang.equals("en_PH")
-//                    || lang.equals("en_PR") || lang.equals("en_UM")
-//                    || lang.equals("en_US") || lang.equals("en_VI")) {
-//                formattedDate = formattedMonth + " " + day;
-//                tvDate.setText(formattedDate);
-//            } else {
-//                formattedDate = day + " " + formattedMonth;
-//                tvDate.setText(formattedDate);
-//            }
-
             tvDate.setText(reminderPresenter.getFormattedDate());
 
             vibrate.vibrate(50);
@@ -655,7 +533,6 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             reminderPresenter.setHour(hour);
             reminderPresenter.setMinute(minute);
 
-//            String formattedTime = adjustTime();
             timeTextView.setText(reminderPresenter.getFormattedTime());
 
         }
@@ -706,15 +583,6 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             reminderPresenter.setTimestamp(calendar.getTimeInMillis());
 
         }
-
-        //return to mainActivity
-//        Intent intent = new Intent();
-//
-//        intent.setClass(getApplicationContext(), MainActivity.class);
-//
-//        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//
-//        startActivity(intent);
 
         super.onBackPressed();
 

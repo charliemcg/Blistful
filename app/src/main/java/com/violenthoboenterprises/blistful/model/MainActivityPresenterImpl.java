@@ -43,6 +43,11 @@ public class MainActivityPresenterImpl implements MainActivityPresenter {
     }
 
     @Override
+    public void reinstateTask(Task taskToReinstate) {
+        taskViewModel.insert(taskToReinstate);
+    }
+
+    @Override
     public boolean showReviewPrompt(int intShowReviewPrompt, long lngTimeInstalled) {
         Calendar calendar = new GregorianCalendar().getInstance();
         //show review prompt after three days

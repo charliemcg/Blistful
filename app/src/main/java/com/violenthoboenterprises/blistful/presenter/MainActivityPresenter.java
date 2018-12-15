@@ -13,4 +13,6 @@ public interface MainActivityPresenter {
     boolean showReviewPrompt(int intShowReviewPrompt, long lngTimeInstalled);
 
     void setTask(Task taskBeingEdited, String editedTaskString);
+
+    void reinstateTask(Task taskToReinstate);
 }

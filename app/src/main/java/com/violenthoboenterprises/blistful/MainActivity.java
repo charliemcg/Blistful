@@ -1,8 +1,13 @@
 package com.violenthoboenterprises.blistful;
 
 import android.app.Dialog;
+import android.app.job.JobInfo;
+import android.app.job.JobParameters;
+import android.app.job.JobScheduler;
+import android.app.job.JobService;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,6 +16,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
+import android.os.PersistableBundle;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,7 +32,6 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -55,6 +60,7 @@ import com.violenthoboenterprises.blistful.presenter.MainActivityPresenter;
 import com.violenthoboenterprises.blistful.presenter.SubtasksPresenter;
 import com.violenthoboenterprises.blistful.view.MainActivityView;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -167,6 +173,7 @@ public class MainActivity extends AppCompatActivity implements
     public String SHOW_REVIEW_KEY = "show_review_key";
     public String TIME_INSTALLED_KEY = "time_installed_key";
     public String REFRESH_THIS_ITEM = "refresh_this_item";
+    public int DELETE_TASK_ID = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -276,17 +283,10 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
-//        recyclerView.setOnLongClickListener(new View.OnLongClickListener(){
-//            @Override
-//            public boolean onLongClick(View view){
-//                Log.d(TAG, "Long click detected");
-//                return true;
-//            }
-//        });
-
         //detect swipes
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
                                   RecyclerView.ViewHolder target) {
@@ -295,13 +295,33 @@ public class MainActivity extends AppCompatActivity implements
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+
+//                BackgroundJobService backgroundJobService = new BackgroundJobService(/*taskViewModel, adapter, viewHolder*/);
+//                ComponentName componentName = new ComponentName(MainActivity.this, BackgroundJobService.class);
+//                JobInfo info = new JobInfo.Builder(DELETE_TASK_ID, componentName)
+//                        .setRequiresCharging(false)
+//                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+//                        .setPersisted(true)
+//                        .build();
+//
+//                JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+//                int resultCode = scheduler.schedule(info);
+//                if (resultCode == JobScheduler.RESULT_SUCCESS) {
+//                    Log.d(TAG, "Job scheduled");
+//                } else {
+//                    Log.d(TAG, "Job scheduling failed");
+//                }
+
+                //Saving a temporary instance of the deleted task should it need to be reinstated
+                Task taskToReinstate = adapter.getTaskAt(viewHolder.getAdapterPosition());
                 taskViewModel.delete(adapter.getTaskAt(viewHolder.getAdapterPosition()));
+
                 String stringSnack = "Task deleted";
-                showSnackbar(stringSnack);
-                int refreshMe = preferences.getInt(REFRESH_THIS_ITEM, -1);
-                if(refreshMe >= 0){
-                    adapter.notifyItemChanged(refreshMe);
-                }
+                showSnackbar(stringSnack, taskToReinstate);
+//                int refreshMe = preferences.getInt(REFRESH_THIS_ITEM, -1);
+//                if(refreshMe >= 0){
+//                    adapter.notifyItemChanged(refreshMe);
+//                }
                 //TODO only notify the item which was changed
 //                for(int i = 0; i < adapter.getItemCount(); i++) {
 //                    adapter.notifyItemChanged(i);
@@ -335,9 +355,6 @@ public class MainActivity extends AppCompatActivity implements
 
                     //Clear text from text box
                     etTask.setText("");
-
-                    //Checks to see if there are still tasks available
-//                    noTasksLeft();
 
                     if (!taskName.equals("")) {
 
@@ -479,15 +496,6 @@ public class MainActivity extends AppCompatActivity implements
 
                     }
 
-//                    createTask(editedTaskString, taskList, taskBeingEdited);
-
-//                    theListView.setAdapter(theAdapter[0]);
-
-//                    tasksAreClickable = true;
-
-                    //Marking editing as complete
-//                    taskBeingEdited = false;
-
                     taskBeingEdited = null;
 
                     return true;
@@ -516,8 +524,14 @@ public class MainActivity extends AppCompatActivity implements
         //Set return button to 'Done'
         etTask.setImeOptions(EditorInfo.IME_ACTION_DONE);
 
-        //Ensure that there is no previous text in the text box
-        etTask.setText("");
+        //Check if editing existing task or adding new one
+        if(taskBeingEdited != null){
+            //put task name in the edit text
+            etTask.setText(taskBeingEdited.getTask());
+        }else {
+            //Ensure that there is no previous text in the text box
+            etTask.setText("");
+        }
 
         //Actions to occur when keyboard is showing
         checkKeyboardShowing();
@@ -525,21 +539,20 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     //Give user option to undo deletion of task
-    private void showSnackbar(String stringSnack) {
+    private void showSnackbar(String stringSnack, final Task taskToReinstate) {
         View view = findViewById(R.id.activityRoot);
         Snackbar.make(view, stringSnack, Snackbar.LENGTH_SHORT)
                 .setAction("UNDO", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(MainActivity.this, "Reinstate task",
-                                Toast.LENGTH_LONG).show();
+                        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+                        scheduler.cancel(DELETE_TASK_ID);
+                        mainActivityPresenter.reinstateTask(taskToReinstate);
                     }
                 })
                 .setActionTextColor(getResources().getColor(R.color.purple))
                 .show();
     }
-
-//        setSupportActionBar(toolbarLight);
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
