@@ -42,7 +42,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
     private View activityRootView;
     private MainActivityView mainActivityView;
     private TaskViewModel taskViewModel;
-    public static int intPositionToUpdate;
 //    public String REFRESH_THIS_ITEM = "refresh_this_item";
     public SharedPreferences preferences;
 
@@ -96,6 +95,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         holder.taskLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //removing any other visible properties
+                notifyItemChanged(preferences.getInt("refresh_this_item", 0));
+                //tracking this item as requiring updating upon return from a child activity
+                preferences.edit().putInt("refresh_this_item", position).apply();
                 if (holder.taskProperties.getVisibility() == View.VISIBLE) {
                     holder.taskProperties.setVisibility(View.GONE);
                     //redrawing the UI to remove properties from view
@@ -117,7 +120,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         holder.btnAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                preferences.edit().putInt("refresh_this_item", position).apply();
+//                preferences.edit().putInt("refresh_this_item", position).apply();
                 Intent intent = new Intent(context, ReminderActivity.class);
                 intent.putExtra("task", currentTask);
                 context.startActivity(intent);
@@ -126,7 +129,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         holder.btnSubtasks.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                preferences.edit().putInt("refresh_this_item", position).apply();
+//                preferences.edit().putInt("refresh_this_item", position).apply();
                 Intent intent = new Intent(context, SubtasksActivity.class);
                 intent.putExtra("task", currentTask);
                 context.startActivity(intent);
@@ -135,7 +138,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         holder.btnNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                preferences.edit().putInt("refresh_this_item", position).apply();
+//                preferences.edit().putInt("refresh_this_item", position).apply();
                 Intent intent = new Intent(context, NoteActivity.class);
                 intent.putExtra("task", currentTask);
                 context.startActivity(intent);
