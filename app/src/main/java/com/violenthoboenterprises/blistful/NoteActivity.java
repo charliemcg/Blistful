@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 
 import com.violenthoboenterprises.blistful.model.NotePresenterImpl;
 import com.violenthoboenterprises.blistful.model.Task;
+import com.violenthoboenterprises.blistful.model.TaskAdapter;
 import com.violenthoboenterprises.blistful.model.TaskViewModel;
 import com.violenthoboenterprises.blistful.presenter.NotePresenter;
 import com.violenthoboenterprises.blistful.view.NoteView;

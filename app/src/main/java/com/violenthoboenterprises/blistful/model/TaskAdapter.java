@@ -2,6 +2,7 @@ package com.violenthoboenterprises.blistful.model;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.violenthoboenterprises.blistful.MainActivity;
 import com.violenthoboenterprises.blistful.ReminderActivity;
 import com.violenthoboenterprises.blistful.SubtasksActivity;
 import com.violenthoboenterprises.blistful.NoteActivity;
@@ -22,6 +24,7 @@ import com.violenthoboenterprises.blistful.presenter.MainActivityPresenter;
 import com.violenthoboenterprises.blistful.presenter.SubtasksPresenter;
 import com.violenthoboenterprises.blistful.view.MainActivityView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +42,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
     private View activityRootView;
     private MainActivityView mainActivityView;
     private TaskViewModel taskViewModel;
+    public static int intPositionToUpdate;
+//    public String REFRESH_THIS_ITEM = "refresh_this_item";
+    public SharedPreferences preferences;
 
     public TaskAdapter(Context context, MainActivityPresenter mainActivityPresenter,
                        SubtasksPresenter subtasksPresenter, View activityRootView,
@@ -49,6 +55,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         this.activityRootView = activityRootView;
         this.mainActivityView = mainActivityView;
         this.taskViewModel = taskViewModel;
+        preferences = context.getSharedPreferences("com.violenthoboenterprises.blistful",
+                Context.MODE_PRIVATE);
     }
 
     @NonNull
@@ -64,6 +72,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         final Task currentTask = tasks.get(position);
         holder.tvTask.setText(currentTask.getTask());
         //checking if any status icons need to be displayed
+        holder.noteIcon.setVisibility(View.GONE);
+        holder.subtasksIcon.setVisibility(View.GONE);
+        holder.repeatIcon.setVisibility(View.GONE);
+        holder.dueIcon.setVisibility(View.GONE);
+        holder.taskProperties.setVisibility(View.GONE);
         if (currentTask.getNote() != null) {
             holder.noteIcon.setVisibility(View.VISIBLE);
         }
@@ -104,6 +117,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         holder.btnAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                preferences.edit().putInt("refresh_this_item", position).apply();
                 Intent intent = new Intent(context, ReminderActivity.class);
                 intent.putExtra("task", currentTask);
                 context.startActivity(intent);
@@ -112,6 +126,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         holder.btnSubtasks.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                preferences.edit().putInt("refresh_this_item", position).apply();
                 Intent intent = new Intent(context, SubtasksActivity.class);
                 intent.putExtra("task", currentTask);
                 context.startActivity(intent);
@@ -120,6 +135,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         holder.btnNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                preferences.edit().putInt("refresh_this_item", position).apply();
                 Intent intent = new Intent(context, NoteActivity.class);
                 intent.putExtra("task", currentTask);
                 context.startActivity(intent);

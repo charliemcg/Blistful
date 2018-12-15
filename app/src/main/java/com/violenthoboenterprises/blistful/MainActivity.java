@@ -89,6 +89,9 @@ public class MainActivity extends AppCompatActivity implements
     private int intShowReviewPrompt;
     //height of device minus keyboard
     private int deviceheight;
+    //keeps track of the selected task so recyclerview
+    //knows which task to update in regards to icons etc
+    public static int intPositionToUpdate;
 
     //Toasts which show up when adding new task
     private String[] strMotivation;
@@ -147,6 +150,8 @@ public class MainActivity extends AppCompatActivity implements
 
     private MainActivityPresenter mainActivityPresenter;
 
+    private TaskAdapter adapter;
+
     private Task taskBeingEdited;
 
     //preferences used for persisting app-wide data
@@ -161,6 +166,7 @@ public class MainActivity extends AppCompatActivity implements
     public String REINSTATE_HINT_KEY = "reinstate_hint_key";
     public String SHOW_REVIEW_KEY = "show_review_key";
     public String TIME_INSTALLED_KEY = "time_installed_key";
+    public String REFRESH_THIS_ITEM = "refresh_this_item";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -235,6 +241,7 @@ public class MainActivity extends AppCompatActivity implements
         deviceheight = displayMetrics.heightPixels;
         intDuesSet = 0;
         imgNoTasks = findViewById(R.id.imgNoTasks);
+//        intPositionToUpdate = -1;
 
         fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -250,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements
         recyclerView.setHasFixedSize(true);
 
         //setting up the adapter
-        final TaskAdapter adapter = new TaskAdapter(this, mainActivityPresenter,
+        adapter = new TaskAdapter(this, mainActivityPresenter,
                 subtasksPresenter, activityRootView, this, taskViewModel);
         recyclerView.setAdapter(adapter);
 
@@ -291,6 +298,14 @@ public class MainActivity extends AppCompatActivity implements
                 taskViewModel.delete(adapter.getTaskAt(viewHolder.getAdapterPosition()));
                 String stringSnack = "Task deleted";
                 showSnackbar(stringSnack);
+                int refreshMe = preferences.getInt(REFRESH_THIS_ITEM, -1);
+                if(refreshMe >= 0){
+                    adapter.notifyItemChanged(refreshMe);
+                }
+                //TODO only notify the item which was changed
+//                for(int i = 0; i < adapter.getItemCount(); i++) {
+//                    adapter.notifyItemChanged(i);
+//                }
             }
         }).attachToRecyclerView(recyclerView);
 
@@ -882,6 +897,9 @@ public class MainActivity extends AppCompatActivity implements
     protected void onResume() {
         super.onResume();
         showPrompt();
+
+        adapter.notifyItemChanged(preferences.getInt("refresh_this_item", 0));
+
     }
 
 }
