@@ -96,7 +96,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
             @Override
             public void onClick(View view) {
                 //removing any other visible properties
-                notifyItemChanged(preferences.getInt("refresh_this_item", 0));
+                if(preferences.getInt("refresh_this_item", 0) != position) {
+                    notifyItemChanged(preferences.getInt("refresh_this_item", 0));
+                }
                 //tracking this item as requiring updating upon return from a child activity
                 preferences.edit().putInt("refresh_this_item", position).apply();
                 if (holder.taskProperties.getVisibility() == View.VISIBLE) {

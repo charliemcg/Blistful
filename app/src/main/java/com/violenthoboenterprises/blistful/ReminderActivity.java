@@ -475,7 +475,6 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             reminderPresenter.setDay(day);
 
             tvDate.setText(reminderPresenter.getFormattedDate());
-            Log.d("ReminderActivity", "Date: " + reminderPresenter.getFormattedDate());
 
         }
 

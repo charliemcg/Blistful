@@ -165,8 +165,6 @@ public class ReminderPresenterImpl implements ReminderPresenter {
             formattedMonth = context.getString(R.string.dec);
         }
 
-        Log.d(TAG, "int month: " + formattedMonth);
-
         //setting date format based of locale
         String lang = String.valueOf(Locale.getDefault());
         if (lang.equals("en_AS") || lang.equals("en_BM")
