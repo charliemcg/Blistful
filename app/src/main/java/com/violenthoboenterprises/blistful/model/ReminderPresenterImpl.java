@@ -1,6 +1,7 @@
 package com.violenthoboenterprises.blistful.model;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.violenthoboenterprises.blistful.R;
 import com.violenthoboenterprises.blistful.presenter.ReminderPresenter;
@@ -10,6 +11,7 @@ import java.util.Locale;
 
 public class ReminderPresenterImpl implements ReminderPresenter {
 
+    private final static String TAG = "ReminderPresenterImpl";
     private ReminderViewModel reminderViewModel;
     private TaskViewModel taskViewModel;
     private ReminderView reminderView;
@@ -134,34 +136,36 @@ public class ReminderPresenterImpl implements ReminderPresenter {
 
     @Override
     public String getFormattedDate() {
-        int formattedMonth = 0;
+        String formattedMonth = "";
         int intMonth = getMonth() + 1;
         //getting string representation for month
         if (intMonth == 1) {
-            formattedMonth = R.string.jan;
+            formattedMonth = context.getString(R.string.jan);
         } else if (intMonth == 2) {
-            formattedMonth = R.string.feb;
+            formattedMonth = context.getString(R.string.feb);
         } else if (intMonth == 3) {
-            formattedMonth = R.string.mar;
+            formattedMonth = context.getString(R.string.mar);
         } else if (intMonth == 4) {
-            formattedMonth = R.string.apr;
+            formattedMonth = context.getString(R.string.apr);
         } else if (intMonth == 5) {
-            formattedMonth = R.string.may;
+            formattedMonth = context.getString(R.string.may);
         } else if (intMonth == 6) {
-            formattedMonth = R.string.jun;
+            formattedMonth = context.getString(R.string.jun);
         } else if (intMonth == 7) {
-            formattedMonth = R.string.jul;
+            formattedMonth = context.getString(R.string.jul);
         } else if (intMonth == 8) {
-            formattedMonth = R.string.aug;
+            formattedMonth = context.getString(R.string.aug);
         } else if (intMonth == 9) {
-            formattedMonth = R.string.sep;
+            formattedMonth = context.getString(R.string.sep);
         } else if (intMonth == 10) {
-            formattedMonth = R.string.oct;
+            formattedMonth = context.getString(R.string.oct);
         } else if (intMonth == 11) {
-            formattedMonth = R.string.nov;
+            formattedMonth = context.getString(R.string.nov);
         } else if (intMonth == 12) {
-            formattedMonth = R.string.dec;
+            formattedMonth = context.getString(R.string.dec);
         }
+
+        Log.d(TAG, "int month: " + formattedMonth);
 
         //setting date format based of locale
         String lang = String.valueOf(Locale.getDefault());

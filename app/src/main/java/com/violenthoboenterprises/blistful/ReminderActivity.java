@@ -452,9 +452,6 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
             TextView tvDate = getActivity().findViewById(R.id.dateTextView);
 
-            tvDate.setText(reminderPresenter.getFormattedDate());
-            Log.d("ReminderActivity", "Date: " + reminderPresenter.getFormattedDate());
-
             vibrate.vibrate(50);
 
             ImageView calendarFadedLight = getActivity().findViewById(R.id.calendarFadedLight);
@@ -476,6 +473,9 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             reminderPresenter.setYear(year);
             reminderPresenter.setMonth(month);
             reminderPresenter.setDay(day);
+
+            tvDate.setText(reminderPresenter.getFormattedDate());
+            Log.d("ReminderActivity", "Date: " + reminderPresenter.getFormattedDate());
 
         }
 
