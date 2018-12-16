@@ -202,6 +202,7 @@ public class AlertReceiver extends BroadcastReceiver {
                 long futureStamp = task.getTimestamp() + AlarmManager.INTERVAL_DAY;
                 futureStamp = getFutureStamp(futureStamp);
                 task.setTimestamp(futureStamp);
+                MainActivity.taskViewModel.update(task);
 
                 Intent alertIntent = new Intent(context, AlertReceiver.class);
                 alertIntent.putExtra
@@ -212,7 +213,7 @@ public class AlertReceiver extends BroadcastReceiver {
 
                 //Setting alarm
                  PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                        context, task.getId(), MainActivity.alertIntent,
+                        context, task.getId(), alertIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT);
 
 //
@@ -234,10 +235,10 @@ public class AlertReceiver extends BroadcastReceiver {
 //
 //                //Setting a repeat alarm
                 if (/*!dbKilledEarly*/true) {//TODO check if killed early
+
                     Calendar currentCal = Calendar.getInstance();
                     Calendar futureCal = Calendar.getInstance();
                     futureCal.setTimeInMillis(futureStamp);
-                    Log.d(TAG, "timestamp: " + futureStamp);
 //                    Log.d(TAG,
 //                            "\nYear: " + futureCal.get(Calendar.YEAR) +
 //                                    "\nMonth: " + futureCal.get(Calendar.MONTH) +
@@ -278,8 +279,8 @@ public class AlertReceiver extends BroadcastReceiver {
                                 - AlarmManager.INTERVAL_DAY);
                     }
 
-                    task.setTimestamp(/*alarmCalendar.getTimeInMillis()*/futureStamp + AlarmManager.INTERVAL_DAY);
-                    Log.d(TAG, "timestamp: " + task.getTimestamp() + " futureStamp: " + futureStamp);
+                    task.setTimestamp(/*alarmCalendar.getTimeInMillis()*/futureStamp);
+                    MainActivity.taskViewModel.update(task);
 
 //                    //updating due date in database
 ////                    theDB.updateAlarmData(String.valueOf(broadId),
@@ -290,6 +291,18 @@ public class AlertReceiver extends BroadcastReceiver {
 ////                            String.valueOf(alarmCalendar.get(Calendar.MONTH)),
 ////                            String.valueOf(alarmCalendar.get(Calendar.YEAR)));
 //
+                }else{
+                    diff = futureStamp - AlarmManager.INTERVAL_DAY - currentCal.getTimeInMillis();
+
+                    if (diff > 0) {
+                        long daysOut = diff / 86400000;
+                        futureStamp = futureStamp - (86400000 * (daysOut + 1));
+                        alarmCalendar.setTimeInMillis(futureStamp
+                                - AlarmManager.INTERVAL_DAY);
+                    }
+
+                    task.setTimestamp(alarmCalendar.getTimeInMillis());
+                    MainActivity.taskViewModel.update(task);
                 }
 //
 ////                theDB.updateManualKill(String.valueOf(broadId), false);

@@ -3,6 +3,7 @@ package com.violenthoboenterprises.blistful.model;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -44,7 +45,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
     private View activityRootView;
     private MainActivityView mainActivityView;
     private TaskViewModel taskViewModel;
-//    public String REFRESH_THIS_ITEM = "refresh_this_item";
+    //    public String REFRESH_THIS_ITEM = "refresh_this_item";
     public SharedPreferences preferences;
 
     public TaskAdapter(Context context, MainActivityPresenter mainActivityPresenter,
@@ -80,11 +81,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         holder.overdueIcon.setVisibility(View.GONE);
         holder.tvDue.setVisibility(View.GONE);
         holder.taskProperties.setVisibility(View.GONE);
-        if(currentTask.getTimestamp() != 0){
-            if((currentTask.getTimestamp() - Calendar.getInstance().getTimeInMillis()) > 0) {
+        holder.tvDue.setTextColor(Color.BLACK);
+        if (currentTask.getTimestamp() != 0) {
+            if ((currentTask.getTimestamp() - Calendar.getInstance().getTimeInMillis()) > 0) {
                 holder.dueIcon.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 holder.overdueIcon.setVisibility(View.VISIBLE);
+                holder.tvDue.setTextColor(Color.RED);
             }
             holder.tvDue.setVisibility(View.VISIBLE);
             String formattedDate = getFormattedDate(currentTask.getTimestamp());
@@ -102,15 +105,12 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         if (currentTask.getRepeatInterval() != null) {
             holder.repeatIcon.setVisibility(View.VISIBLE);
         }
-//        if (currentTask.getTimestamp() > 0) {
-//            holder.dueIcon.setVisibility(View.VISIBLE);
-//        }
         //show properties on click
         holder.taskLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //removing any other visible properties
-                if(preferences.getInt("refresh_this_item", 0) != position) {
+                if (preferences.getInt("refresh_this_item", 0) != position) {
                     notifyItemChanged(preferences.getInt("refresh_this_item", 0));
                 }
                 //tracking this item as requiring updating upon return from a child activity
@@ -125,9 +125,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
             }
         });
         //rename task on long click
-        holder.taskLayout.setOnLongClickListener(new View.OnLongClickListener(){
+        holder.taskLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public boolean onLongClick(View view){
+            public boolean onLongClick(View view) {
                 mainActivityView.addTask(currentTask);
                 return true;
             }
@@ -224,6 +224,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         private TextView tvDue;
         private ConstraintLayout taskLayout;
         private ConstraintLayout taskProperties;
+        private ConstraintLayout taskOverdue;
         private ConstraintLayout btnAlarm;
         private ConstraintLayout btnSubtasks;
         private ConstraintLayout btnNote;
@@ -239,6 +240,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
             tvDue = itemView.findViewById(R.id.tvDue);
             taskLayout = itemView.findViewById(R.id.taskLayout);
             taskProperties = itemView.findViewById(R.id.properties);
+            taskOverdue = itemView.findViewById(R.id.taskIsOverdue);
             btnAlarm = itemView.findViewById(R.id.alarm);
             btnSubtasks = itemView.findViewById(R.id.subTasks);
             btnNote = itemView.findViewById(R.id.note);
@@ -256,11 +258,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
                     }
                 }
             });
-            itemView.setOnLongClickListener(new View.OnLongClickListener(){
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
                     int position = getAdapterPosition();
-                    if(listener != null && position != RecyclerView.NO_POSITION){
+                    if (listener != null && position != RecyclerView.NO_POSITION) {
                         listener.onItemClick(tasks.get(position));
                     }
                     return true;
