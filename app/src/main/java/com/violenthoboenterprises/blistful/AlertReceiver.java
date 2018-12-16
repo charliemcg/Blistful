@@ -237,12 +237,19 @@ public class AlertReceiver extends BroadcastReceiver {
                     Calendar currentCal = Calendar.getInstance();
                     Calendar futureCal = Calendar.getInstance();
                     futureCal.setTimeInMillis(futureStamp);
+                    Log.d(TAG, "timestamp: " + futureStamp);
+//                    Log.d(TAG,
+//                            "\nYear: " + futureCal.get(Calendar.YEAR) +
+//                                    "\nMonth: " + futureCal.get(Calendar.MONTH) +
+//                                    "\nDay: " + futureCal.get(Calendar.DAY_OF_MONTH) +
+//                                    "\nHour: " + futureCal.get(Calendar.HOUR_OF_DAY) +
+//                                    "\nMinute: " + futureCal.get(Calendar.MINUTE));
                     diff = futureCal.getTimeInMillis() - currentCal.getTimeInMillis();
                     //checking if timestamp has been updated or not
                     if (diff < 86400000) {
                         MainActivity.alarmManager.set(AlarmManager.RTC, futureStamp, pendingIntent);
                     } else {
-                        int daysOut = (int) (diff / 86400000);
+                        long daysOut = diff / 86400000;
                         MainActivity.alarmManager.set(AlarmManager.RTC, (futureStamp - (86400000 * daysOut)),
                                 pendingIntent);
                     }
@@ -271,7 +278,8 @@ public class AlertReceiver extends BroadcastReceiver {
                                 - AlarmManager.INTERVAL_DAY);
                     }
 
-                    task.setTimestamp(alarmCalendar.getTimeInMillis());
+                    task.setTimestamp(/*alarmCalendar.getTimeInMillis()*/futureStamp + AlarmManager.INTERVAL_DAY);
+                    Log.d(TAG, "timestamp: " + task.getTimestamp() + " futureStamp: " + futureStamp);
 
 //                    //updating due date in database
 ////                    theDB.updateAlarmData(String.valueOf(broadId),

@@ -72,17 +72,24 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
     public void onBindViewHolder(final TaskHolder holder, final int position) {
         final Task currentTask = tasks.get(position);
         holder.tvTask.setText(currentTask.getTask());
-        if(currentTask.getTimestamp() != 0){
-            holder.tvDue.setVisibility(View.VISIBLE);
-            String formattedDate = getFormattedDate(currentTask.getTimestamp());
-            holder.tvDue.setText(formattedDate);
-        }
         //checking if any status icons need to be displayed
         holder.noteIcon.setVisibility(View.GONE);
         holder.subtasksIcon.setVisibility(View.GONE);
         holder.repeatIcon.setVisibility(View.GONE);
         holder.dueIcon.setVisibility(View.GONE);
+        holder.overdueIcon.setVisibility(View.GONE);
+        holder.tvDue.setVisibility(View.GONE);
         holder.taskProperties.setVisibility(View.GONE);
+        if(currentTask.getTimestamp() != 0){
+            if((currentTask.getTimestamp() - Calendar.getInstance().getTimeInMillis()) > 0) {
+                holder.dueIcon.setVisibility(View.VISIBLE);
+            }else{
+                holder.overdueIcon.setVisibility(View.VISIBLE);
+            }
+            holder.tvDue.setVisibility(View.VISIBLE);
+            String formattedDate = getFormattedDate(currentTask.getTimestamp());
+            holder.tvDue.setText(formattedDate);
+        }
         if (currentTask.getNote() != null) {
             holder.noteIcon.setVisibility(View.VISIBLE);
         }
@@ -95,9 +102,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         if (currentTask.getRepeatInterval() != null) {
             holder.repeatIcon.setVisibility(View.VISIBLE);
         }
-        if (currentTask.getTimestamp() > 0) {
-            holder.dueIcon.setVisibility(View.VISIBLE);
-        }
+//        if (currentTask.getTimestamp() > 0) {
+//            holder.dueIcon.setVisibility(View.VISIBLE);
+//        }
         //show properties on click
         holder.taskLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -224,6 +231,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         private ImageView subtasksIcon;
         private ImageView repeatIcon;
         private ImageView dueIcon;
+        private ImageView overdueIcon;
 
         public TaskHolder(final View itemView) {
             super(itemView);
@@ -238,6 +246,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
             subtasksIcon = itemView.findViewById(R.id.checklistClearWhite);
             repeatIcon = itemView.findViewById(R.id.repeatClearWhite);
             dueIcon = itemView.findViewById(R.id.dueClearWhite);
+            overdueIcon = itemView.findViewById(R.id.overdueClearWhite);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
