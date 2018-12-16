@@ -105,7 +105,7 @@ public class ReminderPresenterImpl implements ReminderPresenter {
 
     @Override
     public void setMonth(int month) {
-        reminder.setMinute(month);
+        reminder.setMonth(month);
         updateReminder(reminder);
     }
 
@@ -205,6 +205,11 @@ public class ReminderPresenterImpl implements ReminderPresenter {
         }
 
         return adjustedHour + ":" + adjustedMinuteString + adjustedAmPm;
+    }
+
+    @Override
+    public long getTimestamp() {
+        return task.getTimestamp();
     }
 
 }

@@ -453,6 +453,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             TextView tvDate = getActivity().findViewById(R.id.dateTextView);
 
             tvDate.setText(reminderPresenter.getFormattedDate());
+            Log.d("ReminderActivity", "Date: " + reminderPresenter.getFormattedDate());
 
             vibrate.vibrate(50);
 
@@ -567,11 +568,12 @@ public class ReminderActivity extends MainActivity implements ReminderView {
         if (reminderPresenter.getYear() != 0 || reminderPresenter.getHour() != 0 ||
                 reminderPresenter.getRepeatInterval() != null) {
 
-            Calendar calendar = new GregorianCalendar();
+            Calendar calendar = Calendar.getInstance();
             //set current date if date wasn't picked
             if (reminderPresenter.getYear() == 0) {
                 reminderPresenter.setYear(calendar.get(Calendar.YEAR));
                 reminderPresenter.setMonth(calendar.get(Calendar.MONTH));
+                Log.d(TAG, "Month: " + calendar.get(Calendar.MONTH));
                 reminderPresenter.setDay(calendar.get(Calendar.DAY_OF_MONTH));
             }
             //set current time if time wasn't picked
@@ -582,12 +584,14 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             //Setting timestamp of the reminder
             calendar.set(Calendar.YEAR, reminderPresenter.getYear());
             calendar.set(Calendar.MONTH, reminderPresenter.getMonth());
+            Log.d(TAG, "month: " + reminderPresenter.getMonth());
             calendar.set(Calendar.DAY_OF_MONTH, reminderPresenter.getDay());
             calendar.set(Calendar.HOUR, reminderPresenter.getHour());
             calendar.set(Calendar.MINUTE, reminderPresenter.getMinute());
             //Updating the task
             reminderPresenter.setTimestamp(calendar.getTimeInMillis());
 
+            //TODO only show notification if pro purchased
 //            if(preferences.getBoolean("reminders_available", false)) {
             scheduleNotification();
 //            }
@@ -612,9 +616,18 @@ public class ReminderActivity extends MainActivity implements ReminderView {
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
         MainActivity.alarmManager.cancel(MainActivity.pendingIntent);
-
+/////////////////////////////
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(task.getTimestamp());
+        Log.d(TAG,
+                "\nYear: " + cal.get(Calendar.YEAR) +
+                     "\nMonth: " + cal.get(Calendar.MONTH) +
+                     "\nDay: " + cal.get(Calendar.DAY_OF_MONTH) +
+                     "\nHour: " + cal.get(Calendar.HOUR) +
+                     "\nMinute: " + cal.get(Calendar.MINUTE));
+/////////////////////////////
         MainActivity.alarmManager.set(AlarmManager.RTC,
-                task.getTimestamp(),
+                reminderPresenter.getTimestamp(),
                 MainActivity.pendingIntent);
 
     }

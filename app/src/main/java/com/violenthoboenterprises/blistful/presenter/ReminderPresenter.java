@@ -44,4 +44,6 @@ public interface ReminderPresenter {
     String getFormattedDate();
 
     String getFormattedTime();
+
+    long getTimestamp();
 }
