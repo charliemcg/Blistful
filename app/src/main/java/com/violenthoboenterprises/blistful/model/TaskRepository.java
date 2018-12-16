@@ -4,11 +4,11 @@ import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
 
-import com.violenthoboenterprises.blistful.model.Task;
 import com.violenthoboenterprises.blistful.presenter.TaskDao;
 import com.violenthoboenterprises.blistful.presenter.TaskDatabase;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class TaskRepository {
 
@@ -30,6 +30,20 @@ public class TaskRepository {
 
     //TODO see if LiveData is needed
     LiveData<List<Task>> getAllTasks(){return allTasks;}
+
+    public List<Integer> getAllTimestamps() {
+        AsyncTask<Void, Void, List<Integer>> result = new GetAllTimestampsAsyncTask(taskDao).execute();
+        List<Integer> allTimestamps;
+        try {
+            allTimestamps = result.get();
+            return allTimestamps;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     //Performing these tasks off of the UI thread
     private static class InsertTaskAsyncTask extends AsyncTask<Task, Void, Void> {
@@ -68,4 +82,13 @@ public class TaskRepository {
         }
     }
 
+    private class GetAllTimestampsAsyncTask extends AsyncTask<Void, Void, List<Integer>>{
+        private TaskDao taskDao;
+        public GetAllTimestampsAsyncTask(TaskDao taskDao) {this.taskDao = taskDao;}
+
+        @Override
+        protected List<Integer> doInBackground(Void... voids) {
+            return taskDao.getAllTimestamps();
+        }
+    }
 }

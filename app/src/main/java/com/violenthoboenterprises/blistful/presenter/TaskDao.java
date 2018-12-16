@@ -9,6 +9,7 @@ import android.arch.persistence.room.Update;
 
 import com.violenthoboenterprises.blistful.model.Task;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -30,4 +31,6 @@ public interface TaskDao {
     //TODO see if LiveData is needed
     LiveData<List<Task>> getAllTasks();
 
+    @Query("SELECT timestamp FROM task_table")
+    List<Integer> getAllTimestamps();
 }

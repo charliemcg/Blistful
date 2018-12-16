@@ -50,6 +50,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.anjlab.android.iab.v3.BillingProcessor;
+import com.anjlab.android.iab.v3.Constants;
 import com.anjlab.android.iab.v3.TransactionDetails;
 import com.google.android.gms.ads.MobileAds;
 import com.violenthoboenterprises.blistful.model.MainActivityPresenterImpl;
@@ -78,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements
     //used to indicate that user purchased ad removal
     private boolean boolAdsRemoved;
     //used to indicate that user purchased reminders
-    private boolean boolRemindersAvailable;
+    public boolean boolRemindersAvailable;
     //used to determine whether or not to show motivational toasts
     private boolean boolShowMotivation;
 
@@ -150,15 +151,15 @@ public class MainActivity extends AppCompatActivity implements
 
     private MenuItem miPro;
 
-    static BillingProcessor billingProcessor;
+    private static BillingProcessor billingProcessor;
 
-    private TaskViewModel taskViewModel;
+    public static TaskViewModel taskViewModel;
 
     private FloatingActionButton fab;
 
     private MainActivityPresenter mainActivityPresenter;
 
-    private TaskAdapter adapter;
+    public TaskAdapter adapter;
 
     private Task taskBeingEdited;
 
@@ -169,17 +170,17 @@ public class MainActivity extends AppCompatActivity implements
     //preferences used for persisting app-wide data
     public static SharedPreferences preferences;
     //keys for shared preferences
-    public String MUTE_KEY = "mute_key";
-    public String ADS_REMOVED_KEY = "ads_removed_key";
-    public String REMINDERS_AVAILABLE_KEY = "reminders_available_key";
-    public String MOTIVATION_KEY = "motivation_key";
-    public String REPEAT_HINT_KEY = "repeat_hint_key";
-    public String RENAME_HINT_KEY = "rename_hint_key";
-    public String REINSTATE_HINT_KEY = "reinstate_hint_key";
-    public String SHOW_REVIEW_KEY = "show_review_key";
-    public String TIME_INSTALLED_KEY = "time_installed_key";
-    public String REFRESH_THIS_ITEM = "refresh_this_item";
-    public int DELETE_TASK_ID = 0;
+//    public String MUTE_KEY = "mute_key";
+//    public String ADS_REMOVED_KEY = "ads_removed_key";
+//    public String REMINDERS_AVAILABLE_KEY = "reminders_available_key";
+//    public String MOTIVATION_KEY = "motivation_key";
+//    public String REPEAT_HINT_KEY = "repeat_hint_key";
+//    public String RENAME_HINT_KEY = "rename_hint_key";
+//    public String REINSTATE_HINT_KEY = "reinstate_hint_key";
+//    public String SHOW_REVIEW_KEY = "show_review_key";
+//    public String TIME_INSTALLED_KEY = "time_installed_key";
+//    public String REFRESH_THIS_ITEM = "refresh_this_item";
+//    public int DELETE_TASK_ID = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,22 +201,22 @@ public class MainActivity extends AppCompatActivity implements
 
         preferences = this.getSharedPreferences("com.violenthoboenterprises.blistful",
                 Context.MODE_PRIVATE);
-        boolMute = preferences.getBoolean(MUTE_KEY, false);
-        boolAdsRemoved = preferences.getBoolean(ADS_REMOVED_KEY, false);
-        boolRemindersAvailable = preferences.getBoolean(REMINDERS_AVAILABLE_KEY, false);
-        boolShowMotivation = preferences.getBoolean(MOTIVATION_KEY, true);
-        intRepeatHint = preferences.getInt(REPEAT_HINT_KEY, 0);
-        intRenameHint = preferences.getInt(RENAME_HINT_KEY, 0);
-        intReinstateHint = preferences.getInt(REINSTATE_HINT_KEY, 0);
-        intShowReviewPrompt = preferences.getInt(SHOW_REVIEW_KEY, 0);
-        lngTimeInstalled = preferences.getLong(TIME_INSTALLED_KEY, 0);
+        boolMute = preferences.getBoolean(StringConstants.MUTE_KEY, false);
+        boolAdsRemoved = preferences.getBoolean(StringConstants.ADS_REMOVED_KEY, true);//TODO change to false
+        boolRemindersAvailable = preferences.getBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, true);//TODO change to false
+        boolShowMotivation = preferences.getBoolean(StringConstants.MOTIVATION_KEY, true);
+        intRepeatHint = preferences.getInt(StringConstants.REPEAT_HINT_KEY, 0);
+        intRenameHint = preferences.getInt(StringConstants.RENAME_HINT_KEY, 0);
+        intReinstateHint = preferences.getInt(StringConstants.REINSTATE_HINT_KEY, 0);
+        intShowReviewPrompt = preferences.getInt(StringConstants.SHOW_REVIEW_KEY, 0);
+        lngTimeInstalled = preferences.getLong(StringConstants.TIME_INSTALLED_KEY, 0);
 
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
         if(lngTimeInstalled == 0){
             long defaultTime = new GregorianCalendar().getInstance().getTimeInMillis();
-            preferences.edit().putLong(TIME_INSTALLED_KEY, defaultTime).apply();
-            lngTimeInstalled = preferences.getLong(TIME_INSTALLED_KEY, 0);
+            preferences.edit().putLong(StringConstants.TIME_INSTALLED_KEY, defaultTime).apply();
+            lngTimeInstalled = preferences.getLong(StringConstants.TIME_INSTALLED_KEY, 0);
         }
 
         taskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
@@ -256,7 +257,6 @@ public class MainActivity extends AppCompatActivity implements
         deviceheight = displayMetrics.heightPixels;
         intDuesSet = 0;
         imgNoTasks = findViewById(R.id.imgNoTasks);
-//        intPositionToUpdate = -1;
 
         fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -411,7 +411,7 @@ public class MainActivity extends AppCompatActivity implements
                                 }
                             }
                             intRenameHint++;
-                            preferences.edit().putInt(RENAME_HINT_KEY, intRenameHint).apply();
+                            preferences.edit().putInt(StringConstants.RENAME_HINT_KEY, intRenameHint).apply();
                         } else {
 
                             if (boolShowMotivation) {
@@ -531,7 +531,7 @@ public class MainActivity extends AppCompatActivity implements
                     @Override
                     public void onClick(View view) {
                         JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-                        scheduler.cancel(DELETE_TASK_ID);
+                        scheduler.cancel(StringConstants.DELETE_TASK_ID);
                         mainActivityPresenter.reinstateTask(taskToReinstate);
                     }
                 })
@@ -576,11 +576,11 @@ public class MainActivity extends AppCompatActivity implements
             if (boolMute) {
                 boolMute = false;
                 item.setChecked(true);
-                preferences.edit().putBoolean(MUTE_KEY, false).apply();
+                preferences.edit().putBoolean(StringConstants.MUTE_KEY, false).apply();
             } else {
                 boolMute = true;
                 item.setChecked(false);
-                preferences.edit().putBoolean(MUTE_KEY, true).apply();
+                preferences.edit().putBoolean(StringConstants.MUTE_KEY, true).apply();
             }
 
             return true;
@@ -600,11 +600,11 @@ public class MainActivity extends AppCompatActivity implements
             if (boolShowMotivation) {
                 boolShowMotivation = false;
                 item.setChecked(false);
-                preferences.edit().putBoolean(MOTIVATION_KEY, false).apply();
+                preferences.edit().putBoolean(StringConstants.MOTIVATION_KEY, false).apply();
             } else {
                 boolShowMotivation = true;
                 item.setChecked(true);
-                preferences.edit().putBoolean(MOTIVATION_KEY, false).apply();
+                preferences.edit().putBoolean(StringConstants.MOTIVATION_KEY, false).apply();
             }
 
             return true;
@@ -762,7 +762,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private void showPrompt() {
         if(mainActivityPresenter.showReviewPrompt(intShowReviewPrompt, lngTimeInstalled)){
-            preferences.edit().putInt(SHOW_REVIEW_KEY, ++intShowReviewPrompt).apply();
+            preferences.edit().putInt(StringConstants.SHOW_REVIEW_KEY, ++intShowReviewPrompt).apply();
             prompt();
         }
     }
@@ -785,7 +785,7 @@ public class MainActivity extends AppCompatActivity implements
                 //show review prompt no more than four times. Setting times
                 //shown to five means it'll no long be shown
                 intShowReviewPrompt = 5;
-                preferences.edit().putInt(SHOW_REVIEW_KEY, intShowReviewPrompt).apply();
+                preferences.edit().putInt(StringConstants.SHOW_REVIEW_KEY, intShowReviewPrompt).apply();
                 String URL = "https://play.google.com/store/apps/details?id=com.violenthoboenterprises.blistful";
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(URL));
@@ -845,9 +845,9 @@ public class MainActivity extends AppCompatActivity implements
             //Update values so that app appears to be in 'pro mode'
 
             boolAdsRemoved = true;
-            preferences.edit().putBoolean(ADS_REMOVED_KEY, true).apply();
+            preferences.edit().putBoolean(StringConstants.ADS_REMOVED_KEY, true).apply();
             boolRemindersAvailable = true;
-            preferences.edit().putBoolean(REMINDERS_AVAILABLE_KEY, true).apply();
+            preferences.edit().putBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, true).apply();
             miPro.setVisible(false);
 
         }
@@ -860,10 +860,14 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onBillingError(int errorCode, @Nullable Throwable error) {
 
+
+        Log.d(TAG, "error in purchasing...");
+
+
         //try purchasing again in case error was a once off
 //        if (tryAgain) {
 //            tryAgain = false;
-        billingProcessor.purchase(MainActivity.this, "unlock_all");
+//        billingProcessor.purchase(MainActivity.this, "unlock_all");
         //inform user of error
 //        } else {
 //            Toast.makeText(MainActivity.this, R.string.somethingWentWrong,

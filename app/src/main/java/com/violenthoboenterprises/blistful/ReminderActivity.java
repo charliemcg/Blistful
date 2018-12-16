@@ -9,6 +9,7 @@ import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.ComponentName;
 import android.content.Context;
@@ -17,6 +18,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -35,8 +37,11 @@ import com.violenthoboenterprises.blistful.model.TaskViewModel;
 import com.violenthoboenterprises.blistful.presenter.ReminderPresenter;
 import com.violenthoboenterprises.blistful.view.ReminderView;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 public class ReminderActivity extends MainActivity implements ReminderView {
 
@@ -572,28 +577,25 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             if (reminderPresenter.getYear() == 0) {
                 reminderPresenter.setYear(calendar.get(Calendar.YEAR));
                 reminderPresenter.setMonth(calendar.get(Calendar.MONTH));
-                Log.d(TAG, "Month: " + calendar.get(Calendar.MONTH));
                 reminderPresenter.setDay(calendar.get(Calendar.DAY_OF_MONTH));
             }
             //set current time if time wasn't picked
             if (reminderPresenter.getHour() == 0) {
-                reminderPresenter.setHour(calendar.get(Calendar.HOUR));
+                reminderPresenter.setHour(calendar.get(Calendar.HOUR_OF_DAY));
                 reminderPresenter.setMinute(calendar.get(Calendar.MINUTE));
             }
             //Setting timestamp of the reminder
             calendar.set(Calendar.YEAR, reminderPresenter.getYear());
             calendar.set(Calendar.MONTH, reminderPresenter.getMonth());
-            Log.d(TAG, "month: " + reminderPresenter.getMonth());
             calendar.set(Calendar.DAY_OF_MONTH, reminderPresenter.getDay());
-            calendar.set(Calendar.HOUR, reminderPresenter.getHour());
+            calendar.set(Calendar.HOUR_OF_DAY, reminderPresenter.getHour());
             calendar.set(Calendar.MINUTE, reminderPresenter.getMinute());
             //Updating the task
             reminderPresenter.setTimestamp(calendar.getTimeInMillis());
 
-            //TODO only show notification if pro purchased
-//            if(preferences.getBoolean("reminders_available", false)) {
-            scheduleNotification();
-//            }
+            if(boolRemindersAvailable) {
+                scheduleNotification();
+            }
 
         }
 
@@ -608,6 +610,8 @@ public class ReminderActivity extends MainActivity implements ReminderView {
         MainActivity.alertIntent.putExtra
                 ("snoozeStatus", false);
         MainActivity.alertIntent.putExtra("task", task);
+        List<Integer> timestamps = taskViewModel.getAllTimestamps();//TODO make sure to get data a due time and no sooner
+        MainActivity.alertIntent.putExtra("timestamps", (Serializable) timestamps);
 
         //Setting alarm
         MainActivity.pendingIntent = PendingIntent.getBroadcast(
@@ -615,16 +619,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
         MainActivity.alarmManager.cancel(MainActivity.pendingIntent);
-/////////////////////////////
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(task.getTimestamp());
-        Log.d(TAG,
-                "\nYear: " + cal.get(Calendar.YEAR) +
-                     "\nMonth: " + cal.get(Calendar.MONTH) +
-                     "\nDay: " + cal.get(Calendar.DAY_OF_MONTH) +
-                     "\nHour: " + cal.get(Calendar.HOUR) +
-                     "\nMinute: " + cal.get(Calendar.MINUTE));
-/////////////////////////////
+
         MainActivity.alarmManager.set(AlarmManager.RTC,
                 reminderPresenter.getTimestamp(),
                 MainActivity.pendingIntent);

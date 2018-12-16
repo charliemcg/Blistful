@@ -26,7 +26,9 @@ import com.violenthoboenterprises.blistful.view.MainActivityView;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 /*
  * Adding tasks to the recycler view
@@ -70,6 +72,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
     public void onBindViewHolder(final TaskHolder holder, final int position) {
         final Task currentTask = tasks.get(position);
         holder.tvTask.setText(currentTask.getTask());
+        if(currentTask.getTimestamp() != 0){
+            holder.tvDue.setVisibility(View.VISIBLE);
+            String formattedDate = getFormattedDate(currentTask.getTimestamp());
+            holder.tvDue.setText(formattedDate);
+        }
         //checking if any status icons need to be displayed
         holder.noteIcon.setVisibility(View.GONE);
         holder.subtasksIcon.setVisibility(View.GONE);
@@ -122,7 +129,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         holder.btnAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                preferences.edit().putInt("refresh_this_item", position).apply();
                 Intent intent = new Intent(context, ReminderActivity.class);
                 intent.putExtra("task", currentTask);
                 context.startActivity(intent);
@@ -131,7 +137,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         holder.btnSubtasks.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                preferences.edit().putInt("refresh_this_item", position).apply();
                 Intent intent = new Intent(context, SubtasksActivity.class);
                 intent.putExtra("task", currentTask);
                 context.startActivity(intent);
@@ -140,12 +145,56 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         holder.btnNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                preferences.edit().putInt("refresh_this_item", position).apply();
                 Intent intent = new Intent(context, NoteActivity.class);
                 intent.putExtra("task", currentTask);
                 context.startActivity(intent);
             }
         });
+    }
+
+    private String getFormattedDate(long timestamp) {
+        String formattedMonth = "";
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(timestamp);
+        int intMonth = cal.get(Calendar.MONTH) + 1;
+        //getting string representation for month
+        if (intMonth == 1) {
+            formattedMonth = context.getString(R.string.jan);
+        } else if (intMonth == 2) {
+            formattedMonth = context.getString(R.string.feb);
+        } else if (intMonth == 3) {
+            formattedMonth = context.getString(R.string.mar);
+        } else if (intMonth == 4) {
+            formattedMonth = context.getString(R.string.apr);
+        } else if (intMonth == 5) {
+            formattedMonth = context.getString(R.string.may);
+        } else if (intMonth == 6) {
+            formattedMonth = context.getString(R.string.jun);
+        } else if (intMonth == 7) {
+            formattedMonth = context.getString(R.string.jul);
+        } else if (intMonth == 8) {
+            formattedMonth = context.getString(R.string.aug);
+        } else if (intMonth == 9) {
+            formattedMonth = context.getString(R.string.sep);
+        } else if (intMonth == 10) {
+            formattedMonth = context.getString(R.string.oct);
+        } else if (intMonth == 11) {
+            formattedMonth = context.getString(R.string.nov);
+        } else if (intMonth == 12) {
+            formattedMonth = context.getString(R.string.dec);
+        }
+
+        //setting date format based of locale
+        String lang = String.valueOf(Locale.getDefault());
+        if (lang.equals("en_AS") || lang.equals("en_BM")
+                || lang.equals("en_CA") || lang.equals("en_GU")
+                || lang.equals("en_PH")
+                || lang.equals("en_PR") || lang.equals("en_UM")
+                || lang.equals("en_US") || lang.equals("en_VI")) {
+            return formattedMonth + " " + cal.get(Calendar.DAY_OF_MONTH);
+        } else {
+            return cal.get(Calendar.DAY_OF_MONTH) + " " + formattedMonth;
+        }
     }
 
     @Override
@@ -165,6 +214,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
     //Building the item view
     class TaskHolder extends RecyclerView.ViewHolder {
         private TextView tvTask;
+        private TextView tvDue;
         private ConstraintLayout taskLayout;
         private ConstraintLayout taskProperties;
         private ConstraintLayout btnAlarm;
@@ -178,6 +228,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         public TaskHolder(final View itemView) {
             super(itemView);
             tvTask = itemView.findViewById(R.id.tvTask);
+            tvDue = itemView.findViewById(R.id.tvDue);
             taskLayout = itemView.findViewById(R.id.taskLayout);
             taskProperties = itemView.findViewById(R.id.properties);
             btnAlarm = itemView.findViewById(R.id.alarm);

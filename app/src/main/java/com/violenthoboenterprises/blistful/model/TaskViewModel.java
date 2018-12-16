@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import com.violenthoboenterprises.blistful.model.Task;
 import com.violenthoboenterprises.blistful.model.TaskRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TaskViewModel extends AndroidViewModel {
@@ -34,4 +35,7 @@ public class TaskViewModel extends AndroidViewModel {
 
     public Task getTask(int id){return task;}
 
+    public List<Integer> getAllTimestamps() {
+        return repository.getAllTimestamps();
+    }
 }

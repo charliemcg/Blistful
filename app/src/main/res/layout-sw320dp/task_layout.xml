@@ -62,7 +62,7 @@
             ads:layout_constraintTop_toTopOf="@+id/mainTaskView" />
 
         <TextView
-            android:id="@+id/dueTextView"
+            android:id="@+id/tvDue"
             android:layout_width="wrap_content"
             android:layout_height="25dp"
             android:layout_marginStart="8dp"
