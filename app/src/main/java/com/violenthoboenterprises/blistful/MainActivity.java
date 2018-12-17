@@ -22,6 +22,7 @@ import android.os.PersistableBundle;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -121,6 +122,9 @@ public class MainActivity extends AppCompatActivity implements
     //Graphic to display if there are no tasks
     private ImageView imgNoTasks;
 
+    //Placeholder banner for when ad cannot be loaded
+    private ImageView imgBanner;
+
     //The master view
     private View activityRootView;
 
@@ -202,8 +206,8 @@ public class MainActivity extends AppCompatActivity implements
         preferences = this.getSharedPreferences("com.violenthoboenterprises.blistful",
                 Context.MODE_PRIVATE);
         boolMute = preferences.getBoolean(StringConstants.MUTE_KEY, false);
-        boolAdsRemoved = preferences.getBoolean(StringConstants.ADS_REMOVED_KEY, true);//TODO change to false
-        boolRemindersAvailable = preferences.getBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, true);//TODO change to false
+        boolAdsRemoved = preferences.getBoolean(StringConstants.ADS_REMOVED_KEY, false);//TODO change to false
+        boolRemindersAvailable = preferences.getBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, false);//TODO change to false
         boolShowMotivation = preferences.getBoolean(StringConstants.MOTIVATION_KEY, true);
         intRepeatHint = preferences.getInt(StringConstants.REPEAT_HINT_KEY, 0);
         intRenameHint = preferences.getInt(StringConstants.RENAME_HINT_KEY, 0);
@@ -257,6 +261,7 @@ public class MainActivity extends AppCompatActivity implements
         deviceheight = displayMetrics.heightPixels;
         intDuesSet = 0;
         imgNoTasks = findViewById(R.id.imgNoTasks);
+        imgBanner = findViewById(R.id.banner);
 
         fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -285,6 +290,11 @@ public class MainActivity extends AppCompatActivity implements
                 adapter.setTasks(tasks);
                 if(adapter.getItemCount() > 0){
                     imgNoTasks.setVisibility(View.GONE);
+                    if(adapter.getItemCount() > 4 && !boolAdsRemoved) {
+                        imgBanner.setVisibility(View.VISIBLE);
+                    }else{
+                        imgBanner.setVisibility(View.GONE);
+                    }
                 }else{
                     imgNoTasks.setVisibility(View.VISIBLE);
                 }
@@ -304,12 +314,16 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
 
-                //Saving a temporary instance of the deleted task should it need to be reinstated
-                Task taskToReinstate = adapter.getTaskAt(viewHolder.getAdapterPosition());
-                taskViewModel.delete(adapter.getTaskAt(viewHolder.getAdapterPosition()));
+                if(adapter.getTaskAt(viewHolder.getAdapterPosition()).getRepeatInterval() == null) {
+                    //Saving a temporary instance of the deleted task should it need to be reinstated
+                    Task taskToReinstate = adapter.getTaskAt(viewHolder.getAdapterPosition());
+                    taskViewModel.delete(adapter.getTaskAt(viewHolder.getAdapterPosition()));
 
-                String stringSnack = "Task deleted";
-                showSnackbar(stringSnack, taskToReinstate);
+                    String stringSnack = "Task deleted";
+                    showSnackbar(stringSnack, taskToReinstate);
+                }else{
+                    Toast.makeText(MainActivity.this, "killed repeating task", Toast.LENGTH_SHORT).show();
+                }
 
             }
         }).attachToRecyclerView(recyclerView);
@@ -640,7 +654,7 @@ public class MainActivity extends AppCompatActivity implements
                         mpChime.start();
                     }
 
-                    billingProcessor.purchase(MainActivity.this, "unlock_all");
+                    billingProcessor.purchase(MainActivity.this, StringConstants.TEST_PURCHASE);
 
                 }
 
@@ -813,7 +827,7 @@ public class MainActivity extends AppCompatActivity implements
                                    @Nullable TransactionDetails details) {
 
         //Inform user of successful purchase
-        if (productId.equals("unlock_all")) {
+        if (productId.equals(StringConstants.TEST_PURCHASE)) {
 
             toast.setText(R.string.thank_you_for_purchase);
             final Handler handler = new Handler();
@@ -849,6 +863,7 @@ public class MainActivity extends AppCompatActivity implements
             boolRemindersAvailable = true;
             preferences.edit().putBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, true).apply();
             miPro.setVisible(false);
+            imgBanner.setVisibility(View.GONE);
 
         }
 

@@ -308,12 +308,25 @@ public class AlertReceiver extends BroadcastReceiver {
 ////                theDB.updateManualKill(String.valueOf(broadId), false);
 //
             } else if (task.getRepeatInterval().equals("week") && !snoozeStatus) {
-//
-//                //App crashes if exact duplicate of timestamp is saved in database. Attempting to
-//                // detect duplicates and then adjusting the timestamp on the millisecond level
-//                long futureStamp = Long.parseLong(dbTimestamp) +
-//                        ((AlarmManager.INTERVAL_DAY * 7) / 1000);
-//                futureStamp = getFutureStamp(futureStamp);
+
+                //App crashes if exact duplicate of timestamp is saved in database. Attempting to
+                // detect duplicates and then adjusting the timestamp on the millisecond level
+                long futureStamp = task.getTimestamp() + AlarmManager.INTERVAL_DAY * 7;
+                futureStamp = getFutureStamp(futureStamp);
+                task.setTimestamp(futureStamp);
+                MainActivity.taskViewModel.update(task);
+
+                Intent alertIntent = new Intent(context, AlertReceiver.class);
+                alertIntent.putExtra
+                        ("snoozeStatus", false);
+                alertIntent.putExtra("task", task);
+                List<Integer> timestamps = MainActivity.taskViewModel.getAllTimestamps();//TODO check that it gets data at due time and no sooner
+                alertIntent.putExtra("timestamps", (Serializable) timestamps);
+
+                //Setting alarm
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                        context, task.getId(), alertIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
 //
 //                //updating timestamp
 ////                theDB.updateTimestamp(String.valueOf(broadId), String.valueOf(futureStamp));
@@ -327,8 +340,8 @@ public class AlertReceiver extends BroadcastReceiver {
 //                        context, broadId, theAlertIntent,
 //                        PendingIntent.FLAG_UPDATE_CURRENT);
 //
-//                Calendar alarmCalendar = Calendar.getInstance();
-//                Long diff;
+                Calendar alarmCalendar = Calendar.getInstance();
+                Long diff;
 //
 //                //setting a repeat alarm
 //                if (!dbKilledEarly) {
@@ -352,11 +365,34 @@ public class AlertReceiver extends BroadcastReceiver {
 //                    theAlarmManager.set(AlarmManager.RTC, Long.parseLong
 //                            (String.valueOf(dbTimestamp) + "000"), MainActivity.pendIntent);
 //                }
+                if (/*!dbKilledEarly*/true) {//TODO check if killed early
+
+                    Calendar currentCal = Calendar.getInstance();
+                    Calendar futureCal = Calendar.getInstance();
+                    futureCal.setTimeInMillis(futureStamp);
+                    diff = futureCal.getTimeInMillis() - currentCal.getTimeInMillis();
+                    //checking if timestamp has been updated or not
+                    if (diff < (86400000 * 7)) {
+                        MainActivity.alarmManager.set(AlarmManager.RTC, futureStamp, pendingIntent);
+                    } else {
+                        long daysOut = diff / (86400000 * 7);
+                        MainActivity.alarmManager.set(AlarmManager.RTC, (futureStamp - ((86400000 * 7) * daysOut)),
+                                pendingIntent);
+                    }
+                }
 //
 //                Calendar currentCal = Calendar.getInstance();
 //
 //                alarmCalendar.setTimeInMillis(Long.parseLong(String.valueOf(futureStamp)
 //                        + "000") - (AlarmManager.INTERVAL_DAY * 7));
+
+                Calendar currentCal = Calendar.getInstance();
+
+                alarmCalendar.setTimeInMillis(futureStamp - (AlarmManager.INTERVAL_DAY * 7));
+
+                Calendar dayCal = Calendar.getInstance();
+                dayCal.setTimeInMillis(task.getTimestamp());
+                int alarmDay = dayCal.get(Calendar.DAY_OF_MONTH);
 //
 //                //alarm data is already updated if user marked task as done
 //                if (!dbManualKill
@@ -385,6 +421,34 @@ public class AlertReceiver extends BroadcastReceiver {
 ////                            String.valueOf(alarmCalendar.get(Calendar.YEAR)));
 //
 //                }
+                //alarm data is already updated if user marked task as done
+                if (/*!dbManualKill
+                        && */(alarmDay != currentCal.get(Calendar.DAY_OF_MONTH))) {//TODO detect manual kill
+                    diff = futureStamp - (AlarmManager.INTERVAL_DAY * 7) - currentCal.getTimeInMillis();
+
+                    if (diff > 0) {
+                        long daysOut = diff / (86400000 * 7);
+                        futureStamp = futureStamp - ((86400000 * 7) * (daysOut + 1));
+                        alarmCalendar.setTimeInMillis(futureStamp
+                                - (AlarmManager.INTERVAL_DAY * 7));
+                    }
+
+                    task.setTimestamp(/*alarmCalendar.getTimeInMillis()*/futureStamp);
+                    MainActivity.taskViewModel.update(task);
+
+                }else{
+                    diff = futureStamp - (AlarmManager.INTERVAL_DAY * 7) - currentCal.getTimeInMillis();
+
+                    if (diff > 0) {
+                        long daysOut = diff / (86400000 * 7);
+                        futureStamp = futureStamp - ((86400000 * 7) * (daysOut + 1));
+                        alarmCalendar.setTimeInMillis(futureStamp
+                                - (AlarmManager.INTERVAL_DAY * 7));
+                    }
+
+                    task.setTimestamp(alarmCalendar.getTimeInMillis());
+                    MainActivity.taskViewModel.update(task);
+                }
 //
 ////                theDB.updateManualKill(String.valueOf(broadId), false);
 //

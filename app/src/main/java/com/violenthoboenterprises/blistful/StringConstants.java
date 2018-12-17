@@ -12,5 +12,7 @@ public class StringConstants {
     public static String SHOW_REVIEW_KEY = "show_review_key";
     public static String TIME_INSTALLED_KEY = "time_installed_key";
     public static int DELETE_TASK_ID = 0;
+    public static String UNLOCK_ALL = "unlock_all";
+    public static String TEST_PURCHASE = "android.test.purchased";//TODO remove this
 
 }
