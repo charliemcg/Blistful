@@ -15,6 +15,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
@@ -53,6 +55,9 @@ import android.widget.Toast;
 import com.anjlab.android.iab.v3.BillingProcessor;
 import com.anjlab.android.iab.v3.Constants;
 import com.anjlab.android.iab.v3.TransactionDetails;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.violenthoboenterprises.blistful.model.MainActivityPresenterImpl;
 import com.violenthoboenterprises.blistful.model.SubtaskViewModel;
@@ -124,6 +129,9 @@ public class MainActivity extends AppCompatActivity implements
 
     //Placeholder banner for when ad cannot be loaded
     private ImageView imgBanner;
+
+    //The banner ad
+    private AdView adView;
 
     //The master view
     private View activityRootView;
@@ -217,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements
 
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
-        if(lngTimeInstalled == 0){
+        if (lngTimeInstalled == 0) {
             long defaultTime = new GregorianCalendar().getInstance().getTimeInMillis();
             preferences.edit().putLong(StringConstants.TIME_INSTALLED_KEY, defaultTime).apply();
             lngTimeInstalled = preferences.getLong(StringConstants.TIME_INSTALLED_KEY, 0);
@@ -262,6 +270,7 @@ public class MainActivity extends AppCompatActivity implements
         intDuesSet = 0;
         imgNoTasks = findViewById(R.id.imgNoTasks);
         imgBanner = findViewById(R.id.banner);
+        adView = findViewById(R.id.adView);
 
         fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -284,18 +293,18 @@ public class MainActivity extends AppCompatActivity implements
         //observing the recycler view items for changes
         //TODO find out if observer is necessary
         taskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
-        taskViewModel.getAllTasks().observe(this, new Observer<List<Task>>(){
+        taskViewModel.getAllTasks().observe(this, new Observer<List<Task>>() {
             @Override
-            public void onChanged(@Nullable List<Task> tasks){
+            public void onChanged(@Nullable List<Task> tasks) {
                 adapter.setTasks(tasks);
-                if(adapter.getItemCount() > 0){
+                if (adapter.getItemCount() > 0) {
                     imgNoTasks.setVisibility(View.GONE);
-                    if(adapter.getItemCount() > 4 && !boolAdsRemoved) {
-                        imgBanner.setVisibility(View.VISIBLE);
-                    }else{
+                    if (adapter.getItemCount() > 4 && !boolAdsRemoved) {
+                        showBannerAd();
+                    } else {
                         imgBanner.setVisibility(View.GONE);
                     }
-                }else{
+                } else {
                     imgNoTasks.setVisibility(View.VISIBLE);
                 }
             }
@@ -314,14 +323,14 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
 
-                if(adapter.getTaskAt(viewHolder.getAdapterPosition()).getRepeatInterval() == null) {
+                if (adapter.getTaskAt(viewHolder.getAdapterPosition()).getRepeatInterval() == null) {
                     //Saving a temporary instance of the deleted task should it need to be reinstated
                     Task taskToReinstate = adapter.getTaskAt(viewHolder.getAdapterPosition());
                     taskViewModel.delete(adapter.getTaskAt(viewHolder.getAdapterPosition()));
 
                     String stringSnack = "Task deleted";
                     showSnackbar(stringSnack, taskToReinstate);
-                }else{
+                } else {
                     Toast.makeText(MainActivity.this, "killed repeating task", Toast.LENGTH_SHORT).show();
                 }
 
@@ -468,7 +477,7 @@ public class MainActivity extends AppCompatActivity implements
 
                     return true;
 
-                //Actions to take when editing existing task
+                    //Actions to take when editing existing task
                 } else if (actionId == EditorInfo.IME_ACTION_DONE) {
 
                     Toast.makeText(MainActivity.this, "Editing task", Toast.LENGTH_SHORT).show();
@@ -489,7 +498,7 @@ public class MainActivity extends AppCompatActivity implements
 
                     etTask.setText("");
 
-                    if(!editedTaskString.equals("")){
+                    if (!editedTaskString.equals("")) {
 
                         mainActivityPresenter.setTask(taskBeingEdited, editedTaskString);
 
@@ -509,6 +518,33 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+    private void showBannerAd() {
+        boolean networkAvailable = false;
+        ConnectivityManager connectivityManager = (ConnectivityManager)
+                this.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        if (activeNetworkInfo != null && activeNetworkInfo.isConnected()) {
+            networkAvailable = true;
+        }
+
+        if (networkAvailable) {
+            adView.setVisibility(View.VISIBLE);
+            final AdRequest banRequest = new AdRequest.Builder().build();
+            adView.loadAd(banRequest);
+        } else {
+            imgBanner.setVisibility(View.VISIBLE);
+        }
+
+        adView.setAdListener(new AdListener() {
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                imgBanner.setVisibility(View.VISIBLE);
+            }
+
+        });
+    }
+
     //Actions to occur when fab clicked
     public void addTask(Task task) {
 
@@ -524,10 +560,10 @@ public class MainActivity extends AppCompatActivity implements
         etTask.setImeOptions(EditorInfo.IME_ACTION_DONE);
 
         //Check if editing existing task or adding new one
-        if(taskBeingEdited != null){
+        if (taskBeingEdited != null) {
             //put task name in the edit text
             etTask.setText(taskBeingEdited.getTask());
-        }else {
+        } else {
             //Ensure that there is no previous text in the text box
             etTask.setText("");
         }
@@ -599,7 +635,7 @@ public class MainActivity extends AppCompatActivity implements
 
             return true;
 
-        //Actions to occur if user selects the pro icon
+            //Actions to occur if user selects the pro icon
         } else if (id == R.id.buy) {
 
             purchasePrompt();
@@ -712,7 +748,7 @@ public class MainActivity extends AppCompatActivity implements
     //Tells user to add tasks when task list is empty
 //    private void noTasksLeft() {
 
-        //Checks if there are any existing tasks
+    //Checks if there are any existing tasks
 //        if (taskList.size() == 0) {
 //
 //            //Inform user to add some tasks
@@ -728,43 +764,43 @@ public class MainActivity extends AppCompatActivity implements
 
         activityRootView.getViewTreeObserver().addOnGlobalLayoutListener
                 (new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
+                    @Override
+                    public void onGlobalLayout() {
 
-                Rect screen = new Rect();
+                        Rect screen = new Rect();
 
-                activityRootView.getWindowVisibleDisplayFrame(screen);
+                        activityRootView.getWindowVisibleDisplayFrame(screen);
 
-                if (screen.bottom != deviceheight) {
+                        if (screen.bottom != deviceheight) {
 
-                    etTask.setFocusable(true);
+                            etTask.setFocusable(true);
 
-                    etTask.requestFocus();
+                            etTask.requestFocus();
 
-                    //Keyboard is inactive without this line
-                    etTask.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
+                            //Keyboard is inactive without this line
+                            etTask.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
 
-                    //Textbox is visible and 'add' button is gone
-                    // whenever keyboard is showing
-                    etTask.setVisibility(View.VISIBLE);
+                            //Textbox is visible and 'add' button is gone
+                            // whenever keyboard is showing
+                            etTask.setVisibility(View.VISIBLE);
 
-                    //remove fab when keybaord is up
-                    fab.setVisibility(View.GONE);
+                            //remove fab when keybaord is up
+                            fab.setVisibility(View.GONE);
 
-                } else /*if (restoreNormalListView)*/ {
+                        } else /*if (restoreNormalListView)*/ {
 
-                    //Textbox is gone and 'add' button is visible whenever
-                    //keyboard is not showing
-                    etTask.setVisibility(View.GONE);
+                            //Textbox is gone and 'add' button is visible whenever
+                            //keyboard is not showing
+                            etTask.setVisibility(View.GONE);
 
-                    //fab must be visible when keyboard is down
-                    fab.setVisibility(View.VISIBLE);
+                            //fab must be visible when keyboard is down
+                            fab.setVisibility(View.VISIBLE);
 
-                }
+                        }
 
-            }
+                    }
 
-        });
+                });
 
     }
 
@@ -775,7 +811,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void showPrompt() {
-        if(mainActivityPresenter.showReviewPrompt(intShowReviewPrompt, lngTimeInstalled)){
+        if (mainActivityPresenter.showReviewPrompt(intShowReviewPrompt, lngTimeInstalled)) {
             preferences.edit().putInt(StringConstants.SHOW_REVIEW_KEY, ++intShowReviewPrompt).apply();
             prompt();
         }
@@ -870,7 +906,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onPurchaseHistoryRestored() {}
+    public void onPurchaseHistoryRestored() {
+    }
 
     @Override
     public void onBillingError(int errorCode, @Nullable Throwable error) {
@@ -892,7 +929,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onBillingInitialized() {}
+    public void onBillingInitialized() {
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
