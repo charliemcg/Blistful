@@ -14,6 +14,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -59,6 +60,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
     private String REPEAT_DAY = "day";
     private String REPEAT_WEEK = "week";
     private String REPEAT_MONTH = "month";
+    private SharedPreferences preferences;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,6 +95,8 @@ public class ReminderActivity extends MainActivity implements ReminderView {
         imgMonthly = findViewById(R.id.monthly);
         imgCancelRepeatFaded = findViewById(R.id.cancelRepeatLight);
         imgCancelRepeat = findViewById(R.id.cancelRepeat);
+        preferences = this.getSharedPreferences("com.violenthoboenterprises.blistful",
+                Context.MODE_PRIVATE);
 
         screenSize = getResources().getConfiguration().screenLayout &
                 Configuration.SCREENLAYOUT_SIZE_MASK;
@@ -403,6 +407,9 @@ public class ReminderActivity extends MainActivity implements ReminderView {
                                     tvDate.setText(R.string.addDate);
                                     tvTime.setText(R.string.addTime);
 
+                                    int duesset = preferences.getInt(StringConstants.DUES_SET, 0);
+                                    preferences.edit().putInt(StringConstants.DUES_SET, --duesset).apply();
+
                                 }
                             };
                             handler3.postDelayed(runnable3, 100);
@@ -596,6 +603,9 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             if(boolRemindersAvailable) {
                 scheduleNotification();
             }
+
+            int duesset = preferences.getInt(StringConstants.DUES_SET, 0);
+            preferences.edit().putInt(StringConstants.DUES_SET, ++duesset).apply();
 
         }
 

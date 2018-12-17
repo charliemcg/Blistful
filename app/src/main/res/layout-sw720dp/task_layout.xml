@@ -134,41 +134,20 @@
 
     </android.support.constraint.ConstraintLayout>
 
-    <View
-        android:id="@+id/propertiesView"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/darkOrange"
+        android:layout_height="wrap_content"
+        android:background="@color/turquoise"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mainTaskView" />
+        app:layout_constraintTop_toBottomOf="@+id/mainTaskView">
 
-    <include
-        android:id="@+id/properties"
-        layout="@layout/task_properties_layout"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mainTaskView" />
+        <include
+            android:id="@+id/properties"
+            layout="@layout/task_properties_layout"
+            android:visibility="gone" />
 
-    <include
-        android:id="@+id/snoozeRow"
-        layout="@layout/snooze_layout"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mainTaskView" />
-
-    <include
-        android:id="@+id/taskIsOverdue"
-        layout="@layout/task_overdue_layout"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mainTaskView" />
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>

@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.violenthoboenterprises.blistful.MainActivity;
 import com.violenthoboenterprises.blistful.ReminderActivity;
+import com.violenthoboenterprises.blistful.StringConstants;
 import com.violenthoboenterprises.blistful.SubtasksActivity;
 import com.violenthoboenterprises.blistful.NoteActivity;
 import com.violenthoboenterprises.blistful.R;
@@ -80,7 +81,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         holder.dueIcon.setVisibility(View.GONE);
         holder.overdueIcon.setVisibility(View.GONE);
         holder.tvDue.setVisibility(View.GONE);
-        holder.taskProperties.setVisibility(View.GONE);
+//        holder.taskProperties.setVisibility(View.GONE);
         holder.tvDue.setTextColor(Color.BLACK);
         if (currentTask.getTimestamp() != 0) {
             if ((currentTask.getTimestamp() - Calendar.getInstance().getTimeInMillis()) > 0) {
@@ -136,9 +137,14 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         holder.btnAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, ReminderActivity.class);
-                intent.putExtra("task", currentTask);
-                context.startActivity(intent);
+                if(preferences.getInt(StringConstants.DUES_SET, 0) < 5 || currentTask.getTimestamp() != 0
+                        || preferences.getBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, false)) {
+                    Intent intent = new Intent(context, ReminderActivity.class);
+                    intent.putExtra("task", currentTask);
+                    context.startActivity(intent);
+                }else{
+                    mainActivityPresenter.showPurchases();
+                }
             }
         });
         holder.btnSubtasks.setOnClickListener(new View.OnClickListener() {

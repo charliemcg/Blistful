@@ -5,4 +5,6 @@ import com.violenthoboenterprises.blistful.model.Task;
 public interface MainActivityView {
 
     void addTask(Task task);
+
+    void showPurchases();
 }

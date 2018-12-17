@@ -573,6 +573,51 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+    @Override
+    public void showPurchases() {
+        final Dialog dialog = new Dialog(MainActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+
+        dialog.setContentView(R.layout.purchases);
+
+        Button positive = dialog.findViewById(R.id.positive);
+        Button negative = dialog.findViewById(R.id.negative);
+
+        //Buy button actions
+        positive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                dialog.dismiss();
+                if (!boolRemindersAvailable && !boolAdsRemoved) {
+
+                    vibrate.vibrate(50);
+
+                    if (!boolMute) {
+                        mpChime.start();
+                    }
+
+                    billingProcessor.purchase(MainActivity.this, StringConstants.TEST_PURCHASE);
+
+                }
+
+            }
+        });
+
+        //Cancel button options
+        negative.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                dialog.dismiss();
+
+            }
+        });
+
+        dialog.show();
+    }
+
     //Give user option to undo deletion of task
     private void showSnackbar(String stringSnack, final Task taskToReinstate) {
         View view = findViewById(R.id.activityRoot);
@@ -638,7 +683,7 @@ public class MainActivity extends AppCompatActivity implements
             //Actions to occur if user selects the pro icon
         } else if (id == R.id.buy) {
 
-            purchasePrompt();
+            showPurchases();
 
             return true;
 
@@ -665,85 +710,85 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     //Create prompt that enables user to upgrade to pro
-    private void purchasePrompt() {
-
-        final Dialog dialog = new Dialog(MainActivity.this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setCancelable(false);
-
-        dialog.setContentView(R.layout.purchases);
-
-        Button positive = dialog.findViewById(R.id.positive);
-        Button negative = dialog.findViewById(R.id.negative);
-
-        //Buy button actions
-        positive.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                dialog.dismiss();
-                if (!boolRemindersAvailable && !boolAdsRemoved) {
-
-                    vibrate.vibrate(50);
-
-                    if (!boolMute) {
-                        mpChime.start();
-                    }
-
-                    billingProcessor.purchase(MainActivity.this, StringConstants.TEST_PURCHASE);
-
-                }
-
-            }
-        });
-
-        //Cancel button options
-        negative.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                dialog.dismiss();
-
-            }
-        });
-
-        dialog.show();
-
-    }
+//    private void purchasePrompt() {
+//
+//        final Dialog dialog = new Dialog(MainActivity.this);
+//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        dialog.setCancelable(false);
+//
+//        dialog.setContentView(R.layout.purchases);
+//
+//        Button positive = dialog.findViewById(R.id.positive);
+//        Button negative = dialog.findViewById(R.id.negative);
+//
+//        //Buy button actions
+//        positive.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                dialog.dismiss();
+//                if (!boolRemindersAvailable && !boolAdsRemoved) {
+//
+//                    vibrate.vibrate(50);
+//
+//                    if (!boolMute) {
+//                        mpChime.start();
+//                    }
+//
+//                    billingProcessor.purchase(MainActivity.this, StringConstants.TEST_PURCHASE);
+//
+//                }
+//
+//            }
+//        });
+//
+//        //Cancel button options
+//        negative.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                dialog.dismiss();
+//
+//            }
+//        });
+//
+//        dialog.show();
+//
+//    }
 
     //reinstates completed task
-    public void reinstate(int i) {
-
-        if (boolShowMotivation) {
-            toast.setText(R.string.taskReinstated);
-            final Handler handler = new Handler();
-
-            final Runnable runnable = new Runnable() {
-                public void run() {
-
-                    if (!boolMute) {
-                        mpSweep.start();
-                    }
-
-                    toastView.startAnimation(AnimationUtils.loadAnimation
-                            (MainActivity.this, R.anim.enter_from_right_fast));
-                    toastView.setVisibility(View.VISIBLE);
-                    final Handler handler2 = new Handler();
-                    final Runnable runnable2 = new Runnable() {
-                        public void run() {
-                            toastView.startAnimation(AnimationUtils.loadAnimation
-                                    (MainActivity.this, android.R.anim.fade_out));
-                            toastView.setVisibility(View.GONE);
-                        }
-                    };
-                    handler2.postDelayed(runnable2, 1500);
-                }
-            };
-
-            handler.postDelayed(runnable, 500);
-        }
-
-    }
+//    public void reinstate(int i) {
+//
+//        if (boolShowMotivation) {
+//            toast.setText(R.string.taskReinstated);
+//            final Handler handler = new Handler();
+//
+//            final Runnable runnable = new Runnable() {
+//                public void run() {
+//
+//                    if (!boolMute) {
+//                        mpSweep.start();
+//                    }
+//
+//                    toastView.startAnimation(AnimationUtils.loadAnimation
+//                            (MainActivity.this, R.anim.enter_from_right_fast));
+//                    toastView.setVisibility(View.VISIBLE);
+//                    final Handler handler2 = new Handler();
+//                    final Runnable runnable2 = new Runnable() {
+//                        public void run() {
+//                            toastView.startAnimation(AnimationUtils.loadAnimation
+//                                    (MainActivity.this, android.R.anim.fade_out));
+//                            toastView.setVisibility(View.GONE);
+//                        }
+//                    };
+//                    handler2.postDelayed(runnable2, 1500);
+//                }
+//            };
+//
+//            handler.postDelayed(runnable, 500);
+//        }
+//
+//    }
 
     //Tells user to add tasks when task list is empty
 //    private void noTasksLeft() {
@@ -806,7 +851,7 @@ public class MainActivity extends AppCompatActivity implements
 
     public void showPro(View view) {
 
-        purchasePrompt();
+        showPurchases();
 
     }
 

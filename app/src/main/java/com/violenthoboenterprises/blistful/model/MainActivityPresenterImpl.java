@@ -48,6 +48,11 @@ public class MainActivityPresenterImpl implements MainActivityPresenter {
     }
 
     @Override
+    public void showPurchases() {
+        mainActivityView.showPurchases();
+    }
+
+    @Override
     public boolean showReviewPrompt(int intShowReviewPrompt, long lngTimeInstalled) {
         Calendar calendar = new GregorianCalendar().getInstance();
         //show review prompt after three days

@@ -15,4 +15,6 @@ public interface MainActivityPresenter {
     void setTask(Task taskBeingEdited, String editedTaskString);
 
     void reinstateTask(Task taskToReinstate);
+
+    void showPurchases();
 }

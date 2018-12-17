@@ -14,5 +14,6 @@ public class StringConstants {
     public static int DELETE_TASK_ID = 0;
     public static String UNLOCK_ALL = "unlock_all";
     public static String TEST_PURCHASE = "android.test.purchased";//TODO remove this
+    public static String DUES_SET = "dues_set";
 
 }

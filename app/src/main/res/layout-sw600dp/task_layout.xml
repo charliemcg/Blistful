@@ -17,7 +17,6 @@
         android:layout_height="wrap_content"
         android:background="@drawable/color_picker_border_white"
         android:elevation="50dp"
-        app:layout_constraintBottom_toTopOf="@+id/propertiesView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/banner">
@@ -143,11 +142,22 @@
 
     </android.support.constraint.ConstraintLayout>
 
+    <!--<android.support.constraint.ConstraintLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/mainTaskView">-->
+        <!--<include-->
+            <!--android:id="@+id/properties"-->
+            <!--layout="@layout/task_properties_layout"-->
+            <!--android:visibility="visible"/>-->
+    <!--</android.support.constraint.ConstraintLayout>-->
+
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/propertiesView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/turquoise"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -158,15 +168,15 @@
             layout="@layout/task_properties_layout"
             android:visibility="gone"/>
 
-        <include
-            android:id="@+id/snoozeRow"
-            layout="@layout/snooze_layout"
-            android:visibility="gone"/>
+        <!--<include-->
+            <!--android:id="@+id/snoozeRow"-->
+            <!--layout="@layout/snooze_layout"-->
+            <!--android:visibility="gone"/>-->
 
-        <include
-            android:id="@+id/taskIsOverdue"
-            layout="@layout/task_overdue_layout"
-            android:visibility="gone"/>
+        <!--<include-->
+            <!--android:id="@+id/taskIsOverdue"-->
+            <!--layout="@layout/task_overdue_layout"-->
+            <!--android:visibility="gone"/>-->
 
     </android.support.constraint.ConstraintLayout>
 
