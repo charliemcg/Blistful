@@ -26,6 +26,7 @@ public class Task implements Serializable {
     private boolean subtasks;
 
     //when the task is due if there is a due date
+    @NonNull
     private long timestamp;
 
     //task name
@@ -81,7 +82,7 @@ public class Task implements Serializable {
     //when the snooze alarm is due
     private long snoozedTimestamp;
 
-    public Task(/*int id, String note, boolean subtasks, long timestamp, */String task,/* boolean due,
+    public Task(/*int id, String note, boolean subtasks, */long timestamp, String task,/* boolean due,
                 boolean killed, boolean repeat, boolean overdue, boolean snoozed, boolean showonce,
                 int interval, String repeatInterval, boolean ignored, */long timeCreated/*,
                 int sortedIndex, int subtasksSize, boolean manualKill, boolean killedEarly,
@@ -89,7 +90,7 @@ public class Task implements Serializable {
 //        this.id = id;
 //        this.note = note;
 //        this.subtasks = subtasks;
-//        this.timestamp = timestamp;
+        this.timestamp = timestamp;
         this.task = task;
 //        this.due = due;
 //        this.killed = killed;

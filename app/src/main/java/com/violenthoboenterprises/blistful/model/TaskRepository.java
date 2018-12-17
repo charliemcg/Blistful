@@ -2,24 +2,42 @@ package com.violenthoboenterprises.blistful.model;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MediatorLiveData;
+import android.arch.lifecycle.Observer;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.violenthoboenterprises.blistful.presenter.TaskDao;
 import com.violenthoboenterprises.blistful.presenter.TaskDatabase;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.concurrent.ExecutionException;
 
 public class TaskRepository {
 
+    private static String TAG = "TaskRepository";
+
     private TaskDao taskDao;
     //TODO see if LiveData is needed
-    private LiveData<List<Task>> allTasks;
+//    private LiveData<List<Task>> allTasks;
 
     TaskRepository(Application application){
         TaskDatabase taskDatabase = TaskDatabase.getInstance(application);
         taskDao = taskDatabase.taskDao();
-        allTasks = taskDao.getAllTasks();
+//        allTasks = taskDao.getAllTasks();
+//        List<Task> tempListNoDues = taskDao.getAllTasks();
+//        List<Task> tempListWithDues = taskDao.getAllTasksByStamp();
+//        tempListNoDues.addAll(tempListWithDues);
+//        allTasks = (LiveData<List<Task>>) tempListNoDues;
+//        int blah = taskDao.getTaskCount();
+//        Log.d(TAG, "count " + blah);
+
     }
 
     void insert(Task task){new InsertTaskAsyncTask(taskDao).execute(task);}
@@ -29,7 +47,32 @@ public class TaskRepository {
     public void delete(Task task){new DeleteTaskAsyncTask(taskDao).execute(task);}
 
     //TODO see if LiveData is needed
-    LiveData<List<Task>> getAllTasks(){return allTasks;}
+//    LiveData<List<Task>> getAllTasks(){return allTasks;}
+    LiveData<List<Task>> getAllTasks(){
+        AsyncTask<Void, Void, LiveData<List<Task>>> resultOne = new GetAllTasksNotDueAsyncTask(taskDao).execute();
+        AsyncTask<Void, Void, LiveData<List<Task>>> resultTwo = new GetAllTasksWithDueAsyncTask(taskDao).execute();
+        LiveData<List<Task>> allTasks;
+        MediatorLiveData liveDataMerger = new MediatorLiveData<>();
+        try {
+            liveDataMerger.addSource(resultOne.get(), value -> liveDataMerger.setValue(value));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        try {
+            liveDataMerger.addSource(resultTwo.get(), value -> liveDataMerger.setValue(value));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+//            allTasks = resultOne.get();
+////            allTasks.addAll(resultOne.get());
+//            allTasks.addAll(resultTwo.get());
+//            return allTasks;
+            return liveDataMerger;
+    }
 
     public List<Integer> getAllTimestamps() {
         AsyncTask<Void, Void, List<Integer>> result = new GetAllTimestampsAsyncTask(taskDao).execute();
@@ -90,5 +133,21 @@ public class TaskRepository {
         protected List<Integer> doInBackground(Void... voids) {
             return taskDao.getAllTimestamps();
         }
+    }
+
+    private class GetAllTasksNotDueAsyncTask extends AsyncTask<Void, Void, LiveData<List<Task>>>{
+        private TaskDao taskDao;
+        public GetAllTasksNotDueAsyncTask(TaskDao taskDao) { this.taskDao = taskDao; }
+
+        @Override
+        protected LiveData<List<Task>> doInBackground(Void... voids) {return taskDao.getAllTasks();}
+    }
+
+    private class GetAllTasksWithDueAsyncTask extends AsyncTask<Void, Void, LiveData<List<Task>>>{
+        private TaskDao taskDao;
+        public GetAllTasksWithDueAsyncTask(TaskDao taskDao) { this.taskDao = taskDao; }
+
+        @Override
+        protected LiveData<List<Task>> doInBackground(Void... voids) {return taskDao.getAllTasksByStamp();}
     }
 }

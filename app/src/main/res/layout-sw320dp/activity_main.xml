@@ -45,10 +45,10 @@
         android:visibility="gone"
         ads:adSize="SMART_BANNER"
         ads:adUnitId="ca-app-pub-2378583121223638/3959260925"
-        app:layout_constraintBottom_toTopOf="@id/toolbar_light"
+        app:layout_constraintBottom_toTopOf="@id/recyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar_light" />
 
     <ImageView
         android:id="@+id/banner"

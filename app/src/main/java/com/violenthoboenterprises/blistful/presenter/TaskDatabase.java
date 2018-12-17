@@ -62,9 +62,9 @@ public abstract class TaskDatabase extends RoomDatabase {
         @Override
         protected Void doInBackground(Void... voids){
             Calendar calendar = new GregorianCalendar().getInstance();
-            taskDao.insert(new Task("This is a task", calendar.getTimeInMillis()));
-            taskDao.insert(new Task("Swipe left or right to delete a task", calendar.getTimeInMillis()));
-            taskDao.insert(new Task("Press '+' to add a new task", calendar.getTimeInMillis()));
+            taskDao.insert(new Task(0, "This is a task", calendar.getTimeInMillis()));
+            taskDao.insert(new Task(0, "Swipe left or right to delete a task", calendar.getTimeInMillis()));
+            taskDao.insert(new Task(0, "Press '+' to add a new task", calendar.getTimeInMillis()));
             return null;
         }
 
