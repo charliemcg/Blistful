@@ -367,7 +367,7 @@ public class MainActivity extends AppCompatActivity implements
                     if (!taskName.equals("")) {
 
                         Calendar calendar = new GregorianCalendar().getInstance();
-                        mainActivityPresenter.addTask(0, taskName, calendar.getTimeInMillis());
+                        mainActivityPresenter.addTask(calendar.getTimeInMillis(), taskName, calendar.getTimeInMillis());
 
                         if (intRenameHint <= 2) {
                             if (intRenameHint == 2) {

@@ -214,4 +214,14 @@ public class ReminderPresenterImpl implements ReminderPresenter {
         return task.getTimestamp();
     }
 
+    @Override
+    public long getTimeCreated() {
+        return task.getTimeCreated();
+    }
+
+    @Override
+    public void setDue(boolean b) {
+        task.setDue(b);
+    }
+
 }

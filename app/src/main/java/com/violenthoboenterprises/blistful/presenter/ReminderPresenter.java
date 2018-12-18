@@ -46,4 +46,8 @@ public interface ReminderPresenter {
     String getFormattedTime();
 
     long getTimestamp();
+
+    long getTimeCreated();
+
+    void setDue(boolean b);
 }

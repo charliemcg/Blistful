@@ -83,7 +83,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         holder.tvDue.setVisibility(View.GONE);
 //        holder.taskProperties.setVisibility(View.GONE);
         holder.tvDue.setTextColor(Color.BLACK);
-        if (currentTask.getTimestamp() != 0) {
+        if (currentTask.isDue()) {
             if ((currentTask.getTimestamp() - Calendar.getInstance().getTimeInMillis()) > 0) {
                 holder.dueIcon.setVisibility(View.VISIBLE);
             } else {
@@ -137,7 +137,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         holder.btnAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(preferences.getInt(StringConstants.DUES_SET, 0) < 5 || currentTask.getTimestamp() != 0
+                if(preferences.getInt(StringConstants.DUES_SET, 0) < 5 || currentTask.isDue()
                         || preferences.getBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, false)) {
                     Intent intent = new Intent(context, ReminderActivity.class);
                     intent.putExtra("task", currentTask);
