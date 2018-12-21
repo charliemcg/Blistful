@@ -54,4 +54,9 @@ public class SubtasksPresenterImpl implements SubtasksPresenter {
         update(subtaskBeingEdited);
     }
 
+    @Override
+    public void reinstateSubTask(Subtask subtaskToReinstate) {
+        subtaskViewModel.insert(subtaskToReinstate);
+    }
+
 }

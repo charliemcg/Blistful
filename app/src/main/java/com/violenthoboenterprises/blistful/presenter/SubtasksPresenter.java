@@ -17,4 +17,6 @@ public interface SubtasksPresenter {
     int getId();
 
     void rename(Subtask subtaskBeingEdited, String subtaskName);
+
+    void reinstateSubTask(Subtask subtaskToReinstate);
 }

@@ -1,5 +1,6 @@
 package com.violenthoboenterprises.blistful;
 
+import android.app.job.JobScheduler;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -106,9 +107,11 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                //Saving a temporary instance of the deleted subtask should it need to be reinstated
+                Subtask subtaskToReinstate = subtasksAdapter.getSubtaskAt(viewHolder.getAdapterPosition());
                 subtaskViewModel.delete(subtasksAdapter.getSubtaskAt(viewHolder.getAdapterPosition()));
                 String stringSnack = "Subtask deleted";
-                showSnackbar(stringSnack);
+                showSnackbar(stringSnack, subtaskToReinstate);
             }
         }).attachToRecyclerView(recyclerView);
 
@@ -183,7 +186,7 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
 
     }
 
-    private void showSnackbar(String stringSnack) {
+    private void showSnackbar(String stringSnack, final Subtask subtaskToReinstate) {
         View view = findViewById(R.id.subtasksRoot);
         Snackbar.make(view, stringSnack, Snackbar.LENGTH_SHORT)
                 .setAction("UNDO", new View.OnClickListener() {
@@ -191,6 +194,9 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
                     public void onClick(View view) {
                         Toast.makeText(SubtasksActivity.this, "Reinstate subtask",
                                 Toast.LENGTH_LONG).show();
+                        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+                        scheduler.cancel(StringConstants.DELETE_TASK_ID);
+                        subtasksPresenter.reinstateSubTask(subtaskToReinstate);
                     }
                 })
                 .setActionTextColor(getResources().getColor(R.color.purple))
