@@ -327,107 +327,28 @@ public class MainActivity extends AppCompatActivity implements
                     //Saving a temporary instance of the deleted task should it need to be reinstated
                     Task taskToReinstate = adapter.getTaskAt(viewHolder.getAdapterPosition());
                     taskViewModel.delete(adapter.getTaskAt(viewHolder.getAdapterPosition()));
-
                     String stringSnack = "Task deleted";
                     showSnackbar(stringSnack, taskToReinstate);
                     if (boolShowMotivation) {
                         //showing motivational toast
-                        int i = random.nextInt(5);
-                        while (strKilledAffirmation[i].equals(strLastKilledToast)) {
-                            i = random.nextInt(5);
-                        }
-                        strLastKilledToast = strKilledAffirmation[i];
-                        toast.setText(strKilledAffirmation[i]);
-                        final Handler handler = new Handler();
-
-                        final Runnable runnable = new Runnable() {
-                            public void run() {
-                                if (!boolMute) {
-                                    mpSweep.start();
-                                }
-                                toastView.startAnimation(AnimationUtils.loadAnimation
-                                        (MainActivity.this, R.anim.enter_from_right_fast));
-                                toastView.setVisibility(View.VISIBLE);
-                                final Handler handler2 = new Handler();
-                                final Runnable runnable2 = new Runnable() {
-                                    public void run() {
-                                        toastView.startAnimation(
-                                                AnimationUtils.loadAnimation
-                                                        (MainActivity.this,
-                                                                android.R.anim.fade_out));
-                                        toastView.setVisibility(View.GONE);
-                                    }
-                                };
-                                handler2.postDelayed(runnable2, 1500);
-                            }
-                        };
-
-                        handler.postDelayed(runnable, 500);
+                        showKilledAffirmationToast();
                     }
                 } else {
+                    long newTimestamp = adapter.getTaskAt(viewHolder.getAdapterPosition())
+                            .getTimestamp() + (AlarmManager.INTERVAL_DAY * 7);
+                    adapter.getTaskAt(viewHolder.getAdapterPosition()).setTimestamp(newTimestamp);
+                    mainActivityPresenter.update(adapter.getTaskAt(viewHolder.getAdapterPosition()));
                     if (preferences.getInt(StringConstants.REPEAT_HINT_KEY, 0) <= 10) {
                         if ((preferences.getInt(StringConstants.REPEAT_HINT_KEY, 0) == 1)
                                 || (preferences.getInt(StringConstants.REPEAT_HINT_KEY, 0) == 10)) {
-                            toast.setText(R.string.youCanCancelRepeat);
-                            final Handler handler = new Handler();
-
-                            final Runnable runnable = new Runnable() {
-                                public void run() {
-                                    mpHint.start();
-                                    toastView.startAnimation(AnimationUtils.loadAnimation
-                                            (MainActivity.this, R.anim.enter_from_right_fast));
-                                    toastView.setVisibility(View.VISIBLE);
-                                    final Handler handler2 = new Handler();
-                                    final Runnable runnable2 = new Runnable() {
-                                        public void run() {
-                                            toastView.startAnimation
-                                                    (AnimationUtils.loadAnimation
-                                                            (MainActivity.this, android.R.anim.fade_out));
-                                            toastView.setVisibility(View.GONE);
-                                        }
-                                    };
-                                    handler2.postDelayed(runnable2, 2500);
-                                }
-                            };
-
-                            handler.postDelayed(runnable, 500);
+                            showRepeatHintToast();
                         }
                     } else if (boolShowMotivation) {
-                        //showing motivational toast
-                        int i = random.nextInt(5);
-                        while (strKilledAffirmation[i].equals(strLastKilledToast)) {
-                            i = random.nextInt(5);
-                        }
-                        strLastKilledToast = strKilledAffirmation[i];
-                        toast.setText(strKilledAffirmation[i]);
-                        final Handler handler = new Handler();
-
-                        final Runnable runnable = new Runnable() {
-                            public void run() {
-                                if (!boolMute) {
-                                    mpSweep.start();
-                                }
-                                toastView.startAnimation(AnimationUtils.loadAnimation
-                                        (MainActivity.this, R.anim.enter_from_right_fast));
-                                toastView.setVisibility(View.VISIBLE);
-                                final Handler handler2 = new Handler();
-                                final Runnable runnable2 = new Runnable() {
-                                    public void run() {
-                                        toastView.startAnimation(
-                                                AnimationUtils.loadAnimation
-                                                        (MainActivity.this,
-                                                                android.R.anim.fade_out));
-                                        toastView.setVisibility(View.GONE);
-                                    }
-                                };
-                                handler2.postDelayed(runnable2, 1500);
-                            }
-                        };
-
-                        handler.postDelayed(runnable, 500);
+                        showKilledAffirmationToast();
                     }
                     int remindersSoFar = preferences.getInt(StringConstants.REPEAT_HINT_KEY, 0);
                     preferences.edit().putInt(StringConstants.REPEAT_HINT_KEY, ++remindersSoFar).apply();
+                    adapter.notifyDataSetChanged();
                 }
 
             }
@@ -467,113 +388,20 @@ public class MainActivity extends AppCompatActivity implements
 
                         if (intRenameHint <= 2) {
                             if (intRenameHint == 2) {
-                                toast.setText(R.string.longClickToRename);
-                                final Handler handler = new Handler();
-
-                                final Runnable runnable = new Runnable() {
-                                    public void run() {
-                                        mpHint.start();
-                                        toastView.startAnimation(AnimationUtils
-                                                .loadAnimation(MainActivity.this,
-                                                        R.anim.enter_from_right_fast));
-                                        toastView.setVisibility(View.VISIBLE);
-                                        final Handler handler2 = new Handler();
-                                        final Runnable runnable2 = new Runnable() {
-                                            public void run() {
-                                                toastView.startAnimation
-                                                        (AnimationUtils.loadAnimation
-                                                                (MainActivity.this,
-                                                                        android.R.anim.fade_out));
-                                                toastView.setVisibility(View.GONE);
-                                            }
-                                        };
-                                        handler2.postDelayed(runnable2, 2500);
-                                    }
-                                };
-
-                                handler.postDelayed(runnable, 500);
-                            } else {
-                                if (boolShowMotivation) {
-                                    //showing motivational toast
-                                    int i = random.nextInt(7);
-                                    while (strMotivation[i].equals(strLastToast)) {
-                                        i = random.nextInt(7);
-                                    }
-                                    strLastToast = strMotivation[i];
-                                    toast.setText(strMotivation[i]);
-                                    final Handler handler = new Handler();
-
-                                    final Runnable runnable = new Runnable() {
-                                        public void run() {
-                                            if (!boolMute) {
-                                                mpSweep.start();
-                                            }
-                                            toastView.startAnimation(AnimationUtils.loadAnimation
-                                                    (MainActivity.this,
-                                                            R.anim.enter_from_right_fast));
-                                            toastView.setVisibility(View.VISIBLE);
-                                            final Handler handler2 = new Handler();
-                                            final Runnable runnable2 = new Runnable() {
-                                                public void run() {
-                                                    toastView.startAnimation(
-                                                            AnimationUtils.loadAnimation
-                                                                    (MainActivity.this,
-                                                                            android.R.anim.fade_out));
-                                                    toastView.setVisibility(View.GONE);
-                                                }
-                                            };
-                                            handler2.postDelayed(runnable2, 1500);
-                                        }
-                                    };
-
-                                    handler.postDelayed(runnable, 500);
-                                }
-                            }
-                            intRenameHint++;
-                            preferences.edit().putInt(StringConstants.RENAME_HINT_KEY, intRenameHint).apply();
-                        } else {
-
-                            if (boolShowMotivation) {
-                                //showing motivational toast
-                                int i = random.nextInt(7);
-                                while (strMotivation[i].equals(strLastToast)) {
-                                    i = random.nextInt(7);
-                                }
-                                strLastToast = strMotivation[i];
-                                toast.setText(strMotivation[i]);
-                                final Handler handler = new Handler();
-
-                                final Runnable runnable = new Runnable() {
-                                    public void run() {
-                                        if (!boolMute) {
-                                            mpSweep.start();
-                                        }
-                                        toastView.startAnimation(AnimationUtils.loadAnimation
-                                                (MainActivity.this,
-                                                        R.anim.enter_from_right_fast));
-                                        toastView.setVisibility(View.VISIBLE);
-                                        final Handler handler2 = new Handler();
-                                        final Runnable runnable2 = new Runnable() {
-                                            public void run() {
-                                                toastView.startAnimation
-                                                        (AnimationUtils.loadAnimation
-                                                                (MainActivity.this,
-                                                                        android.R.anim.fade_out));
-                                                toastView.setVisibility(View.GONE);
-                                            }
-                                        };
-                                        handler2.postDelayed(runnable2, 1500);
-                                    }
-                                };
-
-                                handler.postDelayed(runnable, 500);
+                                showRenameHintToast();
+                            } else if (boolShowMotivation) {
+                                showMotivationalToast();
                             }
                         }
+                        intRenameHint++;
+                        preferences.edit().putInt(StringConstants.RENAME_HINT_KEY, intRenameHint).apply();
+                    } else if (boolShowMotivation) {
+                        showMotivationalToast();
                     }
 
                     return true;
 
-                    //Actions to take when editing existing task
+                //Actions to take when editing existing task
                 } else if (actionId == EditorInfo.IME_ACTION_DONE) {
 
                     Toast.makeText(MainActivity.this, "Editing task", Toast.LENGTH_SHORT).show();
@@ -612,6 +440,131 @@ public class MainActivity extends AppCompatActivity implements
 
         });
 
+    }
+
+    private void showMotivationalToast() {
+        //showing motivational toast
+        int i = random.nextInt(7);
+        while (strMotivation[i].equals(strLastToast)) {
+            i = random.nextInt(7);
+        }
+        strLastToast = strMotivation[i];
+        toast.setText(strMotivation[i]);
+        final Handler handler = new Handler();
+
+        final Runnable runnable = new Runnable() {
+            public void run() {
+                if (!boolMute) {
+                    mpSweep.start();
+                }
+                toastView.startAnimation(AnimationUtils.loadAnimation
+                        (MainActivity.this,
+                                R.anim.enter_from_right_fast));
+                toastView.setVisibility(View.VISIBLE);
+                final Handler handler2 = new Handler();
+                final Runnable runnable2 = new Runnable() {
+                    public void run() {
+                        toastView.startAnimation(
+                                AnimationUtils.loadAnimation
+                                        (MainActivity.this,
+                                                android.R.anim.fade_out));
+                        toastView.setVisibility(View.GONE);
+                    }
+                };
+                handler2.postDelayed(runnable2, 1500);
+            }
+        };
+
+        handler.postDelayed(runnable, 500);
+    }
+
+    private void showRenameHintToast() {
+        toast.setText(R.string.longClickToRename);
+        final Handler handler = new Handler();
+
+        final Runnable runnable = new Runnable() {
+            public void run() {
+                mpHint.start();
+                toastView.startAnimation(AnimationUtils
+                        .loadAnimation(MainActivity.this,
+                                R.anim.enter_from_right_fast));
+                toastView.setVisibility(View.VISIBLE);
+                final Handler handler2 = new Handler();
+                final Runnable runnable2 = new Runnable() {
+                    public void run() {
+                        toastView.startAnimation
+                                (AnimationUtils.loadAnimation
+                                        (MainActivity.this,
+                                                android.R.anim.fade_out));
+                        toastView.setVisibility(View.GONE);
+                    }
+                };
+                handler2.postDelayed(runnable2, 2500);
+            }
+        };
+
+        handler.postDelayed(runnable, 500);
+    }
+
+    private void showRepeatHintToast() {
+        toast.setText(R.string.youCanCancelRepeat);
+        final Handler handler = new Handler();
+
+        final Runnable runnable = new Runnable() {
+            public void run() {
+                mpHint.start();
+                toastView.startAnimation(AnimationUtils.loadAnimation
+                        (MainActivity.this, R.anim.enter_from_right_fast));
+                toastView.setVisibility(View.VISIBLE);
+                final Handler handler2 = new Handler();
+                final Runnable runnable2 = new Runnable() {
+                    public void run() {
+                        toastView.startAnimation
+                                (AnimationUtils.loadAnimation
+                                        (MainActivity.this, android.R.anim.fade_out));
+                        toastView.setVisibility(View.GONE);
+                    }
+                };
+                handler2.postDelayed(runnable2, 2500);
+            }
+        };
+
+        handler.postDelayed(runnable, 500);
+    }
+
+    private void showKilledAffirmationToast() {
+        //showing motivational toast
+        int i = random.nextInt(5);
+        while (strKilledAffirmation[i].equals(strLastKilledToast)) {
+            i = random.nextInt(5);
+        }
+        strLastKilledToast = strKilledAffirmation[i];
+        toast.setText(strKilledAffirmation[i]);
+        final Handler handler = new Handler();
+
+        final Runnable runnable = new Runnable() {
+            public void run() {
+                if (!boolMute) {
+                    mpSweep.start();
+                }
+                toastView.startAnimation(AnimationUtils.loadAnimation
+                        (MainActivity.this, R.anim.enter_from_right_fast));
+                toastView.setVisibility(View.VISIBLE);
+                final Handler handler2 = new Handler();
+                final Runnable runnable2 = new Runnable() {
+                    public void run() {
+                        toastView.startAnimation(
+                                AnimationUtils.loadAnimation
+                                        (MainActivity.this,
+                                                android.R.anim.fade_out));
+                        toastView.setVisibility(View.GONE);
+                    }
+                };
+                handler2.postDelayed(runnable2, 1500);
+            }
+        };
+
+        handler.postDelayed(runnable, 500);
     }
 
     private void showBannerAd() {
@@ -716,9 +669,9 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void toggleFab(boolean showFab) {
-        if(showFab){
+        if (showFab) {
             fab.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             fab.setVisibility(View.GONE);
         }
     }
@@ -813,101 +766,6 @@ public class MainActivity extends AppCompatActivity implements
 
         return super.onOptionsItemSelected(item);
     }
-
-    //Create prompt that enables user to upgrade to pro
-//    private void purchasePrompt() {
-//
-//        final Dialog dialog = new Dialog(MainActivity.this);
-//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        dialog.setCancelable(false);
-//
-//        dialog.setContentView(R.layout.purchases);
-//
-//        Button positive = dialog.findViewById(R.id.positive);
-//        Button negative = dialog.findViewById(R.id.negative);
-//
-//        //Buy button actions
-//        positive.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                dialog.dismiss();
-//                if (!boolRemindersAvailable && !boolAdsRemoved) {
-//
-//                    vibrate.vibrate(50);
-//
-//                    if (!boolMute) {
-//                        mpChime.start();
-//                    }
-//
-//                    billingProcessor.purchase(MainActivity.this, StringConstants.TEST_PURCHASE);
-//
-//                }
-//
-//            }
-//        });
-//
-//        //Cancel button options
-//        negative.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                dialog.dismiss();
-//
-//            }
-//        });
-//
-//        dialog.show();
-//
-//    }
-
-    //reinstates completed task
-//    public void reinstate(int i) {
-//
-//        if (boolShowMotivation) {
-//            toast.setText(R.string.taskReinstated);
-//            final Handler handler = new Handler();
-//
-//            final Runnable runnable = new Runnable() {
-//                public void run() {
-//
-//                    if (!boolMute) {
-//                        mpSweep.start();
-//                    }
-//
-//                    toastView.startAnimation(AnimationUtils.loadAnimation
-//                            (MainActivity.this, R.anim.enter_from_right_fast));
-//                    toastView.setVisibility(View.VISIBLE);
-//                    final Handler handler2 = new Handler();
-//                    final Runnable runnable2 = new Runnable() {
-//                        public void run() {
-//                            toastView.startAnimation(AnimationUtils.loadAnimation
-//                                    (MainActivity.this, android.R.anim.fade_out));
-//                            toastView.setVisibility(View.GONE);
-//                        }
-//                    };
-//                    handler2.postDelayed(runnable2, 1500);
-//                }
-//            };
-//
-//            handler.postDelayed(runnable, 500);
-//        }
-//
-//    }
-
-    //Tells user to add tasks when task list is empty
-//    private void noTasksLeft() {
-
-    //Checks if there are any existing tasks
-//        if (taskList.size() == 0) {
-//
-//            //Inform user to add some tasks
-//            imgNoTasks.setVisibility(View.VISIBLE);
-//        } else {
-//            imgNoTasks.setVisibility(View.GONE);
-//        }
-
-//    }
 
     //Actions to occur when keyboard is showing
     void checkKeyboardShowing() {
@@ -1104,6 +962,7 @@ public class MainActivity extends AppCompatActivity implements
         showPrompt();
 
         adapter.notifyItemChanged(preferences.getInt("refresh_this_item", 0));
+        toggleFab(true);
 
     }
 
