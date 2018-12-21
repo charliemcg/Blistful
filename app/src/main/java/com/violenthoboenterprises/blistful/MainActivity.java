@@ -331,7 +331,106 @@ public class MainActivity extends AppCompatActivity implements
                     String stringSnack = "Task deleted";
                     showSnackbar(stringSnack, taskToReinstate);
                 } else {
-                    Toast.makeText(MainActivity.this, "killed repeating task", Toast.LENGTH_SHORT).show();
+                 //////////////////////////////////////////////////////////////
+                    if (preferences.getInt(StringConstants.REPEAT_HINT_KEY, 0) <= 10) {
+                        if ((preferences.getInt(StringConstants.REPEAT_HINT_KEY, 0) == 1)
+                                || (preferences.getInt(StringConstants.REPEAT_HINT_KEY, 0) == 10)) {
+                            toast.setText(R.string.youCanCancelRepeat);
+                            final Handler handler = new Handler();
+
+                            final Runnable runnable = new Runnable() {
+                                public void run() {
+                                    mpHint.start();
+                                    toastView.startAnimation(AnimationUtils.loadAnimation
+                                            (MainActivity.this, R.anim.enter_from_right_fast));
+                                    toastView.setVisibility(View.VISIBLE);
+                                    final Handler handler2 = new Handler();
+                                    final Runnable runnable2 = new Runnable() {
+                                        public void run() {
+                                            toastView.startAnimation
+                                                    (AnimationUtils.loadAnimation
+                                                            (MainActivity.this, android.R.anim.fade_out));
+                                            toastView.setVisibility(View.GONE);
+                                        }
+                                    };
+                                    handler2.postDelayed(runnable2, 2500);
+                                }
+                            };
+
+                            handler.postDelayed(runnable, 500);
+                        }
+                    }
+//                    } else if (MainActivity.showMotivation) {
+//                        //showing motivational toast
+//                        int i = MainActivity.random.nextInt(5);
+//                        while (MainActivity.killedAffirmation[i].equals(MainActivity.lastKilledToast)) {
+//                            i = MainActivity.random.nextInt(5);
+//                        }
+//                        MainActivity.lastKilledToast = MainActivity.killedAffirmation[i];
+//                        MainActivity.toast.setText(MainActivity.killedAffirmation[i]);
+//                        final Handler handler = new Handler();
+//
+//                        final Runnable runnable = new Runnable() {
+//                            public void run() {
+//                                if (!MainActivity.mute) {
+//                                    MainActivity.sweep.start();
+//                                }
+//                                MainActivity.toastView.startAnimation(AnimationUtils.loadAnimation
+//                                        (getContext(), R.anim.enter_from_right_fast));
+//                                MainActivity.toastView.setVisibility(View.VISIBLE);
+//                                final Handler handler2 = new Handler();
+//                                final Runnable runnable2 = new Runnable() {
+//                                    public void run() {
+//                                        MainActivity.toastView.startAnimation(
+//                                                AnimationUtils.loadAnimation
+//                                                        (getContext(),
+//                                                                android.R.anim.fade_out));
+//                                        MainActivity.toastView.setVisibility(View.GONE);
+//                                    }
+//                                };
+//                                handler2.postDelayed(runnable2, 1500);
+//                            }
+//                        };
+//
+//                        handler.postDelayed(runnable, 500);
+//                    }
+                    int remindersSoFar = preferences.getInt(StringConstants.REPEAT_HINT_KEY, 0);
+                    preferences.edit().putInt(StringConstants.REPEAT_HINT_KEY, ++remindersSoFar).apply();
+//                } else if (MainActivity.showMotivation) {
+//                    //showing motivational toast
+//                    int i = MainActivity.random.nextInt(5);
+//                    while (MainActivity.killedAffirmation[i].equals(MainActivity.lastKilledToast)) {
+//                        i = MainActivity.random.nextInt(5);
+//                    }
+//                    MainActivity.lastKilledToast = MainActivity.killedAffirmation[i];
+//                    MainActivity.toast.setText(MainActivity.killedAffirmation[i]);
+//                    final Handler handler = new Handler();
+//
+//                    final Runnable runnable = new Runnable() {
+//                        public void run() {
+//                            if (!MainActivity.mute) {
+//                                MainActivity.sweep.start();
+//                            }
+//                            MainActivity.toastView.startAnimation(AnimationUtils.loadAnimation
+//                                    (getContext(), R.anim.enter_from_right_fast));
+//                            MainActivity.toastView.setVisibility(View.VISIBLE);
+//                            final Handler handler2 = new Handler();
+//                            final Runnable runnable2 = new Runnable() {
+//                                public void run() {
+//                                    MainActivity.toastView.startAnimation(
+//                                            AnimationUtils.loadAnimation
+//                                                    (getContext(),
+//                                                            android.R.anim.fade_out));
+//                                    MainActivity.toastView.setVisibility(View.GONE);
+//                                }
+//                            };
+//                            handler2.postDelayed(runnable2, 1500);
+//                        }
+//                    };
+//
+//                    handler.postDelayed(runnable, 500);
+//                }
+                    ////////////////////////////////////////////////////////////////
                 }
 
             }
