@@ -34,13 +34,6 @@ public class TaskRepository {
         TaskDatabase taskDatabase = TaskDatabase.getInstance(application);
         taskDao = taskDatabase.taskDao();
         allTasks = taskDao.getAllTasks();
-//        List<Task> tempListNoDues = taskDao.getAllTasks();
-//        List<Task> tempListWithDues = taskDao.getAllTasksByStamp();
-//        tempListNoDues.addAll(tempListWithDues);
-//        allTasks = (LiveData<List<Task>>) tempListNoDues;
-//        int blah = taskDao.getTaskCount();
-//        Log.d(TAG, "count " + blah);
-
     }
 
     void insert(Task task) {
@@ -56,37 +49,9 @@ public class TaskRepository {
     }
 
     //TODO see if LiveData is needed
-    LiveData<List<Task>> getAllTasks(){return allTasks;}
-//    LiveData<List<Task>> getAllTasks() {
-//        AsyncTask<Void, Void, LiveData<List<Task>>> resultOne = new GetAllTasksNotDueAsyncTask(taskDao).execute();
-//        AsyncTask<Void, Void, LiveData<List<Task>>> resultTwo = new GetAllTasksWithDueAsyncTask(taskDao).execute();
-//        MediatorLiveData liveDataMerger = new MediatorLiveData<>();
-//        try {
-//            liveDataMerger.addSource(resultOne.get(), liveDataMerger::setValue);
-//            liveDataMerger.addSource(resultTwo.get(), liveDataMerger::setValue);
-//        } catch (InterruptedException | ExecutionException e) {
-//            e.printStackTrace();
-//        }
-//        return liveDataMerger;
-        ///////////////////////////////////
-//        List<Task> blah = new ArrayList<>();
-//        AsyncTask<Void, Void, List<Task>> resultOne = new GetAllTasksNotDueAsyncTask(taskDao).execute();
-//        AsyncTask<Void, Void, List<Task>> resultTwo = new GetAllTasksWithDueAsyncTask(taskDao).execute();
-//        try {
-//            ArrayList<Task> blah = (ArrayList<Task>) resultOne.get();
-//            for (int i = 0; i < blah.size(); i++) {
-//                Log.d(TAG, "Task: " + blah.get(i));
-//            }
-//            MutableLiveData<List<Task>> fruitList;
-//
-//            fruitList = new MutableLiveData<>();
-//            fruitList.setValue(blah);
-//            return fruitList;
-//        } catch (InterruptedException | ExecutionException e) {
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
+    LiveData<List<Task>> getAllTasks(){
+        return allTasks;
+    }
 
     public List<Integer> getAllTimestamps() {
         AsyncTask<Void, Void, List<Integer>> result = new GetAllTimestampsAsyncTask(taskDao).execute();
@@ -156,29 +121,4 @@ public class TaskRepository {
         }
     }
 
-//    private class GetAllTasksNotDueAsyncTask extends AsyncTask<Void, Void, /*LiveData<*/List<Task>> {
-//        private TaskDao taskDao;
-//
-//        public GetAllTasksNotDueAsyncTask(TaskDao taskDao) {
-//            this.taskDao = taskDao;
-//        }
-//
-//        @Override
-//        protected /*LiveData<*/List<Task> doInBackground(Void... voids) {
-//            return taskDao.getAllTasks();
-//        }
-//    }
-//
-//    private class GetAllTasksWithDueAsyncTask extends AsyncTask<Void, Void, /*LiveData<*/List<Task>> {
-//        private TaskDao taskDao;
-//
-//        public GetAllTasksWithDueAsyncTask(TaskDao taskDao) {
-//            this.taskDao = taskDao;
-//        }
-//
-//        @Override
-//        protected /*LiveData<*/List<Task> doInBackground(Void... voids) {
-//            return taskDao.getAllTasksByStamp();
-//        }
-//    }
 }

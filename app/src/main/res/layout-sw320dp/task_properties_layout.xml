@@ -35,7 +35,8 @@
                 android:src="@drawable/due_icon_light_solid"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="blah" />
 
             <TextView
                 android:id="@+id/alarmBtnText"
