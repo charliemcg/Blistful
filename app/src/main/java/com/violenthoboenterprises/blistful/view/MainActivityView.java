@@ -7,4 +7,6 @@ public interface MainActivityView {
     void addTask(Task task);
 
     void showPurchases();
+
+    void toggleFab(boolean showFab);
 }

@@ -52,6 +52,11 @@ public class MainActivityPresenterImpl implements MainActivityPresenter {
     }
 
     @Override
+    public void toggleFab(boolean showFab) {
+        mainActivityView.toggleFab(showFab);
+    }
+
+    @Override
     public boolean showReviewPrompt(int intShowReviewPrompt, long lngTimeInstalled) {
         Calendar calendar = new GregorianCalendar().getInstance();
         //show review prompt after three days

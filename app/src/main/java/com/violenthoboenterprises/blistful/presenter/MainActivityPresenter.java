@@ -17,4 +17,6 @@ public interface MainActivityPresenter {
     void reinstateTask(Task taskToReinstate);
 
     void showPurchases();
+
+    void toggleFab(boolean showFab);
 }

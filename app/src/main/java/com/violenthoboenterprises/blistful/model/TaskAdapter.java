@@ -118,10 +118,12 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
                 preferences.edit().putInt("refresh_this_item", position).apply();
                 if (holder.taskProperties.getVisibility() == View.VISIBLE) {
                     holder.taskProperties.setVisibility(View.GONE);
+                    mainActivityPresenter.toggleFab(true);
                     //redrawing the UI to remove properties from view
                     activityRootView.postInvalidate();
                 } else {
                     holder.taskProperties.setVisibility(View.VISIBLE);
+                    mainActivityPresenter.toggleFab(false);
                 }
             }
         });
@@ -137,6 +139,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         holder.btnAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                holder.taskProperties.setVisibility(View.GONE);
                 if(preferences.getInt(StringConstants.DUES_SET, 0) < 5 || currentTask.isDue()
                         || preferences.getBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, false)) {
                     Intent intent = new Intent(context, ReminderActivity.class);
@@ -150,6 +153,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         holder.btnSubtasks.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                holder.taskProperties.setVisibility(View.GONE);
                 Intent intent = new Intent(context, SubtasksActivity.class);
                 intent.putExtra("task", currentTask);
                 context.startActivity(intent);
@@ -158,6 +162,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         holder.btnNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                holder.taskProperties.setVisibility(View.GONE);
                 Intent intent = new Intent(context, NoteActivity.class);
                 intent.putExtra("task", currentTask);
                 context.startActivity(intent);

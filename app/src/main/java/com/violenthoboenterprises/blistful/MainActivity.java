@@ -618,6 +618,15 @@ public class MainActivity extends AppCompatActivity implements
         dialog.show();
     }
 
+    @Override
+    public void toggleFab(boolean showFab) {
+        if(showFab){
+            fab.setVisibility(View.VISIBLE);
+        }else{
+            fab.setVisibility(View.GONE);
+        }
+    }
+
     //Give user option to undo deletion of task
     private void showSnackbar(String stringSnack, final Task taskToReinstate) {
         View view = findViewById(R.id.activityRoot);
