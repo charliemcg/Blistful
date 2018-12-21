@@ -184,6 +184,12 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
 
         });
 
+        //Show keyboard if there are no subtasks already
+        List<Subtask> subtasks = subtasksPresenter.getSubtasksByParent(task.getId());
+        int subtasksSize = subtasks.size();
+        if(subtasksSize == 0) {
+            etSubtask.requestFocus();
+        }
     }
 
     private void showSnackbar(String stringSnack, final Subtask subtaskToReinstate) {

@@ -29,7 +29,8 @@
         </activity>
         <activity
             android:name=".SubtasksActivity"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"/>
+            <!--android:windowSoftInputMode="stateVisible"/>-->
         <activity
             android:name=".NoteActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"/>

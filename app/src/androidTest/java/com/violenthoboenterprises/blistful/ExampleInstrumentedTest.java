@@ -120,6 +120,7 @@ public class ExampleInstrumentedTest {
                 .check(new RecyclerViewItemCountAssertion(0));
         onView(withId(R.id.checklistEditText)).check(matches(withText("")));
         onView(withId(R.id.checklistEditText)).perform(typeText("test"));
+        SystemClock.sleep(2000);
         //clicking done on soft keyboard
         onView(withId(R.id.checklistEditText)).perform(pressImeActionButton());
         onView(withId(R.id.checklistEditText)).check(matches(withText("")));
