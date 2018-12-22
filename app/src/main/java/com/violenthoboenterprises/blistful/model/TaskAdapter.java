@@ -80,7 +80,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         holder.subtasksIcon.setVisibility(View.GONE);
         holder.repeatIcon.setVisibility(View.GONE);
         holder.dueIcon.setVisibility(View.GONE);
-        holder.overdueIcon.setVisibility(View.GONE);
         holder.tvDue.setVisibility(View.GONE);
 //        holder.taskProperties.setVisibility(View.GONE);
         holder.tvDue.setTextColor(Color.BLACK);
@@ -262,7 +261,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         private ImageView subtasksIcon;
         private ImageView repeatIcon;
         private ImageView dueIcon;
-        private ImageView overdueIcon;
 
         public TaskHolder(final View itemView) {
             super(itemView);
@@ -278,7 +276,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
             subtasksIcon = itemView.findViewById(R.id.checklistClearWhite);
             repeatIcon = itemView.findViewById(R.id.repeatClearWhite);
             dueIcon = itemView.findViewById(R.id.dueClearWhite);
-            overdueIcon = itemView.findViewById(R.id.overdueClearWhite);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

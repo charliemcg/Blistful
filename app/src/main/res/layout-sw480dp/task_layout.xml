@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/turquoise"
+    android:layout_margin="8dp"
     android:descendantFocusability="beforeDescendants"
     tools:context="com.violenthoboenterprises.blistful.MainActivity"
     android:id="@+id/taskLayout">
@@ -109,16 +110,16 @@
             ads:layout_constraintEnd_toEndOf="@+id/mainTaskView"
             ads:layout_constraintTop_toBottomOf="@+id/tvTask" />
 
-        <ImageView
-            android:id="@+id/overdueClearWhite"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:contentDescription="@string/accessOverdueIcon"
-            android:src="@drawable/overdue_icon_light"
-            android:visibility="gone"
-            ads:layout_constraintBottom_toBottomOf="@+id/mainTaskView"
-            ads:layout_constraintEnd_toEndOf="@+id/mainTaskView"
-            ads:layout_constraintTop_toBottomOf="@+id/tvTask" />
+        <!--<ImageView-->
+            <!--android:id="@+id/overdueClearWhite"-->
+            <!--android:layout_width="20dp"-->
+            <!--android:layout_height="20dp"-->
+            <!--android:contentDescription="@string/accessOverdueIcon"-->
+            <!--android:src="@drawable/overdue_icon_light"-->
+            <!--android:visibility="gone"-->
+            <!--ads:layout_constraintBottom_toBottomOf="@+id/mainTaskView"-->
+            <!--ads:layout_constraintEnd_toEndOf="@+id/mainTaskView"-->
+            <!--ads:layout_constraintTop_toBottomOf="@+id/tvTask" />-->
 
         <ImageView
             android:id="@+id/snoozeClearWhite"

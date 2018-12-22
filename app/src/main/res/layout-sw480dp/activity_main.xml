@@ -107,23 +107,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
 
-    <!--<RelativeLayout-->
-        <!--android:layout_width="130dp"-->
-        <!--android:layout_height="180dp"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_alignParentRight="true">-->
-
-        <!--<Button-->
-            <!--android:id="@+id/add"-->
-            <!--android:layout_width="80dp"-->
-            <!--android:layout_height="80dp"-->
-            <!--android:layout_centerHorizontal="true"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:background="@drawable/add"-->
-            <!--android:contentDescription="@string/accessPlusSign"/>-->
-
-    <!--</RelativeLayout>-->
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="77dp"
