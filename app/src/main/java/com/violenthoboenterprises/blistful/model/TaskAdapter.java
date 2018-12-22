@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -83,29 +84,41 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         holder.tvDue.setVisibility(View.GONE);
 //        holder.taskProperties.setVisibility(View.GONE);
         holder.tvDue.setTextColor(Color.BLACK);
+
+        //checking if needed to display due icon
         if (currentTask.isDue()) {
-            if ((currentTask.getTimestamp() - Calendar.getInstance().getTimeInMillis()) > 0) {
-                holder.dueIcon.setVisibility(View.VISIBLE);
-            } else {
-                holder.overdueIcon.setVisibility(View.VISIBLE);
+            holder.dueIcon.setVisibility(View.VISIBLE);
+            //Switch to overdue icon when appropriate
+            if ((currentTask.getTimestamp() < Calendar.getInstance().getTimeInMillis())) {
+                holder.dueIcon.setImageDrawable(context.getResources()
+                        .getDrawable(R.drawable.overdue_icon_light));//TODO check that this works on all versions
                 holder.tvDue.setTextColor(Color.RED);
+            }else{
+                holder.dueIcon.setImageDrawable(context.getResources()
+                        .getDrawable(R.drawable.due_icon_light));
             }
             holder.tvDue.setVisibility(View.VISIBLE);
             String formattedDate = getFormattedDate(currentTask.getTimestamp());
             holder.tvDue.setText(formattedDate);
         }
+
+        //checking if needed to display note icon
         if (currentTask.getNote() != null) {
             holder.noteIcon.setVisibility(View.VISIBLE);
         }
-        //checking for existence of subtasks
+
+        //checking if needed to display subtasks icon
         List<Subtask> subtasks = subtasksPresenter.getSubtasksByParent(currentTask.getId());
         int subtasksSize = subtasks.size();
         if (subtasksSize > 0) {
             holder.subtasksIcon.setVisibility(View.VISIBLE);
         }
+
+        //checking if needed to display repeat icon
         if (currentTask.getRepeatInterval() != null) {
             holder.repeatIcon.setVisibility(View.VISIBLE);
         }
+
         //show properties on click
         holder.taskLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,6 +140,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
                 }
             }
         });
+
         //rename task on long click
         holder.taskLayout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -135,21 +149,24 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
                 return true;
             }
         });
-        //buttons should open respective activities
+
+        //show reminder activity
         holder.btnAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 holder.taskProperties.setVisibility(View.GONE);
-                if(preferences.getInt(StringConstants.DUES_SET, 0) < 5 || currentTask.isDue()
+                if (preferences.getInt(StringConstants.DUES_SET, 0) < 5 || currentTask.isDue()
                         || preferences.getBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, false)) {
                     Intent intent = new Intent(context, ReminderActivity.class);
                     intent.putExtra("task", currentTask);
                     context.startActivity(intent);
-                }else{
+                } else {
                     mainActivityPresenter.showPurchases();
                 }
             }
         });
+
+        //show subtasks activity
         holder.btnSubtasks.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -159,6 +176,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
                 context.startActivity(intent);
             }
         });
+
+        //show note activity
         holder.btnNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
