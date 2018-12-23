@@ -106,7 +106,7 @@ public class Database extends SQLiteOpenHelper {
 
     String TAG = this.getClass().getSimpleName();
 
-    Database(Context context) {
+    public Database(Context context) {
         super(context, DBNAME, null, 1);
         SQLiteDatabase db = this.getWritableDatabase();
     }
@@ -355,7 +355,7 @@ public class Database extends SQLiteOpenHelper {
 //        db.update(TABLE, content, "ID = ?", new String[] {id});
 //    }
 
-    void updateNote(String id, String note){
+    public void updateNote(String id, String note){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues content = new ContentValues();
         content.put(COL2, note);
@@ -397,7 +397,7 @@ public class Database extends SQLiteOpenHelper {
         db.update(TABLE, content, "ID = ?", new String[] {id});
     }
 
-    void updateTimestamp(String id, String timestamp){
+    public void updateTimestamp(String id, String timestamp){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues content= new ContentValues();
         content.put(COL4, timestamp);
@@ -425,7 +425,7 @@ public class Database extends SQLiteOpenHelper {
         db.update(TABLE, content, "ID = ?", new String[] {id});
     }
 
-    void updateRepeatInterval(String id, String interval){
+    public void updateRepeatInterval(String id, String interval){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues content = new ContentValues();
         content.put(COL14, interval);
@@ -468,7 +468,7 @@ public class Database extends SQLiteOpenHelper {
                 new String[] {id, subtask});
     }
 
-    void updateChecklistSize(String id, int index){
+    public void updateChecklistSize(String id, int index){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues content = new ContentValues();
         content.put(COL18, index);
@@ -518,7 +518,7 @@ public class Database extends SQLiteOpenHelper {
         db.update(STABLE, content, "ID = ?", new String[] {id});
     }
 
-    void updateMute(Boolean mute){
+    public void updateMute(Boolean mute){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues content = new ContentValues();
         content.put(UCOL2, mute);
@@ -630,7 +630,7 @@ public class Database extends SQLiteOpenHelper {
         db.update(UTABLE, content, "ID = ?", new String[] {"0"});
     }
 
-    void updateMotivation(boolean motivate){
+    public void updateMotivation(boolean motivate){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues content = new ContentValues();
         content.put(UCOL21, motivate);
@@ -755,7 +755,7 @@ public class Database extends SQLiteOpenHelper {
         return db.delete(CTABLE, "ID = ?", new String[] {id});
     }
 
-    int getTotalRows(){
+    public int getTotalRows(){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor countCursor = db.rawQuery("SELECT COUNT (*) FROM notes_table", null);
         int count = 0;
@@ -769,7 +769,7 @@ public class Database extends SQLiteOpenHelper {
         return count;
     }
 
-    ArrayList<Integer> getIDs(){
+    public ArrayList<Integer> getIDs(){
         SQLiteDatabase db = this.getReadableDatabase();
         ArrayList<Integer> theList = new ArrayList<>();
         Cursor IDCursor = db.rawQuery("SELECT ID FROM notes_table", null);

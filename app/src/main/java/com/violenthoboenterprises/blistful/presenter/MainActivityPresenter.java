@@ -22,4 +22,6 @@ public interface MainActivityPresenter {
     void toggleFab(boolean showFab);
 
     int getTaskIdByName(String taskName);
+
+    void migrateDatabase();
 }
