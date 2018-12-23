@@ -39,4 +39,6 @@ public interface TaskDao {
     @Query("SELECT COUNT() FROM task_table")
     int getTaskCount();
 
+    @Query("SELECT id FROM task_table WHERE task= :taskName")
+    int getTaskIdByName(String taskName);
 }

@@ -145,7 +145,7 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
                             mpBlip.start();
                         }
 
-                        subtasksPresenter.addSubtask(subtasksPresenter.getId(), subtaskName);
+                        subtasksPresenter.addSubtask(subtasksPresenter.getId(), subtaskName, Calendar.getInstance().getTimeInMillis());
 
                     }
 

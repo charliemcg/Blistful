@@ -110,6 +110,8 @@ public class MainActivity extends AppCompatActivity implements
     //keeps track of the selected task so recyclerview
     //knows which task to update in regards to icons etc
     public static int intPositionToUpdate;
+    //getting the id of a migrated task so as to correctly add subtasks
+    public static int tempMigrationId;
 
     //Toasts which show up when adding new task
     private String[] strMotivation;
@@ -235,93 +237,116 @@ public class MainActivity extends AppCompatActivity implements
         SubtasksPresenter subtasksPresenter = new SubtasksPresenterImpl
                 (null, subtaskViewModel, null, getApplicationContext());
 
+        //TODO move migration off of the view class to model class
         ///////////////Step 1. Create mock data. Remove once created
 //        Database db = new Database(this);
 //        db.insertUniversalData(true);
+//        //adding mock universal data
 //        db.updateMotivation(true);
 //        db.updateMute(true);
+//        //adding mock task data
 //        db.insertData(3, "", "Task Name",
 //                3, "123456789");
 //        db.updateNote(String.valueOf(3), "This is a note");
+//        db.updateNote(String.valueOf(3), null);
 //        long stamp = Calendar.getInstance().getTimeInMillis() + (1000 * 60 * 60 * 24);
 //        db.updateTimestamp(String.valueOf(3), String.valueOf(stamp));
 //        db.updateRepeatInterval(String.valueOf(3), "day");
 //        db.insertData(4, "", "Task Name 2",
 //                4, "123456789");
-//        db.updateNote(String.valueOf(4), "This is a note 2");
 //        stamp = Calendar.getInstance().getTimeInMillis() + (1000 * 60 * 60 * 24);
 //        db.updateTimestamp(String.valueOf(4), String.valueOf(stamp));
+//        db.updateChecklistSize(String.valueOf(4), 2);
 //        db.updateRepeatInterval(String.valueOf(4), "none");
+//        //adding mock subtask data
+//        db.insertSubtaskData(4, 0, "Subtask 1",
+//                String.valueOf(Calendar.getInstance().getTimeInMillis() / 1000));
+//        db.insertSubtaskData(4, 1, "Subtask 2",
+//                String.valueOf(Calendar.getInstance().getTimeInMillis() / 1000));
 
         ///////////////Step 2. Merge the database. Remove while creating mock data
-        if (!preferences.getBoolean(StringConstants.DATABASE_MERGED_KEY, false)) {
-            //The old database
-            Database db = new Database(this);
-            db.insertUniversalData(true);
-            //getting universal data and putting into shared preferences
-            Cursor cursor = db.getUniversalData();
-            while (cursor.moveToNext()) {
-                preferences.edit().putBoolean(StringConstants.MUTE_KEY, (cursor.getInt(1) > 0)).apply();
-                preferences.edit().putBoolean(StringConstants.ADS_REMOVED_KEY, (cursor.getInt(5) > 0)).apply();
-                preferences.edit().putBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, (cursor.getInt(6) > 0)).apply();
-                preferences.edit().putInt(StringConstants.DUES_SET, (cursor.getInt(19))).apply();
-                preferences.edit().putBoolean(StringConstants.MOTIVATION_KEY, (cursor.getInt(20) > 0)).apply();
-                preferences.edit().putInt(StringConstants.REPEAT_HINT_KEY, (cursor.getInt(21))).apply();
-                preferences.edit().putInt(StringConstants.RENAME_HINT_KEY, (cursor.getInt(22))).apply();
-                preferences.edit().putLong(StringConstants.TIME_INSTALLED_KEY, (cursor.getInt(24))).apply();
-            }
-
-            ArrayList<String> taskList = new ArrayList<>();
-            ArrayList<Integer> sortedIDs = new ArrayList<>();
-
-            int taskListSize = db.getTotalRows();
-
-            ArrayList<Integer> tempSortedIDs = new ArrayList<>();
-
-            ArrayList<Integer> IDList = db.getIDs();
-
-            for (int i = 0; i < taskListSize; i++) {
-
-                Cursor sortedIdsResult = db.getData(IDList.get(i));
-                while (sortedIdsResult.moveToNext()) {
-                    tempSortedIDs.add(sortedIdsResult.getInt(16));
-                }
-                sortedIdsResult.close();
-
-            }
-
-            Collections.sort(tempSortedIDs);
-
-            for (int i = 0; i < taskListSize; i++) {
-
-                sortedIDs.add(tempSortedIDs.get(i));
-
-            }
-
-            for (int i = 0; i < taskListSize; i++) {
-                Cursor result = db.getData(IDList.get(i));
-                while (result.moveToNext()) {
-                    String note = result.getString(1);
-                    long dueTimestamp = Long.parseLong(result.getString(3));
-                    String taskName = result.getString(4);
-                    String repeatInterval = result.getString(13);
-                    long timeCreated = Long.parseLong(result.getString(15));
-                    boolean manualKill = result.getInt(18) >0;
-                    boolean killedEarly = result.getInt(19) >0;
-                    int originalDay = result.getInt(20);
-                    if(repeatInterval.equalsIgnoreCase("none")){
-                        repeatInterval = null;
-                    }
-                    //TODO found out why timestamp isn't working
-                    mainActivityPresenter.addTask(note, dueTimestamp, taskName, repeatInterval,
-                            timeCreated, manualKill, killedEarly, originalDay);
-                }
-                result.close();
-            }
-
-            //Only need to perform migration once
-            preferences.edit().putBoolean(StringConstants.DATABASE_MERGED_KEY, true).apply();
-        }
+//        if (!preferences.getBoolean(StringConstants.DATABASE_MERGED_KEY, false)) {
+//            //The old database
+//            Database db = new Database(this);
+//            db.insertUniversalData(true);
+//            //getting universal data and putting into shared preferences
+//            Cursor cursor = db.getUniversalData();
+//            while (cursor.moveToNext()) {
+//                preferences.edit().putBoolean(StringConstants.MUTE_KEY, (cursor.getInt(1) > 0)).apply();
+//                preferences.edit().putBoolean(StringConstants.ADS_REMOVED_KEY, (cursor.getInt(5) > 0)).apply();
+//                preferences.edit().putBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, (cursor.getInt(6) > 0)).apply();
+//                preferences.edit().putInt(StringConstants.DUES_SET, (cursor.getInt(19))).apply();
+//                preferences.edit().putBoolean(StringConstants.MOTIVATION_KEY, (cursor.getInt(20) > 0)).apply();
+//                preferences.edit().putInt(StringConstants.REPEAT_HINT_KEY, (cursor.getInt(21))).apply();
+//                preferences.edit().putInt(StringConstants.RENAME_HINT_KEY, (cursor.getInt(22))).apply();
+//                preferences.edit().putLong(StringConstants.TIME_INSTALLED_KEY, (cursor.getInt(24))).apply();
+//            }
+//
+//            int taskListSize = db.getTotalRows();
+//
+//            ArrayList<Integer> IDList = db.getIDs();
+//
+//            for (int i = 0; i < taskListSize; i++) {
+//                int id = 0;
+//                String note = null;
+//                long dueTimestamp = 0;
+//                String taskName = null;
+//                String repeatInterval = null;
+//                long timeCreated = 0;
+//                int subtasksCount = 0;
+//                boolean manualKill = false;
+//                boolean killedEarly = false;
+//                int originalDay = 0;
+//                Cursor result = db.getData(IDList.get(i));
+//                while (result.moveToNext()) {
+//                    id = result.getInt(0);
+//                    note = result.getString(1);
+//                    dueTimestamp = Long.parseLong(result.getString(3));
+//                    taskName = result.getString(4);
+//                    repeatInterval = result.getString(13);
+//                    timeCreated = Long.parseLong(result.getString(15));
+//                    subtasksCount = result.getInt(17);
+//                    manualKill = result.getInt(18) >0;
+//                    killedEarly = result.getInt(19) >0;
+//                    originalDay = result.getInt(20);
+//                    if(repeatInterval.equalsIgnoreCase("none")){
+//                        repeatInterval = null;
+//                    }
+//                    //old db uses seconds. New db uses millis
+//                    dueTimestamp *= 1000;
+//                    timeCreated *= 1000;
+//                }
+//                //TODO found out why timestamp isn't working. Possibly because old db used seconds and new one uses millis
+//                mainActivityPresenter.addTask(note, dueTimestamp, taskName, repeatInterval,
+//                        timeCreated, manualKill, killedEarly, originalDay);
+//
+//                //getting the subtask ids
+//                ArrayList<Integer> sortedSubtaskIds = new ArrayList<>();
+//                Cursor dbIdResult = db.getSubtask(id);
+//                while (dbIdResult.moveToNext()) {
+//                    sortedSubtaskIds.add(dbIdResult.getInt(1));
+//                }
+//                dbIdResult.close();
+//                //getting the newly generated id of the current task
+//                int newId = mainActivityPresenter.getTaskIdByName(taskName);
+//                //adding subtasks to current task if there are any
+//                for(int j = 0; j < subtasksCount; j++) {
+//                    result = db.getSubtaskData(id,
+//                            sortedSubtaskIds.get(j));
+//                    String subtask = null;
+//                    long subtaskTimeCreated = 0;
+//                    while (result.moveToNext()) {
+//                        subtask = result.getString(2);
+//                        subtaskTimeCreated = Long.parseLong(result.getString(4));
+//                    }
+//                    subtasksPresenter.addSubtask(newId, subtask, subtaskTimeCreated);
+//                }
+//                result.close();
+//            }
+//
+//            //Only need to perform migration once
+//            preferences.edit().putBoolean(StringConstants.DATABASE_MERGED_KEY, true).apply();
+//        }
 
         boolMute = preferences.getBoolean(StringConstants.MUTE_KEY, false);
         boolAdsRemoved = preferences.getBoolean(StringConstants.ADS_REMOVED_KEY, false);//TODO change to false

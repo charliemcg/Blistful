@@ -20,4 +20,6 @@ public interface MainActivityPresenter {
     void showPurchases();
 
     void toggleFab(boolean showFab);
+
+    int getTaskIdByName(String taskName);
 }

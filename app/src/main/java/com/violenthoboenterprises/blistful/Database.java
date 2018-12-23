@@ -252,7 +252,8 @@ public class Database extends SQLiteOpenHelper {
         }
     }
 
-    void insertSubtaskData(int id, int subtaskID, String subtask, String stamp){
+    public boolean insertSubtaskData(int id, int subtaskID, String subtask, String stamp){
+        Log.d(TAG, "Inserting subtasks");
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues content= new ContentValues();
         content.put(CCOL1, id);
@@ -261,6 +262,12 @@ public class Database extends SQLiteOpenHelper {
         content.put(CCOL4, false);
         content.put(CCOL5, stamp);
         content.put(CCOL6, 0);
+        long result = db.insert(CTABLE, null, content);
+        if(result == -1){
+            return false;
+        }else {
+            return true;
+        }
     }
 
     public Cursor getData(int id){
@@ -319,14 +326,14 @@ public class Database extends SQLiteOpenHelper {
         return result;
     }
 
-    Cursor getSubtaskData(int id, int subId){
+    public Cursor getSubtaskData(int id, int subId){
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor result = db.rawQuery("select * from " + CTABLE + " where " + CCOL1
                 + " == " + id + " AND " + CCOL2 + " == " + subId, null);
         return result;
     }
 
-    Cursor getSubtask(int id){
+    public Cursor getSubtask(int id){
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor result = db.rawQuery("select * from " + CTABLE + " where " + CCOL1
                 + " == " + id, null);

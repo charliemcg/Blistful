@@ -23,8 +23,8 @@ public class SubtasksPresenterImpl implements SubtasksPresenter {
     }
 
     @Override
-    public void addSubtask(int parentId, String subtaskName) {
-        Subtask subtask = new Subtask(parentId, subtaskName);
+    public void addSubtask(int parentId, String subtaskName, long timeCreated) {
+        Subtask subtask = new Subtask(parentId, subtaskName, timeCreated);
         subtaskViewModel.insert(subtask);
     }
 

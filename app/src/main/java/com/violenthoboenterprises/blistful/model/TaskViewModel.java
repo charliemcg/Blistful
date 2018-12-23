@@ -38,4 +38,6 @@ public class TaskViewModel extends AndroidViewModel {
     public List<Integer> getAllTimestamps() {
         return repository.getAllTimestamps();
     }
+
+    public int getTaskIdByName(String taskName) {return repository.getTaskIdByName(taskName);}
 }

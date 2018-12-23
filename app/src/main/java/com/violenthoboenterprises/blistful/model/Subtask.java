@@ -25,13 +25,14 @@ public class Subtask {
     private boolean killed;
 
     //when the subtask was created
-    private int timeCreated;
+    private long timeCreated;
 
-    public Subtask(int parentId, @NonNull String subtask) {
+    public Subtask(int parentId, @NonNull String subtask, long timeCreated) {
         //need to know the parent task to which the subtask belongs
         this.parentId = parentId;
         //name of the subtask
         this.subtask = subtask;
+        this.timeCreated = timeCreated;
     }
 
     public int getId() {
@@ -67,7 +68,7 @@ public class Subtask {
         this.killed = killed;
     }
 
-    public int getTimeCreated() {
+    public long getTimeCreated() {
         return timeCreated;
     }
 

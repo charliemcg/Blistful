@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.violenthoboenterprises.blistful.MainActivity;
 import com.violenthoboenterprises.blistful.presenter.MainActivityPresenter;
@@ -31,6 +32,8 @@ public class MainActivityPresenterImpl implements MainActivityPresenter {
         Task task = new Task(note, dueTimestamp, taskName, repeatInterval,
                 timeCreated, manualKill, killedEarly, originalDay);
         taskViewModel.insert(task);
+        MainActivity.tempMigrationId = task.getId();
+        Log.d("Blah", "migration id: " + MainActivity.tempMigrationId + " task: " + task.getId());
     }
     @Override
     public void update(Task task) {
@@ -56,6 +59,11 @@ public class MainActivityPresenterImpl implements MainActivityPresenter {
     @Override
     public void toggleFab(boolean showFab) {
         mainActivityView.toggleFab(showFab);
+    }
+
+    @Override
+    public int getTaskIdByName(String taskName) {
+        return taskViewModel.getTaskIdByName(taskName);
     }
 
     @Override

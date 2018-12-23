@@ -161,22 +161,22 @@
 //
 //        //getting alarm data
 //        Cursor alarmResult = MainActivity.db.getAlarmData(
-//                Integer.parseInt(MainActivity.sortedIDs.get(position)));
-//        String alarmHour = "";
-//        String alarmMinute = "";
-//        String alarmAmpm = "";
-//        String alarmDay = "";
-//        String alarmMonth = "";
-//        String alarmYear = "";
-//        while (alarmResult.moveToNext()) {
-//            alarmHour = alarmResult.getString(1);
-//            alarmMinute = alarmResult.getString(2);
-//            alarmAmpm = alarmResult.getString(3);
-//            alarmDay = alarmResult.getString(4);
-//            alarmMonth = alarmResult.getString(5);
-//            alarmYear = alarmResult.getString(6);
-//        }
-//        alarmResult.close();
+////                Integer.parseInt(MainActivity.sortedIDs.get(position)));
+////        String alarmHour = "";
+////        String alarmMinute = "";
+////        String alarmAmpm = "";
+////        String alarmDay = "";
+////        String alarmMonth = "";
+////        String alarmYear = "";
+////        while (alarmResult.moveToNext()) {
+////            alarmHour = alarmResult.getString(1);
+////            alarmMinute = alarmResult.getString(2);
+////            alarmAmpm = alarmResult.getString(3);
+////            alarmDay = alarmResult.getString(4);
+////            alarmMonth = alarmResult.getString(5);
+////            alarmYear = alarmResult.getString(6);
+////        }
+////        alarmResult.close();
 //
 //        //getting universal data
 //        Cursor uniResult = MainActivity.db.getUniversalData();

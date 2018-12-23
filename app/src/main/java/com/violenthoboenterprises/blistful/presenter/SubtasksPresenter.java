@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface SubtasksPresenter {
 
-    void addSubtask(int parentId, String subtask);
+    void addSubtask(int parentId, String subtask, long timeCreated);
 
 //    Subtask getSubtask(int parentId, int subtaskId);
 

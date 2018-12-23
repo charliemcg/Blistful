@@ -65,6 +65,18 @@ public class TaskRepository {
         return null;
     }
 
+    public int getTaskIdByName(String taskName) {
+        AsyncTask<String, Void, Integer> result = new GetTaskIdByNameAsyncTask(taskDao).execute(taskName);
+        try {
+            int simpleResult = result.get();
+            return simpleResult;
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        Log.d(TAG, "I should not be here");
+        return 0;
+    }
+
     //Performing these tasks off of the UI thread
     private static class InsertTaskAsyncTask extends AsyncTask<Task, Void, Void> {
         private TaskDao taskDao;
@@ -121,4 +133,13 @@ public class TaskRepository {
         }
     }
 
+    private class GetTaskIdByNameAsyncTask extends AsyncTask<String, Void, Integer> {
+        private TaskDao taskDao;
+        public GetTaskIdByNameAsyncTask(TaskDao taskDao) {this.taskDao = taskDao;}
+
+        @Override
+        protected Integer doInBackground(String... strings) {
+            return taskDao.getTaskIdByName(strings[0]);
+        }
+    }
 }
