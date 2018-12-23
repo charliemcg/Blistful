@@ -55,12 +55,17 @@ public class ReminderActivity extends MainActivity implements ReminderView {
     private static MenuItem killReminder, killReminderOpen;
     private static int screenSize;
     private static ReminderPresenter reminderPresenter;
-    private Task task;
+    private static Task task;
     private static Reminder reminder;
     private String REPEAT_DAY = "day";
     private String REPEAT_WEEK = "week";
     private String REPEAT_MONTH = "month";
     private SharedPreferences preferences;
+    private static int tempMinute;
+    private static int tempHour;
+    private static int tempDay;
+    private static int tempMonth;
+    private static int tempYear;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,6 +107,11 @@ public class ReminderActivity extends MainActivity implements ReminderView {
                 Configuration.SCREENLAYOUT_SIZE_MASK;
 
         onCreateOptionsMenu(dueToolbar.getMenu());
+        tempMinute = -1;
+        tempHour = -1;
+        tempDay = -1;
+        tempMonth = -1;
+        tempYear = -1;
 
         //Inform user that they can set an alarm
         if (reminderPresenter.getYear() == 0) {
@@ -442,9 +452,25 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
             DatePickerDialog datePickerDialog;
 
-            year = calendar.get(Calendar.YEAR);
-            month = calendar.get(Calendar.MONTH);
-            day = calendar.get(Calendar.DAY_OF_MONTH);
+//            year = calendar.get(Calendar.YEAR);
+//            month = calendar.get(Calendar.MONTH);
+//            day = calendar.get(Calendar.DAY_OF_MONTH);
+
+            if(task.getTimestamp() != 0){
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeInMillis(task.getTimestamp());
+                year = cal.get(Calendar.YEAR);
+                month = cal.get(Calendar.MONTH);
+                day = cal.get(Calendar.DAY_OF_MONTH);
+            }else if(tempDay != -1) {
+                year = tempYear;
+                month = tempMonth;
+                day = tempDay;
+            }else{
+                year = calendar.get(Calendar.YEAR);
+                month = calendar.get(Calendar.MONTH);
+                day = calendar.get(Calendar.DAY_OF_MONTH);
+            }
 
             //Initialise date picker
             datePickerDialog = new DatePickerDialog(getActivity(),
@@ -487,6 +513,10 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             reminderPresenter.setMonth(month);
             reminderPresenter.setDay(day);
 
+            tempDay = day;
+            tempMonth = month;
+            tempYear = year;
+
             tvDate.setText(reminderPresenter.getFormattedDate());
 
         }
@@ -505,9 +535,19 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
             int defaultTimePickerHour;
 
-            minute = calendar.get(Calendar.MINUTE);
-            hour = calendar.get(Calendar.HOUR_OF_DAY);
-            defaultTimePickerHour = hour;
+            if(task.getTimestamp() != 0){
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeInMillis(task.getTimestamp());
+                minute = cal.get(Calendar.MINUTE);
+                defaultTimePickerHour = cal.get(Calendar.HOUR_OF_DAY);
+            }else if(tempMinute != -1) {
+                minute = tempMinute;
+                defaultTimePickerHour = tempHour;
+            }else{
+                minute = calendar.get(Calendar.MINUTE);
+                hour = calendar.get(Calendar.HOUR_OF_DAY);
+                defaultTimePickerHour = hour;
+            }
 
             TimePickerDialog timePickerDialog;
 
@@ -551,6 +591,9 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
             reminderPresenter.setHour(hour);
             reminderPresenter.setMinute(minute);
+
+            tempMinute = minute;
+            tempHour = hour;
 
             timeTextView.setText(reminderPresenter.getFormattedTime());
 
