@@ -15,5 +15,6 @@ public class StringConstants {
     public static String UNLOCK_ALL = "unlock_all";
     public static String TEST_PURCHASE = "android.test.purchased";//TODO remove this
     public static String DUES_SET = "dues_set";
+    public static String DATABASE_MERGED_KEY = "database_merged_key";
 
 }

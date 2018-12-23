@@ -13,6 +13,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.Rect;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
@@ -70,6 +71,7 @@ import com.violenthoboenterprises.blistful.presenter.SubtasksPresenter;
 import com.violenthoboenterprises.blistful.view.MainActivityView;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -194,6 +196,8 @@ public class MainActivity extends AppCompatActivity implements
 //    public String REFRESH_THIS_ITEM = "refresh_this_item";
 //    public int DELETE_TASK_ID = 0;
 
+    public static Database db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -213,13 +217,50 @@ public class MainActivity extends AppCompatActivity implements
 
         preferences = this.getSharedPreferences("com.violenthoboenterprises.blistful",
                 Context.MODE_PRIVATE);
+
+        ///////////////Step 1. Create mock data. Remove once created
+//        Database db = new Database(this);
+//        db.insertUniversalData(true);
+//        db.updateMotivation(true);
+//        db.updateMute(true);
+//            db.insertData(3, "", "Task Name",
+//                    3, "123456789");
+
+        ///////////////Step 2. Merge the database. Remove while creating mock data
+        if (!preferences.getBoolean(StringConstants.DATABASE_MERGED_KEY, false)) {
+            Log.d(TAG, "I'm in here");
+            //The old database
+            Database db = new Database(this);
+            db.insertUniversalData(true);
+            //getting universal data and putting into shared preferences
+            Cursor cursor = db.getUniversalData();
+            while (cursor.moveToNext()) {
+                Log.d(TAG, "getting universal data");
+                preferences.edit().putBoolean(StringConstants.MUTE_KEY, (cursor.getInt(1) > 0)).apply();
+                preferences.edit().putBoolean(StringConstants.ADS_REMOVED_KEY, (cursor.getInt(5) > 0)).apply();
+                preferences.edit().putBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, (cursor.getInt(6) > 0)).apply();
+                preferences.edit().putInt(StringConstants.DUES_SET, (cursor.getInt(19))).apply();
+                preferences.edit().putBoolean(StringConstants.MOTIVATION_KEY, (cursor.getInt(20) > 0)).apply();
+                preferences.edit().putInt(StringConstants.REPEAT_HINT_KEY, (cursor.getInt(21))).apply();
+                preferences.edit().putInt(StringConstants.RENAME_HINT_KEY, (cursor.getInt(22))).apply();
+                preferences.edit().putLong(StringConstants.TIME_INSTALLED_KEY, (cursor.getInt(24))).apply();
+            }
+            cursor = db.getData(3);
+            while(cursor.moveToNext()){
+                Log.d(TAG, "getting task data");
+            }
+            cursor.close();
+            //Only need to perform migration once
+            preferences.edit().putBoolean(StringConstants.DATABASE_MERGED_KEY, true).apply();
+        }
+
         boolMute = preferences.getBoolean(StringConstants.MUTE_KEY, false);
         boolAdsRemoved = preferences.getBoolean(StringConstants.ADS_REMOVED_KEY, false);//TODO change to false
         boolRemindersAvailable = preferences.getBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, false);//TODO change to false
         boolShowMotivation = preferences.getBoolean(StringConstants.MOTIVATION_KEY, true);
         intRepeatHint = preferences.getInt(StringConstants.REPEAT_HINT_KEY, 0);
         intRenameHint = preferences.getInt(StringConstants.RENAME_HINT_KEY, 0);
-        intReinstateHint = preferences.getInt(StringConstants.REINSTATE_HINT_KEY, 0);
+//        intReinstateHint = preferences.getInt(StringConstants.REINSTATE_HINT_KEY, 0);
         intShowReviewPrompt = preferences.getInt(StringConstants.SHOW_REVIEW_KEY, 0);
         lngTimeInstalled = preferences.getLong(StringConstants.TIME_INSTALLED_KEY, 0);
 
@@ -401,7 +442,7 @@ public class MainActivity extends AppCompatActivity implements
 
                     return true;
 
-                //Actions to take when editing existing task
+                    //Actions to take when editing existing task
                 } else if (actionId == EditorInfo.IME_ACTION_DONE) {
 
                     Toast.makeText(MainActivity.this, "Editing task", Toast.LENGTH_SHORT).show();
@@ -963,6 +1004,124 @@ public class MainActivity extends AppCompatActivity implements
 
         adapter.notifyItemChanged(preferences.getInt("refresh_this_item", 0));
         toggleFab(true);
+
+//        if (!preferences.getBoolean(StringConstants.DATABASE_MERGED_KEY, false)) {
+//            Log.d(TAG, "I'm in here");
+//            //The old database
+//            Database db = new Database(this);
+//            db.insertUniversalData(true);
+//            //creating mock data //TODO delete this
+//            ///////////////////////////////////////////////////////////////
+//            db.updateMotivation(false);
+//            db.updateMute(false);
+//            db.insertData(3, "", "Task Name",
+//                    3, "123456789");
+//            ///////////////////////////////////////////////////////////////
+//            //getting universal data and putting into shared preferences
+//            Cursor cursor = db.getUniversalData();
+//            while (cursor.moveToNext()) {
+//                Log.d(TAG, "getting universal data");
+//                preferences.edit().putBoolean(StringConstants.MUTE_KEY, (cursor.getInt(1) > 0)).apply();
+//                preferences.edit().putBoolean(StringConstants.ADS_REMOVED_KEY, (cursor.getInt(5) > 0)).apply();
+//                preferences.edit().putBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, (cursor.getInt(6) > 0)).apply();
+//                preferences.edit().putInt(StringConstants.DUES_SET, (cursor.getInt(19))).apply();
+//                preferences.edit().putBoolean(StringConstants.MOTIVATION_KEY, (cursor.getInt(20) > 0)).apply();
+//                preferences.edit().putBoolean(StringConstants.REPEAT_HINT_KEY, (cursor.getInt(21) > 0)).apply();
+//                preferences.edit().putBoolean(StringConstants.RENAME_HINT_KEY, (cursor.getInt(22) > 0)).apply();
+//                preferences.edit().putLong(StringConstants.TIME_INSTALLED_KEY, (cursor.getInt(24))).apply();
+//            }
+//            cursor = db.getData(3);
+//            while(cursor.moveToNext()){
+//                Log.d(TAG, "getting task data");
+//            }
+//            cursor.close();
+//            //Only need to perform migration once
+////            preferences.edit().putBoolean(StringConstants.DATABASE_MERGED_KEY, true).apply();
+//        }
+
+        //clearing the lists before adding data back into them so as to avoid duplication
+        ArrayList<Integer> taskList = new ArrayList<>();
+        ArrayList<Integer> sortedIDs = new ArrayList<>();
+
+//        int taskLastChanged = 0;
+//
+//        int taskListSize = db.getTotalRows();
+
+        //getting app-wide data
+//        Cursor dbResult = db.getUniversalData();
+//        while (dbResult.moveToNext()) {
+//            Log.d(TAG, "I'm in here");
+//        }
+//        dbResult.close();
+
+//        ArrayList<Integer> tempSortedIDs = new ArrayList<>();
+//
+//        ArrayList<Integer> IDList = db.getIDs();
+//
+//        for( int i = 0 ; i < taskListSize ; i++ ) {
+//
+//            Cursor sortedIdsResult = db.getData(IDList.get(i));
+//            while (sortedIdsResult.moveToNext()) {
+//                tempSortedIDs.add(sortedIdsResult.getInt(16));
+//            }
+//            sortedIdsResult.close();
+//
+//        }
+//
+//        Collections.sort(tempSortedIDs);
+//
+//        for(int i = 0; i < taskListSize; i ++){
+//
+//            sortedIDs.add(String.valueOf(tempSortedIDs.get(i)));
+//
+//        }
+//
+//        for(int i = 0; i < taskListSize; i++){
+//            Cursor sharedPreferencesResult = db.getData(IDList.get(i));
+//            while (sharedPreferencesResult.moveToNext()) {
+//                taskList.add(sharedPreferencesResult.getString(4));
+//            }
+//            sharedPreferencesResult.close();
+//        }
+//
+//        new Reorder();
+//        //Updating the view with the new order
+//        theAdapter = new ListAdapter[]{new MyAdapter(
+//                this, taskList)};
+//        theListView.setAdapter(theAdapter[0]);
+//
+//        alertIntent = new Intent(this, AlertReceiver.class);
+//
+////        theListView.setAdapter(theAdapter[0]);
+//
+//        //Checks to see if there are still tasks left
+//        noTasksLeft();
+//
+//        showPrompt(launchTime);
+//
+////        if(adsRemoved){
+////            removeAdsImg.setVisibility(View.GONE);
+////            removeAdsPurchasedImg.setVisibility(View.VISIBLE);
+////        }
+////        if(remindersAvailable){
+////            remindersImg.setVisibility(View.GONE);
+////            remindersPurchasedImg.setVisibility(View.VISIBLE);
+////        }
+////        if(colorCyclingAllowed){
+////            autoColorImg.setVisibility(View.GONE);
+////            autoColorPurchasedImg.setVisibility(View.VISIBLE);
+////        }
+////        if(adsRemoved || remindersAvailable || colorCyclingAllowed){
+////            unlockAllImg.setVisibility(View.GONE);
+////            unlockAllPurchasedImg.setVisibility(View.VISIBLE);
+////        }
+//
+//        //Setting the position for the toast
+//        toastParams.setMargins(15, (int) (deviceheight / 1.35), 0, 0);
+//
+//        int[] colors = {R.color.turquoise, R.color.turquoise, R.color.turquoise};
+//        theListView.setDivider(new GradientDrawable
+//                (GradientDrawable.Orientation.RIGHT_LEFT, colors));
 
     }
 
