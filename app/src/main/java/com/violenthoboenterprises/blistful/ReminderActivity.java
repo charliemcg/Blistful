@@ -370,7 +370,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
                                     reminderPresenter.setRepeatInterval(null);
                                     reminderPresenter.setTimestamp(reminderPresenter.getTimeCreated());
-                                    reminderPresenter.setDue(false);
+//                                    reminderPresenter.setDue(false);
 
                                     reminderPresenter.setYear(0);
                                     reminderPresenter.setMonth(0);
@@ -605,7 +605,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
                 scheduleNotification();
             }
 
-            reminderPresenter.setDue(true);
+//            reminderPresenter.setDue(true);
 
             int duesset = preferences.getInt(StringConstants.DUES_SET, 0);
             preferences.edit().putInt(StringConstants.DUES_SET, ++duesset).apply();

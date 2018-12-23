@@ -86,7 +86,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         holder.tvDue.setTextColor(Color.BLACK);
 
         //checking if needed to display due icon
-        if (currentTask.isDue()) {
+        if (/*currentTask.isDue()*/currentTask.getTimestamp() != 0) {
             holder.dueIcon.setVisibility(View.VISIBLE);
             //Switch to overdue icon when appropriate
             if ((currentTask.getTimestamp() < Calendar.getInstance().getTimeInMillis())) {
@@ -155,7 +155,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
             @Override
             public void onClick(View view) {
                 holder.taskProperties.setVisibility(View.GONE);
-                if (preferences.getInt(StringConstants.DUES_SET, 0) < 5 || currentTask.isDue()
+                if (preferences.getInt(StringConstants.DUES_SET, 0) < 5 || currentTask/*.isDue()*/.getTimestamp() != 0
                         || preferences.getBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, false)) {
                     Intent intent = new Intent(context, ReminderActivity.class);
                     intent.putExtra("task", currentTask);

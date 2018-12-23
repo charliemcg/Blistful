@@ -33,8 +33,8 @@ public class Task implements Serializable {
     private String task;
 
     //does task have a due date
-    @NonNull
-    private boolean due;
+//    @NonNull
+//    private boolean due;
 
     //is task killed
     private boolean killed;
@@ -116,7 +116,7 @@ public class Task implements Serializable {
         subtasks = in.readByte() != 0;
         timestamp = in.readInt();
         task = in.readString();
-        due = in.readByte() != 0;
+//        due = in.readByte() != 0;
         killed = in.readByte() != 0;
         repeat = in.readByte() != 0;
         overdue = in.readByte() != 0;
@@ -186,13 +186,13 @@ public class Task implements Serializable {
         this.task = task;
     }
 
-    public boolean isDue() {
-        return due;
-    }
+//    public boolean isDue() {
+//        return due;
+//    }
 
-    public void setDue(boolean due) {
-        this.due = due;
-    }
+//    public void setDue(boolean due) {
+//        this.due = due;
+//    }
 
     public boolean isKilled() {
         return killed;

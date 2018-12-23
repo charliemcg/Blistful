@@ -49,5 +49,5 @@ public interface ReminderPresenter {
 
     long getTimeCreated();
 
-    void setDue(boolean b);
+//    void setDue(boolean b);
 }

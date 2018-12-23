@@ -219,9 +219,9 @@ public class ReminderPresenterImpl implements ReminderPresenter {
         return task.getTimeCreated();
     }
 
-    @Override
-    public void setDue(boolean b) {
-        task.setDue(b);
-    }
+//    @Override
+//    public void setDue(boolean b) {
+//        task.setDue(b);
+//    }
 
 }
