@@ -110,8 +110,6 @@ public class MainActivity extends AppCompatActivity implements
     //keeps track of the selected task so recyclerview
     //knows which task to update in regards to icons etc
     public static int intPositionToUpdate;
-    //getting the id of a migrated task so as to correctly add subtasks
-    public static int tempMigrationId;
 
     //Toasts which show up when adding new task
     private String[] strMotivation;
@@ -250,7 +248,6 @@ public class MainActivity extends AppCompatActivity implements
 //        intReinstateHint = preferences.getInt(StringConstants.REINSTATE_HINT_KEY, 0);
         intShowReviewPrompt = preferences.getInt(StringConstants.SHOW_REVIEW_KEY, 0);
         lngTimeInstalled = preferences.getLong(StringConstants.TIME_INSTALLED_KEY, 0);
-
 
         //Initialising variables
         etTask = findViewById(R.id.taskNameEditText);

@@ -525,6 +525,13 @@ public class Database extends SQLiteOpenHelper {
         db.update(UTABLE, content, "ID = ?", new String[] {"0"});
     }
 
+    public void updateTimeCreated(String time){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues content = new ContentValues();
+        content.put(UCOL24, time);
+        db.update(UTABLE, content, "ID = ?", new String[] {"0"});
+    }
+
     void updateHighlight(String highlight){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues content = new ContentValues();
@@ -539,14 +546,14 @@ public class Database extends SQLiteOpenHelper {
         db.update(UTABLE, content, "ID = ?", new String[] {"0"});
     }
 
-    void updateAdsRemoved(boolean removal){
+    public void updateAdsRemoved(boolean removal){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues content = new ContentValues();
         content.put(UCOL6, removal);
         db.update(UTABLE, content, "ID = ?", new String[] {"0"});
     }
 
-    void updateRemindersAvailable(boolean reminder){
+    public void updateRemindersAvailable(boolean reminder){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues content = new ContentValues();
         content.put(UCOL7, reminder);
@@ -658,7 +665,7 @@ public class Database extends SQLiteOpenHelper {
         db.update(UTABLE, content, "ID = ?", new String[] {"0"});
     }
 
-    void updateReviewOne(boolean review){
+    public void updateReviewOne(boolean review){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues content = new ContentValues();
         content.put(UCOL26, review);

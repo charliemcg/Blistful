@@ -39,8 +39,6 @@ public class MainActivityPresenterImpl implements MainActivityPresenter {
         Task task = new Task(note, dueTimestamp, taskName, repeatInterval,
                 timeCreated, manualKill, killedEarly, originalDay);
         taskViewModel.insert(task);
-        MainActivity.tempMigrationId = task.getId();
-        Log.d("Blah", "migration id: " + MainActivity.tempMigrationId + " task: " + task.getId());
     }
 
     @Override
@@ -81,8 +79,14 @@ public class MainActivityPresenterImpl implements MainActivityPresenter {
 //        Database db = new Database(context);
 //        db.insertUniversalData(true);
 //        //adding mock universal data
-//        db.updateMotivation(true);
-//        db.updateMute(true);
+//        db.updateMotivation(false);
+//        db.updateMute(false);
+//        long timeCreated = Calendar.getInstance().getTimeInMillis() / 1000 / 60 / 60;
+//        db.updateTimeCreated(String.valueOf(timeCreated));
+//        db.updateAdsRemoved(true);
+//        db.updateRemindersAvailable(true);
+//        db.updateReviewOne(true);
+//
 //        //adding mock task data
 //        db.insertData(3, "", "Task Name",
 //                3, "123456789");
@@ -98,6 +102,7 @@ public class MainActivityPresenterImpl implements MainActivityPresenter {
 //        db.updateTimestamp(String.valueOf(4), String.valueOf(stamp));
 //        db.updateChecklistSize(String.valueOf(4), 2);
 //        db.updateRepeatInterval(String.valueOf(4), "none");
+//
 //        //adding mock subtask data
 //        db.insertSubtaskData(4, 0, "Subtask 1",
 //                String.valueOf(Calendar.getInstance().getTimeInMillis() / 1000));
@@ -118,7 +123,12 @@ public class MainActivityPresenterImpl implements MainActivityPresenter {
             MainActivity.preferences.edit().putBoolean(StringConstants.MOTIVATION_KEY, (cursor.getInt(20) > 0)).apply();
             MainActivity.preferences.edit().putInt(StringConstants.REPEAT_HINT_KEY, (cursor.getInt(21))).apply();
             MainActivity.preferences.edit().putInt(StringConstants.RENAME_HINT_KEY, (cursor.getInt(22))).apply();
-            MainActivity.preferences.edit().putLong(StringConstants.TIME_INSTALLED_KEY, (cursor.getInt(24))).apply();
+            long stampToAdjust = cursor.getInt(24);
+            stampToAdjust = stampToAdjust * 1000 * 60 * 60;
+            MainActivity.preferences.edit().putLong(StringConstants.TIME_INSTALLED_KEY, stampToAdjust).apply();
+            if(cursor.getInt(25) > 0){
+                MainActivity.preferences.edit().putInt(StringConstants.SHOW_REVIEW_KEY, 5).apply();
+            }
         }
 
         int taskListSize = db.getTotalRows();
