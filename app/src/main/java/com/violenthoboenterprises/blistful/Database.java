@@ -348,6 +348,13 @@ public class Database extends SQLiteOpenHelper {
 //        db.update(TABLE, content, "ID = ?", new String[] {id});
 //    }
 
+    void updateNote(String id, String note){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues content = new ContentValues();
+        content.put(COL2, note);
+        db.update(TABLE, content, "ID = ?", new String[] {id});
+    }
+
     void updateDue(String id, Boolean due){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues content = new ContentValues();

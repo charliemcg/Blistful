@@ -73,6 +73,7 @@ import com.violenthoboenterprises.blistful.view.MainActivityView;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Random;
@@ -218,52 +219,6 @@ public class MainActivity extends AppCompatActivity implements
         preferences = this.getSharedPreferences("com.violenthoboenterprises.blistful",
                 Context.MODE_PRIVATE);
 
-        ///////////////Step 1. Create mock data. Remove once created
-//        Database db = new Database(this);
-//        db.insertUniversalData(true);
-//        db.updateMotivation(true);
-//        db.updateMute(true);
-//            db.insertData(3, "", "Task Name",
-//                    3, "123456789");
-
-        ///////////////Step 2. Merge the database. Remove while creating mock data
-        if (!preferences.getBoolean(StringConstants.DATABASE_MERGED_KEY, false)) {
-            Log.d(TAG, "I'm in here");
-            //The old database
-            Database db = new Database(this);
-            db.insertUniversalData(true);
-            //getting universal data and putting into shared preferences
-            Cursor cursor = db.getUniversalData();
-            while (cursor.moveToNext()) {
-                Log.d(TAG, "getting universal data");
-                preferences.edit().putBoolean(StringConstants.MUTE_KEY, (cursor.getInt(1) > 0)).apply();
-                preferences.edit().putBoolean(StringConstants.ADS_REMOVED_KEY, (cursor.getInt(5) > 0)).apply();
-                preferences.edit().putBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, (cursor.getInt(6) > 0)).apply();
-                preferences.edit().putInt(StringConstants.DUES_SET, (cursor.getInt(19))).apply();
-                preferences.edit().putBoolean(StringConstants.MOTIVATION_KEY, (cursor.getInt(20) > 0)).apply();
-                preferences.edit().putInt(StringConstants.REPEAT_HINT_KEY, (cursor.getInt(21))).apply();
-                preferences.edit().putInt(StringConstants.RENAME_HINT_KEY, (cursor.getInt(22))).apply();
-                preferences.edit().putLong(StringConstants.TIME_INSTALLED_KEY, (cursor.getInt(24))).apply();
-            }
-            cursor = db.getData(3);
-            while(cursor.moveToNext()){
-                Log.d(TAG, "getting task data");
-            }
-            cursor.close();
-            //Only need to perform migration once
-            preferences.edit().putBoolean(StringConstants.DATABASE_MERGED_KEY, true).apply();
-        }
-
-        boolMute = preferences.getBoolean(StringConstants.MUTE_KEY, false);
-        boolAdsRemoved = preferences.getBoolean(StringConstants.ADS_REMOVED_KEY, false);//TODO change to false
-        boolRemindersAvailable = preferences.getBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, false);//TODO change to false
-        boolShowMotivation = preferences.getBoolean(StringConstants.MOTIVATION_KEY, true);
-        intRepeatHint = preferences.getInt(StringConstants.REPEAT_HINT_KEY, 0);
-        intRenameHint = preferences.getInt(StringConstants.RENAME_HINT_KEY, 0);
-//        intReinstateHint = preferences.getInt(StringConstants.REINSTATE_HINT_KEY, 0);
-        intShowReviewPrompt = preferences.getInt(StringConstants.SHOW_REVIEW_KEY, 0);
-        lngTimeInstalled = preferences.getLong(StringConstants.TIME_INSTALLED_KEY, 0);
-
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
         if (lngTimeInstalled == 0) {
@@ -279,6 +234,105 @@ public class MainActivity extends AppCompatActivity implements
                 (MainActivity.this, taskViewModel, getApplicationContext());
         SubtasksPresenter subtasksPresenter = new SubtasksPresenterImpl
                 (null, subtaskViewModel, null, getApplicationContext());
+
+        ///////////////Step 1. Create mock data. Remove once created
+//        Database db = new Database(this);
+//        db.insertUniversalData(true);
+//        db.updateMotivation(true);
+//        db.updateMute(true);
+//        db.insertData(3, "", "Task Name",
+//                3, "123456789");
+//        db.updateNote(String.valueOf(3), "This is a note");
+//        long stamp = Calendar.getInstance().getTimeInMillis() + (1000 * 60 * 60 * 24);
+//        db.updateTimestamp(String.valueOf(3), String.valueOf(stamp));
+//        db.updateRepeatInterval(String.valueOf(3), "day");
+//        db.insertData(4, "", "Task Name 2",
+//                4, "123456789");
+//        db.updateNote(String.valueOf(4), "This is a note 2");
+//        stamp = Calendar.getInstance().getTimeInMillis() + (1000 * 60 * 60 * 24);
+//        db.updateTimestamp(String.valueOf(4), String.valueOf(stamp));
+//        db.updateRepeatInterval(String.valueOf(4), "none");
+
+        ///////////////Step 2. Merge the database. Remove while creating mock data
+        if (!preferences.getBoolean(StringConstants.DATABASE_MERGED_KEY, false)) {
+            //The old database
+            Database db = new Database(this);
+            db.insertUniversalData(true);
+            //getting universal data and putting into shared preferences
+            Cursor cursor = db.getUniversalData();
+            while (cursor.moveToNext()) {
+                preferences.edit().putBoolean(StringConstants.MUTE_KEY, (cursor.getInt(1) > 0)).apply();
+                preferences.edit().putBoolean(StringConstants.ADS_REMOVED_KEY, (cursor.getInt(5) > 0)).apply();
+                preferences.edit().putBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, (cursor.getInt(6) > 0)).apply();
+                preferences.edit().putInt(StringConstants.DUES_SET, (cursor.getInt(19))).apply();
+                preferences.edit().putBoolean(StringConstants.MOTIVATION_KEY, (cursor.getInt(20) > 0)).apply();
+                preferences.edit().putInt(StringConstants.REPEAT_HINT_KEY, (cursor.getInt(21))).apply();
+                preferences.edit().putInt(StringConstants.RENAME_HINT_KEY, (cursor.getInt(22))).apply();
+                preferences.edit().putLong(StringConstants.TIME_INSTALLED_KEY, (cursor.getInt(24))).apply();
+            }
+
+            ArrayList<String> taskList = new ArrayList<>();
+            ArrayList<Integer> sortedIDs = new ArrayList<>();
+
+            int taskListSize = db.getTotalRows();
+
+            ArrayList<Integer> tempSortedIDs = new ArrayList<>();
+
+            ArrayList<Integer> IDList = db.getIDs();
+
+            for (int i = 0; i < taskListSize; i++) {
+
+                Cursor sortedIdsResult = db.getData(IDList.get(i));
+                while (sortedIdsResult.moveToNext()) {
+                    tempSortedIDs.add(sortedIdsResult.getInt(16));
+                }
+                sortedIdsResult.close();
+
+            }
+
+            Collections.sort(tempSortedIDs);
+
+            for (int i = 0; i < taskListSize; i++) {
+
+                sortedIDs.add(tempSortedIDs.get(i));
+
+            }
+
+            for (int i = 0; i < taskListSize; i++) {
+                Cursor result = db.getData(IDList.get(i));
+                while (result.moveToNext()) {
+                    String note = result.getString(1);
+                    long dueTimestamp = Long.parseLong(result.getString(3));
+                    String taskName = result.getString(4);
+                    String repeatInterval = result.getString(13);
+                    long timeCreated = Long.parseLong(result.getString(15));
+                    boolean manualKill = result.getInt(18) >0;
+                    boolean killedEarly = result.getInt(19) >0;
+                    int originalDay = result.getInt(20);
+                    if(repeatInterval.equalsIgnoreCase("none")){
+                        repeatInterval = null;
+                    }
+                    //TODO found out why timestamp isn't working
+                    mainActivityPresenter.addTask(note, dueTimestamp, taskName, repeatInterval,
+                            timeCreated, manualKill, killedEarly, originalDay);
+                }
+                result.close();
+            }
+
+            //Only need to perform migration once
+            preferences.edit().putBoolean(StringConstants.DATABASE_MERGED_KEY, true).apply();
+        }
+
+        boolMute = preferences.getBoolean(StringConstants.MUTE_KEY, false);
+        boolAdsRemoved = preferences.getBoolean(StringConstants.ADS_REMOVED_KEY, false);//TODO change to false
+        boolRemindersAvailable = preferences.getBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, false);//TODO change to false
+        boolShowMotivation = preferences.getBoolean(StringConstants.MOTIVATION_KEY, true);
+        intRepeatHint = preferences.getInt(StringConstants.REPEAT_HINT_KEY, 0);
+        intRenameHint = preferences.getInt(StringConstants.RENAME_HINT_KEY, 0);
+//        intReinstateHint = preferences.getInt(StringConstants.REINSTATE_HINT_KEY, 0);
+        intShowReviewPrompt = preferences.getInt(StringConstants.SHOW_REVIEW_KEY, 0);
+        lngTimeInstalled = preferences.getLong(StringConstants.TIME_INSTALLED_KEY, 0);
+
 
         //Initialising variables
         etTask = findViewById(R.id.taskNameEditText);
@@ -425,7 +479,8 @@ public class MainActivity extends AppCompatActivity implements
                     if (!taskName.equals("")) {
 
                         Calendar calendar = new GregorianCalendar().getInstance();
-                        mainActivityPresenter.addTask(0, taskName, calendar.getTimeInMillis());
+                        mainActivityPresenter.addTask(null, 0, taskName, null,
+                                calendar.getTimeInMillis(), false, false, 0);
 
                         if (intRenameHint <= 2) {
                             if (intRenameHint == 2) {

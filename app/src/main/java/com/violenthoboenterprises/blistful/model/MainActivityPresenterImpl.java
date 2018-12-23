@@ -26,8 +26,10 @@ public class MainActivityPresenterImpl implements MainActivityPresenter {
     }
 
     @Override
-    public void addTask(long timestamp, String taskName, long timeCreated) {
-        Task task = new Task(timestamp, taskName, false, timeCreated);
+    public void addTask(String note, long dueTimestamp, String taskName, String repeatInterval,
+                        long timeCreated, boolean manualKill, boolean killedEarly, int originalDay) {
+        Task task = new Task(note, dueTimestamp, taskName, repeatInterval,
+                timeCreated, manualKill, killedEarly, originalDay);
         taskViewModel.insert(task);
     }
     @Override

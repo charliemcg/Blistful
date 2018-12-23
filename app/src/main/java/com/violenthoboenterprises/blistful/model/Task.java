@@ -26,7 +26,6 @@ public class Task implements Serializable {
     private boolean subtasks;
 
     //when the task is due if there is a due date
-    @NonNull
     private long timestamp;
 
     //task name
@@ -83,31 +82,31 @@ public class Task implements Serializable {
     //when the snooze alarm is due
     private long snoozedTimestamp;
 
-    public Task(/*int id, String note, boolean subtasks, */long timestamp, String task, boolean due,/*
+    public Task(/*int id, */String note, /*boolean subtasks, */long timestamp, String task, /*boolean due,
                 boolean killed, boolean repeat, boolean overdue, boolean snoozed, boolean showonce,
-                int interval, String repeatInterval, boolean ignored, */long timeCreated/*,
-                int sortedIndex, int subtasksSize, boolean manualKill, boolean killedEarly,
-                int originalDay, long snoozedTimestamp*/) {
+                int interval, */String repeatInterval, /*boolean ignored, */long timeCreated, /*
+                int sortedIndex, int subtasksSize, */boolean manualKill, boolean killedEarly,
+                int originalDay/*, long snoozedTimestamp*/) {
 //        this.id = id;
-//        this.note = note;
+        this.note = note;
 //        this.subtasks = subtasks;
         this.timestamp = timestamp;
         this.task = task;
-        this.due = due;
+//        this.due = due;
 //        this.killed = killed;
 //        this.repeat = repeat;
 //        this.overdue = overdue;
 //        this.snoozed = snoozed;
 //        this.showonce = showonce;
 //        this.interval = interval;
-//        this.repeatInterval = repeatInterval;
+        this.repeatInterval = repeatInterval;
 //        this.ignored = ignored;
         this.timeCreated = timeCreated;
 //        this.sortedIndex = sortedIndex;
 //        this.subtasksSize = subtasksSize;
-//        this.manualKill = manualKill;
-//        this.killedEarly = killedEarly;
-//        this.originalDay = originalDay;
+        this.manualKill = manualKill;
+        this.killedEarly = killedEarly;
+        this.originalDay = originalDay;
 //        this.snoozedTimestamp = snoozedTimestamp;
     }
 
