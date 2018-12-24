@@ -3,12 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="horizontal"
     tools:context="com.violenthoboenterprises.blistful.MainActivity"
-    android:background="@color/lightTurquoise"
+    android:background="@color/turquoise"
+    android:layout_margin="8dp"
     android:descendantFocusability="blocksDescendants"
     android:id="@+id/subtask_layout">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/mainTaskView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/color_picker_border_white"
+        android:elevation="50dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
     <TextView
         android:id="@+id/tvSubtask"
@@ -24,5 +34,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>

@@ -224,8 +224,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         //setting date format based of locale
         String lang = String.valueOf(Locale.getDefault());
         if (lang.equals("en_AS") || lang.equals("en_BM")
-                || lang.equals("en_CA") || lang.equals("en_GU")
-                || lang.equals("en_PH")
+                || lang.equals("en_GU") || lang.equals("en_PH")
                 || lang.equals("en_PR") || lang.equals("en_UM")
                 || lang.equals("en_US") || lang.equals("en_VI")) {
             return formattedMonth + " " + cal.get(Calendar.DAY_OF_MONTH);
