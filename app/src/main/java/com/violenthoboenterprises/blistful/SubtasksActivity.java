@@ -4,11 +4,6 @@ import android.app.job.JobScheduler;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Color;
-import android.graphics.Rect;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -16,38 +11,23 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
-import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.violenthoboenterprises.blistful.model.MainActivityPresenterImpl;
 import com.violenthoboenterprises.blistful.model.Subtask;
 import com.violenthoboenterprises.blistful.model.SubtaskViewModel;
 import com.violenthoboenterprises.blistful.model.SubtasksAdapter;
 import com.violenthoboenterprises.blistful.model.SubtasksPresenterImpl;
 import com.violenthoboenterprises.blistful.model.Task;
-import com.violenthoboenterprises.blistful.model.TaskAdapter;
-import com.violenthoboenterprises.blistful.model.TaskViewModel;
 import com.violenthoboenterprises.blistful.presenter.SubtasksPresenter;
 import com.violenthoboenterprises.blistful.view.SubtasksView;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 public class SubtasksActivity extends MainActivity implements SubtasksView {
@@ -64,8 +44,8 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.checklist_layout);
-        Toolbar subTasksToolbar = findViewById(R.id.subTasksToolbar);
+        setContentView(R.layout.activity_subtasks);
+        Toolbar subTasksToolbar = findViewById(R.id.tbSubtasks);
 
         //Getting the parent task to which the subtasks are related
         task = (Task) getIntent().getSerializableExtra("task");
@@ -74,7 +54,7 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
                 subtaskViewModel, task, getApplicationContext());
 
         keyboard = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        etSubtask = findViewById(R.id.checklistEditText);
+        etSubtask = findViewById(R.id.etSubtask);
 
         //Setting up the recycler view
         RecyclerView recyclerView = findViewById(R.id.subTasksRecyclerView);

@@ -126,7 +126,7 @@ public class AlertReceiver extends BroadcastReceiver {
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         //Setting values to custom notification view
-//        remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification_light);//TODO consider reinstating remote views
+//        remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification);//TODO consider reinstating remote views
 //        remoteViews.setTextViewText(R.id.notif_title, task.getTask());
         //TODO reinstate randomiser
         //randomly generating motivational toast

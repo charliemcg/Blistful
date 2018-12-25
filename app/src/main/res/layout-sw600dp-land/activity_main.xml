@@ -11,7 +11,7 @@
     android:background="@color/turquoise">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_light"
+        android:id="@+id/tb"
         style="@style/HeaderBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
@@ -47,10 +47,10 @@
         app:layout_constraintBottom_toTopOf="@id/recyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_light" />
+        app:layout_constraintTop_toBottomOf="@id/tb" />
 
     <ImageView
-        android:id="@+id/banner"
+        android:id="@+id/imgBanner"
         android:layout_width="wrap_content"
         android:layout_height="60dp"
         android:contentDescription="@string/accessBannerPromptingUser"
@@ -61,17 +61,16 @@
         app:layout_constraintBottom_toTopOf="@+id/recyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_light" />
+        app:layout_constraintTop_toBottomOf="@id/tb" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="462dp"
-        android:layout_below="@+id/toolbar_light"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:listitem="@layout/task_layout" />
+        tools:listitem="@layout/item_task" />
 
     <ImageView
         android:id="@+id/imgNoTasks"
@@ -85,7 +84,7 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <EditText
-        android:id="@+id/taskNameEditText"
+        android:id="@+id/etTaskName"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
@@ -131,7 +130,7 @@
         android:visibility="gone">
 
         <TextView
-            android:id="@+id/toast"
+            android:id="@+id/tvToast"
             android:layout_width="wrap_content"
             android:layout_height="65dp"
             android:textColor="@color/dark_gray"

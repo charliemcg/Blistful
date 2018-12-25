@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ReminderActivity">
+
+    <item
+        android:id="@+id/itemTrashReminder"
+        android:title="Cancel Alarm"
+        android:icon="@drawable/trash_dark"
+        app:showAsAction="always"
+        android:visible="false"
+        android:contentDescription="@string/accessTrashCan"/>
+
+    <item
+        android:id="@+id/itemTrashReminderOpen"
+        android:title="Open Trash"
+        android:icon="@drawable/trash_dark_open"
+        app:showAsAction="always"
+        android:visible="false"/>
+
+</menu>

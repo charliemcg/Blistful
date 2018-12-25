@@ -11,14 +11,14 @@
     tools:context="com.violenthoboenterprises.blistful.MainActivity">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar_light"
+        android:id="@+id/tb"
         style="@style/HeaderBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/turquoise"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.LightTheme"
-        app:layout_constraintBottom_toTopOf="@+id/banner"
+        app:layout_constraintBottom_toTopOf="@+id/imgBanner"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -48,10 +48,10 @@
         app:layout_constraintBottom_toTopOf="@id/recyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_light" />
+        app:layout_constraintTop_toBottomOf="@id/tb" />
 
     <ImageView
-        android:id="@+id/banner"
+        android:id="@+id/imgBanner"
         android:layout_width="wrap_content"
         android:layout_height="60dp"
         android:contentDescription="@string/accessBannerPromptingUser"
@@ -62,19 +62,18 @@
         app:layout_constraintBottom_toTopOf="@+id/recyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_light" />
+        app:layout_constraintTop_toBottomOf="@id/tb" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_below="@+id/toolbar_light"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/banner"
-        tools:listitem="@layout/task_layout" />
+        app:layout_constraintTop_toBottomOf="@id/imgBanner"
+        tools:listitem="@layout/item_task" />
 
     <ImageView
         android:id="@+id/imgNoTasks"
@@ -88,7 +87,7 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <EditText
-        android:id="@+id/taskNameEditText"
+        android:id="@+id/etTaskName"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
@@ -104,7 +103,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/toolbar_light"
+        app:layout_constraintTop_toTopOf="@+id/tb"
         app:layout_constraintVertical_bias="1.0" />
 
     <android.support.design.widget.FloatingActionButton
@@ -136,7 +135,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.858" >
         <TextView
-            android:id="@+id/toast"
+            android:id="@+id/tvToast"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:gravity="center_vertical"

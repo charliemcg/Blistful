@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/pickerRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/turquoise"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/tbDue"
+        style="@style/HeaderBar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/turquoise"
+        android:elevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imgCalendarFaded"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="116dp"
+        android:contentDescription="@string/accessGrayedOutCalendar"
+        android:elevation="100dp"
+        android:src="@drawable/calendar_faded_light"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/btnDate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnDate"
+        app:layout_constraintVertical_bias="0.518" />
+
+    <ImageView
+        android:id="@+id/imgCalendar"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="116dp"
+        android:contentDescription="@string/accessCalendar"
+        android:elevation="100dp"
+        android:src="@drawable/calendar"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/btnDate"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnDate"
+        app:layout_constraintVertical_bias="0.518" />
+
+    <TextView
+        android:id="@+id/tvDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:elevation="100dp"
+        android:gravity="center"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="@+id/btnDate"
+        app:layout_constraintEnd_toEndOf="@+id/btnDate"
+        app:layout_constraintStart_toEndOf="@+id/imgCalendar"
+        app:layout_constraintTop_toTopOf="@+id/btnDate" />
+
+    <View
+        android:id="@+id/btnDate"
+        android:layout_width="match_parent"
+        android:layout_height="360dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/color_picker_border_white"
+        app:layout_constraintBottom_toTopOf="@+id/btnTime"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tbDue" />
+
+    <ImageView
+        android:id="@+id/imgTimeFaded"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="116dp"
+        android:contentDescription="@string/accessGrayedOutClock"
+        android:elevation="100dp"
+        android:src="@drawable/time_faded_light"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/btnTime"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnTime"
+        app:layout_constraintVertical_bias="0.537" />
+
+    <ImageView
+        android:id="@+id/imgTime"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="116dp"
+        android:contentDescription="@string/accessClock"
+        android:elevation="100dp"
+        android:src="@drawable/time"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/btnTime"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnTime"
+        app:layout_constraintVertical_bias="0.537" />
+
+    <TextView
+        android:id="@+id/tvTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:elevation="100dp"
+        android:gravity="center"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="@+id/btnTime"
+        app:layout_constraintEnd_toEndOf="@+id/btnTime"
+        app:layout_constraintStart_toEndOf="@+id/imgTimeFaded"
+        app:layout_constraintTop_toTopOf="@+id/btnTime" />
+
+    <View
+        android:id="@+id/btnTime"
+        android:layout_width="match_parent"
+        android:layout_height="360dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="45dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="45dp"
+        android:background="@drawable/color_picker_border_white"
+        app:layout_constraintBottom_toTopOf="@+id/viewRepeatLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnDate" />
+
+    <ImageView
+        android:id="@+id/imgCancelRepeatFaded"
+        android:layout_width="0dp"
+        android:layout_height="95dp"
+        android:contentDescription="@string/accessNoRepeat"
+        android:elevation="100dp"
+        android:src="@drawable/repeat_none_light"
+        app:layout_constraintLeft_toLeftOf="@+id/viewRepeatLayout"
+        app:layout_constraintRight_toLeftOf="@+id/imgDailyRepeat"
+        app:layout_constraintBottom_toBottomOf="@+id/viewRepeatLayout"
+        app:layout_constraintTop_toTopOf="@+id/viewRepeatLayout"/>
+
+    <ImageView
+        android:id="@+id/imgCancelRepeat"
+        android:layout_width="0dp"
+        android:layout_height="95dp"
+        android:contentDescription="@string/accessNoRepeat"
+        android:elevation="100dp"
+        android:src="@drawable/repeat_none"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="@+id/viewRepeatLayout"
+        app:layout_constraintRight_toLeftOf="@+id/imgDailyRepeat"
+        app:layout_constraintBottom_toBottomOf="@+id/viewRepeatLayout"
+        app:layout_constraintTop_toTopOf="@+id/viewRepeatLayout" />
+
+    <ImageView
+        android:id="@+id/imgDailyRepeatFaded"
+        android:layout_width="0dp"
+        android:layout_height="95dp"
+        android:contentDescription="@string/accessDailyRepeat"
+        android:elevation="100dp"
+        android:src="@drawable/repeat_day_light"
+        app:layout_constraintLeft_toRightOf="@+id/imgCancelRepeat"
+        app:layout_constraintRight_toLeftOf="@+id/imgWeeklyRepeat"
+        app:layout_constraintBottom_toBottomOf="@+id/viewRepeatLayout"
+        app:layout_constraintTop_toTopOf="@+id/viewRepeatLayout" />
+
+    <ImageView
+        android:id="@+id/imgDailyRepeat"
+        android:layout_width="0dp"
+        android:layout_height="95dp"
+        android:contentDescription="@string/accessDailyRepeat"
+        android:elevation="100dp"
+        android:src="@drawable/repeat_day"
+        android:visibility="gone"
+        app:layout_constraintLeft_toRightOf="@+id/imgCancelRepeat"
+        app:layout_constraintRight_toLeftOf="@+id/imgWeeklyRepeat"
+        app:layout_constraintBottom_toBottomOf="@+id/viewRepeatLayout"
+        app:layout_constraintTop_toTopOf="@+id/viewRepeatLayout"/>
+
+    <ImageView
+        android:id="@+id/imgWeeklyRepeatFaded"
+        android:layout_width="0dp"
+        android:layout_height="95dp"
+        android:contentDescription="@string/circularArrowRepeatWeekly"
+        android:elevation="100dp"
+        android:src="@drawable/repeat_week_light"
+        app:layout_constraintLeft_toRightOf="@+id/imgDailyRepeat"
+        app:layout_constraintRight_toLeftOf="@+id/imgMonthlyRepeat"
+        app:layout_constraintBottom_toBottomOf="@+id/viewRepeatLayout"
+        app:layout_constraintTop_toTopOf="@+id/viewRepeatLayout" />
+
+    <ImageView
+        android:id="@+id/imgWeeklyRepeat"
+        android:layout_width="0dp"
+        android:layout_height="95dp"
+        android:contentDescription="@string/redCircularArrowRepeatWeekly"
+        android:elevation="100dp"
+        android:src="@drawable/repeat_week"
+        android:visibility="gone"
+        app:layout_constraintLeft_toRightOf="@+id/imgDailyRepeat"
+        app:layout_constraintRight_toLeftOf="@+id/imgMonthlyRepeat"
+        app:layout_constraintBottom_toBottomOf="@+id/viewRepeatLayout"
+        app:layout_constraintTop_toTopOf="@+id/viewRepeatLayout"  />
+
+    <ImageView
+        android:id="@+id/imgMonthlyRepeatFaded"
+        android:layout_width="0dp"
+        android:layout_height="95dp"
+        android:contentDescription="@string/accessMonthlyRepeat"
+        android:elevation="100dp"
+        android:src="@drawable/repeat_month_light"
+        app:layout_constraintLeft_toRightOf="@+id/imgWeeklyRepeat"
+        app:layout_constraintRight_toRightOf="@id/viewRepeatLayout"
+        app:layout_constraintBottom_toBottomOf="@+id/viewRepeatLayout"
+        app:layout_constraintTop_toTopOf="@+id/viewRepeatLayout" />
+
+    <ImageView
+        android:id="@+id/imgMonthlyRepeat"
+        android:layout_width="0dp"
+        android:layout_height="95dp"
+        android:contentDescription="@string/accessMonthlyRepeat"
+        android:elevation="100dp"
+        android:src="@drawable/repeat_month"
+        android:visibility="gone"
+        app:layout_constraintLeft_toRightOf="@+id/imgWeeklyRepeat"
+        app:layout_constraintRight_toRightOf="@id/viewRepeatLayout"
+        app:layout_constraintBottom_toBottomOf="@+id/viewRepeatLayout"
+        app:layout_constraintTop_toTopOf="@+id/viewRepeatLayout"/>
+
+    <View
+        android:id="@+id/viewRepeatLayout"
+        android:layout_width="match_parent"
+        android:layout_height="178dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/color_picker_border_white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnDate"
+        app:layout_constraintVertical_bias="0.934" />
+
+</android.support.constraint.ConstraintLayout>

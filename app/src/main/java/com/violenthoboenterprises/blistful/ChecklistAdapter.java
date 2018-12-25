@@ -19,7 +19,7 @@
 //
 //    public ChecklistAdapter(Context context, ArrayList<String> values) {
 //
-//        super(context, R.layout.checklist_item, values);
+//        super(context, R.layout.item_subtask, values);
 //
 //    }
 //
@@ -29,7 +29,7 @@
 //        final String item = getItem(position);
 //        final LayoutInflater theInflater = LayoutInflater.from(getContext());
 //        final View checklistItemView = theInflater.inflate
-//                (R.layout.checklist_item, parent, false);
+//                (R.layout.item_subtask, parent, false);
 ////        TextView checklistTextView = checklistItemView.findViewById(R.id.checklistTextView);
 ////        final ImageView tickWhite = checklistItemView.findViewById(R.id.subtaskCompleteWhite);
 ////        final ImageView tickedWhite = checklistItemView.findViewById(R.id.subtaskCompletedWhite);

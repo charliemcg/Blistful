@@ -2,13 +2,10 @@ package com.violenthoboenterprises.blistful;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,7 +18,6 @@ import android.widget.TextView;
 
 import com.violenthoboenterprises.blistful.model.NotePresenterImpl;
 import com.violenthoboenterprises.blistful.model.Task;
-import com.violenthoboenterprises.blistful.model.TaskAdapter;
 import com.violenthoboenterprises.blistful.model.TaskViewModel;
 import com.violenthoboenterprises.blistful.presenter.NotePresenter;
 import com.violenthoboenterprises.blistful.view.NoteView;
@@ -42,8 +38,8 @@ public class NoteActivity extends MainActivity implements NoteView {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.note_layout);
-        noteToolbar = findViewById(R.id.noteToolbar);
+        setContentView(R.layout.activity_note);
+        noteToolbar = findViewById(R.id.tbNote);
         setSupportActionBar(noteToolbar);
 
         //getting the task to which this note is related
@@ -52,14 +48,14 @@ public class NoteActivity extends MainActivity implements NoteView {
         notePresenter = new NotePresenterImpl
                 (NoteActivity.this, taskViewModel, task, getApplicationContext());
 
-        tvNote = findViewById(R.id.noteTextView);
-        etNote = findViewById(R.id.noteEditText);
+        tvNote = findViewById(R.id.tvNote);
+        etNote = findViewById(R.id.etNote);
         keyboard = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        btnSubmitNote = findViewById(R.id.submitNoteBtnDark);
-        btnSubmitNoteOne = findViewById(R.id.submitNoteOne);
-        btnSubmitNoteFour = findViewById(R.id.submitNoteTwo);
-        btnSubmitNoteTwo = findViewById(R.id.submitNoteOneHalf);
-        btnSubmitNoteThree = findViewById(R.id.submitNoteTwoHalf);
+        btnSubmitNote = findViewById(R.id.btnSubmitNote);
+        btnSubmitNoteOne = findViewById(R.id.btnSubmitNoteOne);
+        btnSubmitNoteFour = findViewById(R.id.btnSubmitNoteTwo);
+        btnSubmitNoteTwo = findViewById(R.id.btnSubmitNoteThree);
+        btnSubmitNoteThree = findViewById(R.id.btnSubmitNoteFour);
 
         getSupportActionBar().setTitle(R.string.note);
         noteToolbar.setSubtitle(notePresenter.getTaskName());
@@ -227,8 +223,8 @@ public class NoteActivity extends MainActivity implements NoteView {
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!menu.hasVisibleItems()) {
             getMenuInflater().inflate(R.menu.menu_note, noteToolbar.getMenu());
-            trashNote = this.noteToolbar.getMenu().findItem(R.id.killNoteItem);
-            trashNoteOpen = this.noteToolbar.getMenu().findItem(R.id.trashOpen);
+            trashNote = this.noteToolbar.getMenu().findItem(R.id.itemTrashNote);
+            trashNoteOpen = this.noteToolbar.getMenu().findItem(R.id.itemTrashNoteOpen);
             if (tvNote.getText().toString().equals("")) {
                 trashNote.setVisible(false);
             } else {
@@ -247,7 +243,7 @@ public class NoteActivity extends MainActivity implements NoteView {
         int id = item.getItemId();
 
         //Removing the note
-        if (id == R.id.killNoteItem) {
+        if (id == R.id.itemTrashNote) {
 
             //animating the trash can
             final Handler handler = new Handler();

@@ -7,21 +7,14 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcelable;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,9 +32,7 @@ import com.violenthoboenterprises.blistful.presenter.ReminderPresenter;
 import com.violenthoboenterprises.blistful.view.ReminderView;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 public class ReminderActivity extends MainActivity implements ReminderView {
@@ -69,9 +60,9 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.due_picker);
+        setContentView(R.layout.activity_reminder);
 
-        dueToolbar = findViewById(R.id.dueToolbar);
+        dueToolbar = findViewById(R.id.tbDue);
         setSupportActionBar(dueToolbar);
 
         //getting the task to which this note is related
@@ -84,22 +75,22 @@ public class ReminderActivity extends MainActivity implements ReminderView {
         reminderPresenter = new ReminderPresenterImpl(ReminderActivity.this,
                 taskViewModel, reminderViewModel, task, reminder, getApplicationContext());
 
-        imgTime = findViewById(R.id.time);
-        imgTimeFaded = findViewById(R.id.timeFadedLight);
-        imgCalendar = findViewById(R.id.calendar);
-        imgCalendarFaded = findViewById(R.id.calendarFadedLight);
-        View btnDate = findViewById(R.id.dateBtn);
-        View btnTime = findViewById(R.id.timeBtn);
-        tvDate = findViewById(R.id.dateTextView);
-        tvTime = findViewById(R.id.timeTextView);
-        imgDailyFaded = findViewById(R.id.dailyLight);
-        imgDaily = findViewById(R.id.daily);
-        imgWeeklyFaded = findViewById(R.id.weeklyLight);
-        imgWeekly = findViewById(R.id.weekly);
-        imgMonthlyFaded = findViewById(R.id.monthlyLight);
-        imgMonthly = findViewById(R.id.monthly);
-        imgCancelRepeatFaded = findViewById(R.id.cancelRepeatLight);
-        imgCancelRepeat = findViewById(R.id.cancelRepeat);
+        imgTime = findViewById(R.id.imgTime);
+        imgTimeFaded = findViewById(R.id.imgTimeFaded);
+        imgCalendar = findViewById(R.id.imgCalendar);
+        imgCalendarFaded = findViewById(R.id.imgCalendarFaded);
+        View btnDate = findViewById(R.id.btnDate);
+        View btnTime = findViewById(R.id.btnTime);
+        tvDate = findViewById(R.id.tvDate);
+        tvTime = findViewById(R.id.tvTime);
+        imgDailyFaded = findViewById(R.id.imgDailyRepeatFaded);
+        imgDaily = findViewById(R.id.imgDailyRepeat);
+        imgWeeklyFaded = findViewById(R.id.imgWeeklyRepeatFaded);
+        imgWeekly = findViewById(R.id.imgWeeklyRepeat);
+        imgMonthlyFaded = findViewById(R.id.imgMonthlyRepeatFaded);
+        imgMonthly = findViewById(R.id.imgMonthlyRepeat);
+        imgCancelRepeatFaded = findViewById(R.id.imgCancelRepeatFaded);
+        imgCancelRepeat = findViewById(R.id.imgCancelRepeat);
         preferences = this.getSharedPreferences("com.violenthoboenterprises.blistful",
                 Context.MODE_PRIVATE);
 
@@ -326,9 +317,9 @@ public class ReminderActivity extends MainActivity implements ReminderView {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!menu.hasVisibleItems()) {
-            getMenuInflater().inflate(R.menu.menu_alarm, dueToolbar.getMenu());
-            killReminder = this.dueToolbar.getMenu().findItem(R.id.killAlarmItem);
-            killReminderOpen = this.dueToolbar.getMenu().findItem(R.id.trashAlarmOpen);
+            getMenuInflater().inflate(R.menu.menu_reminder, dueToolbar.getMenu());
+            killReminder = this.dueToolbar.getMenu().findItem(R.id.itemTrashReminder);
+            killReminderOpen = this.dueToolbar.getMenu().findItem(R.id.itemTrashReminderOpen);
             this.dueToolbar.setTitle(R.string.setDateTime);
             this.dueToolbar.setSubtitle(reminderPresenter.getTask());
             //if reminder already exists then delete icon should be present
@@ -350,7 +341,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
         int id = item.getItemId();
 
         //Resetting alarm to off
-        if (id == R.id.killAlarmItem) {
+        if (id == R.id.itemTrashReminder) {
 
             final Handler handler = new Handler();
 
@@ -489,14 +480,14 @@ public class ReminderActivity extends MainActivity implements ReminderView {
                 mpBlip.start();
             }
 
-            TextView tvDate = getActivity().findViewById(R.id.dateTextView);
+            TextView tvDate = getActivity().findViewById(R.id.tvDate);
 
             vibrate.vibrate(50);
 
-            ImageView calendarFadedLight = getActivity().findViewById(R.id.calendarFadedLight);
+            ImageView calendarFadedLight = getActivity().findViewById(R.id.imgCalendarFaded);
             calendarFadedLight.setVisibility(View.INVISIBLE);
 
-            ImageView calendar = getActivity().findViewById(R.id.calendar);
+            ImageView calendar = getActivity().findViewById(R.id.imgCalendar);
             calendar.setVisibility(View.VISIBLE);
 
             if (screenSize == 3) {
@@ -562,7 +553,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
         public void onTimeSet(TimePicker view, int hour, int minute) {
 
-            TextView timeTextView = getActivity().findViewById(R.id.timeTextView);
+            TextView timeTextView = getActivity().findViewById(R.id.tvTime);
 
             if (!boolMute) {
                 mpBlip.start();
@@ -570,7 +561,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
             MainActivity.vibrate.vibrate(50);
 
-            ImageView timeFadedLight = getActivity().findViewById(R.id.timeFadedLight);
+            ImageView timeFadedLight = getActivity().findViewById(R.id.imgTimeFaded);
             timeFadedLight.setVisibility(View.INVISIBLE);
 
             ImageView time = getActivity().findViewById(R.id.time);

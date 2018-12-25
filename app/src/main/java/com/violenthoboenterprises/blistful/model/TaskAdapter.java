@@ -3,22 +3,16 @@ package com.violenthoboenterprises.blistful.model;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Color;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
-import android.support.constraint.ConstraintSet;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.violenthoboenterprises.blistful.MainActivity;
 import com.violenthoboenterprises.blistful.ReminderActivity;
 import com.violenthoboenterprises.blistful.StringConstants;
 import com.violenthoboenterprises.blistful.SubtasksActivity;
@@ -28,7 +22,6 @@ import com.violenthoboenterprises.blistful.presenter.MainActivityPresenter;
 import com.violenthoboenterprises.blistful.presenter.SubtasksPresenter;
 import com.violenthoboenterprises.blistful.view.MainActivityView;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -68,7 +61,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
     @Override
     public TaskHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.task_layout, parent, false);
+                .inflate(R.layout.item_task, parent, false);
         return new TaskHolder(itemView);
     }
 
@@ -267,15 +260,15 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
             tvTask = itemView.findViewById(R.id.tvTask);
             tvDue = itemView.findViewById(R.id.tvDue);
             taskLayout = itemView.findViewById(R.id.taskLayout);
-            taskProperties = itemView.findViewById(R.id.properties);
-            taskOverdue = itemView.findViewById(R.id.taskIsOverdue);
-            btnAlarm = itemView.findViewById(R.id.alarm);
-            btnSubtasks = itemView.findViewById(R.id.subTasks);
-            btnNote = itemView.findViewById(R.id.note);
-            noteIcon = itemView.findViewById(R.id.noteClearWhite);
-            subtasksIcon = itemView.findViewById(R.id.checklistClearWhite);
-            repeatIcon = itemView.findViewById(R.id.repeatClearWhite);
-            dueIcon = itemView.findViewById(R.id.dueClearWhite);
+            taskProperties = itemView.findViewById(R.id.viewProperties);
+//            taskOverdue = itemView.findViewById(R.id.taskIsOverdue);
+            btnAlarm = itemView.findViewById(R.id.btnAlarm);
+            btnSubtasks = itemView.findViewById(R.id.btnSubtasks);
+            btnNote = itemView.findViewById(R.id.btnNote);
+            noteIcon = itemView.findViewById(R.id.imgNote);
+            subtasksIcon = itemView.findViewById(R.id.imgSubtasks);
+            repeatIcon = itemView.findViewById(R.id.imgRepeat);
+            dueIcon = itemView.findViewById(R.id.imgDue);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

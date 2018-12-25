@@ -44,7 +44,7 @@
 //    final String TAG = this.getClass().getSimpleName();
 //
 //    MyAdapter(Context context, ArrayList<String> values) {
-//        super(context, R.layout.task_layout, values);
+//        super(context, R.layout.item_task, values);
 //    }
 //
 //    @Override
@@ -56,7 +56,7 @@
 //        final String task = getItem(position);
 //        //Uses unique layout for the new item
 //        final LayoutInflater theInflater = LayoutInflater.from(getContext());
-//        final View taskView = theInflater.inflate(R.layout.task_layout, parent, false);
+//        final View taskView = theInflater.inflate(R.layout.item_task, parent, false);
 //        //Where the task text is displayed
 //        final TextView theTextView = taskView.findViewById(R.id.tvTask);
 //        final Intent intent = new Intent(getContext(), SubtasksActivity.class);
@@ -3305,7 +3305,7 @@
 //                        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 //                        dialog.setCancelable(false);
 //
-//                        dialog.setContentView(R.layout.purchases);
+//                        dialog.setContentView(R.layout.dialog_purchases);
 //
 //                        Button positive = dialog.findViewById(R.id.positive);
 //                        Button negative = dialog.findViewById(R.id.negative);

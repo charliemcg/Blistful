@@ -3,17 +3,12 @@ package com.violenthoboenterprises.blistful;
 import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.PendingIntent;
-import android.app.job.JobInfo;
-import android.app.job.JobParameters;
 import android.app.job.JobScheduler;
-import android.app.job.JobService;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Rect;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
@@ -21,11 +16,9 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
-import android.os.PersistableBundle;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -54,7 +47,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.anjlab.android.iab.v3.BillingProcessor;
-import com.anjlab.android.iab.v3.Constants;
 import com.anjlab.android.iab.v3.TransactionDetails;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -70,10 +62,7 @@ import com.violenthoboenterprises.blistful.presenter.MainActivityPresenter;
 import com.violenthoboenterprises.blistful.presenter.SubtasksPresenter;
 import com.violenthoboenterprises.blistful.view.MainActivityView;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Random;
@@ -212,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements
         //App ID for AdMob
         MobileAds.initialize(this, ADKEY);
 
-        toolbarLight = findViewById(R.id.toolbar_light);
+        toolbarLight = findViewById(R.id.tb);
         toolbarLight.setTitle("");
         setSupportActionBar(toolbarLight);
 
@@ -250,7 +239,7 @@ public class MainActivity extends AppCompatActivity implements
         lngTimeInstalled = preferences.getLong(StringConstants.TIME_INSTALLED_KEY, 0);
 
         //Initialising variables
-        etTask = findViewById(R.id.taskNameEditText);
+        etTask = findViewById(R.id.etTaskName);
         keyboard = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         vibrate = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         activityRootView = findViewById(R.id.activityRoot);
@@ -272,14 +261,14 @@ public class MainActivity extends AppCompatActivity implements
                 getString(R.string.neverGiveUp), getString(R.string.youreAnInspiration),
                 getString(R.string.accomplishmentsMakeYouStronger),
                 getString(R.string.yourePositivityPaysOff)};
-        toast = findViewById(R.id.toast);
+        toast = findViewById(R.id.tvToast);
         toastView = findViewById(R.id.toastView);
         DisplayMetrics displayMetrics = new DisplayMetrics();
         this.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         deviceheight = displayMetrics.heightPixels;
         intDuesSet = 0;
         imgNoTasks = findViewById(R.id.imgNoTasks);
-        imgBanner = findViewById(R.id.banner);
+        imgBanner = findViewById(R.id.imgBanner);
         adView = findViewById(R.id.adView);
 
         fab = findViewById(R.id.fab);
@@ -639,10 +628,10 @@ public class MainActivity extends AppCompatActivity implements
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
 
-        dialog.setContentView(R.layout.purchases);
+        dialog.setContentView(R.layout.dialog_purchases);
 
-        Button positive = dialog.findViewById(R.id.positive);
-        Button negative = dialog.findViewById(R.id.negative);
+        Button positive = dialog.findViewById(R.id.btnPositive);
+        Button negative = dialog.findViewById(R.id.btnNegative);
 
         //Buy button actions
         positive.setOnClickListener(new View.OnClickListener() {
@@ -707,10 +696,10 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!menu.hasVisibleItems()) {
             getMenuInflater().inflate(R.menu.menu_main, menu);
-            miPro = this.toolbarLight.getMenu().findItem(R.id.buy);
-            MenuItem miMotivation = this.toolbarLight.getMenu().findItem(R.id.motivation);
+            miPro = this.toolbarLight.getMenu().findItem(R.id.itemBuy);
+            MenuItem miMotivation = this.toolbarLight.getMenu().findItem(R.id.itemMotivation);
             //Action bar options
-            MenuItem miMute = this.toolbarLight.getMenu().findItem(R.id.mute);
+            MenuItem miMute = this.toolbarLight.getMenu().findItem(R.id.itemMute);
             if (boolShowMotivation) {
                 miMotivation.setChecked(true);
             }
@@ -735,7 +724,7 @@ public class MainActivity extends AppCompatActivity implements
         vibrate.vibrate(50);
 
         //Actions to occur if user selects 'mute'
-        if (id == R.id.mute) {
+        if (id == R.id.itemMute) {
 
             if (boolMute) {
                 boolMute = false;
@@ -750,7 +739,7 @@ public class MainActivity extends AppCompatActivity implements
             return true;
 
             //Actions to occur if user selects the pro icon
-        } else if (id == R.id.buy) {
+        } else if (id == R.id.itemBuy) {
 
             showPurchases();
 
@@ -759,7 +748,7 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         //Actions to occur if user selects 'motivation'
-        else if (id == R.id.motivation) {
+        else if (id == R.id.itemMotivation) {
 
             if (boolShowMotivation) {
                 boolShowMotivation = false;
@@ -842,10 +831,10 @@ public class MainActivity extends AppCompatActivity implements
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
 
-        dialog.setContentView(R.layout.review_dialog_light);
+        dialog.setContentView(R.layout.dialog_review);
 
-        Button positive = dialog.findViewById(R.id.positive);
-        Button negative = dialog.findViewById(R.id.negative);
+        Button positive = dialog.findViewById(R.id.btnPositive);
+        Button negative = dialog.findViewById(R.id.btnNegative);
 
         positive.setOnClickListener(new View.OnClickListener() {
             @Override
