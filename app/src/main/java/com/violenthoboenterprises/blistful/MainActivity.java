@@ -768,7 +768,7 @@ public class MainActivity extends AppCompatActivity implements
             } else {
                 boolShowMotivation = true;
                 item.setChecked(true);
-                preferences.edit().putBoolean(StringConstants.MOTIVATION_KEY, false).apply();
+                preferences.edit().putBoolean(StringConstants.MOTIVATION_KEY, true).apply();
             }
 
             return true;

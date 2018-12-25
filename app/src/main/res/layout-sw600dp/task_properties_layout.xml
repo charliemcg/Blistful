@@ -27,28 +27,27 @@
 
             <ImageView
                 android:id="@+id/alarmBtnIconWhite"
-                android:layout_width="75dp"
+                android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:src="@drawable/due_icon_light_solid"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/alarmBtnText"/>
 
             <TextView
                 android:id="@+id/alarmBtnText"
-                android:layout_width="60dp"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:gravity="center_vertical"
+                android:gravity="center"
                 android:lines="2"
                 android:text="@string/alarm"
                 android:textSize="15sp"
-                android:textAlignment="center"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/alarmBtnIconWhite"
-                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -66,28 +65,27 @@
 
             <ImageView
                 android:id="@+id/subTasksBtnIconWhite"
-                android:layout_width="75dp"
+                android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:src="@drawable/subtasks_icon_light_solid"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/subtasksBtnText"/>
 
             <TextView
                 android:id="@+id/subtasksBtnText"
-                android:layout_width="60dp"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:lines="2"
-                android:gravity="center_vertical"
+                android:gravity="center"
                 android:text="@string/subTasks"
                 android:textSize="15sp"
-                android:textAlignment="center"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/subTasksBtnIconWhite"
-                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -106,28 +104,27 @@
 
             <ImageView
                 android:id="@+id/noteBtnIconWhite"
-                android:layout_width="75dp"
+                android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:src="@drawable/note_icon_light_solid"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/noteBtnText"/>
 
             <TextView
                 android:id="@+id/noteBtnText"
-                android:layout_width="60dp"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:lines="2"
                 android:text="@string/note"
-                android:gravity="center_vertical"
+                android:gravity="center"
                 android:textSize="15sp"
-                android:textAlignment="center"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/noteBtnIconWhite"
-                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
