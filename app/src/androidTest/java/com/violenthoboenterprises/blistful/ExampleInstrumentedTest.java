@@ -68,27 +68,27 @@ public class ExampleInstrumentedTest {
     @Test
     public void testFab(){
         onView(withId(R.id.fab)).perform(click());
-        ViewInteraction textView = onView(withId(R.id.taskNameEditText));
+        ViewInteraction textView = onView(withId(R.id.etTaskName));
         textView.check(matches(withText("")));
-        onView(withId(R.id.taskNameEditText)).perform(typeText("test"));
+        onView(withId(R.id.etTaskName)).perform(typeText("test"));
         //clicking done on soft keyboard
-        onView(withId(R.id.taskNameEditText)).perform(pressImeActionButton());
-        onView(withId(R.id.taskNameEditText)).check(matches(withText("")));
+        onView(withId(R.id.etTaskName)).perform(pressImeActionButton());
+        onView(withId(R.id.etTaskName)).check(matches(withText("")));
     }
 
     @Test
     public void testChangeToReminder(){
         //switching to the reminder activity of the first item
         onView(withId(R.id.recyclerView)).perform(
-                RecyclerViewActions.actionOnItemAtPosition(0, MyViewAction.clickChildViewWithId(R.id.alarm)));
-        ViewInteraction cancelInit = onView(withId(R.id.cancelRepeat));
-        ViewInteraction dailyInit = onView(withId(R.id.dailyLight));
-        ViewInteraction weeklyInit = onView(withId(R.id.weeklyLight));
-        ViewInteraction monthlyInit = onView(withId(R.id.monthlyLight));
-        ViewInteraction cancelSecondary = onView(withId(R.id.cancelRepeatLight));
-        ViewInteraction dailySecondary = onView(withId(R.id.daily));
-        ViewInteraction weeklySecondary = onView(withId(R.id.weekly));
-        ViewInteraction monthlySecondary = onView(withId(R.id.monthly));
+                RecyclerViewActions.actionOnItemAtPosition(0, MyViewAction.clickChildViewWithId(R.id.btnAlarm)));
+        ViewInteraction cancelInit = onView(withId(R.id.imgCancelRepeat));
+        ViewInteraction dailyInit = onView(withId(R.id.imgDailyRepeatFaded));
+        ViewInteraction weeklyInit = onView(withId(R.id.imgWeeklyRepeatFaded));
+        ViewInteraction monthlyInit = onView(withId(R.id.imgMonthlyRepeatFaded));
+        ViewInteraction cancelSecondary = onView(withId(R.id.imgCancelRepeatFaded));
+        ViewInteraction dailySecondary = onView(withId(R.id.imgDailyRepeat));
+        ViewInteraction weeklySecondary = onView(withId(R.id.imgWeeklyRepeat));
+        ViewInteraction monthlySecondary = onView(withId(R.id.imgMonthlyRepeat));
         //clicking all the repeat buttons and checking that the correct images are displayed/hidden
         cancelInit.check(matches(isDisplayed()));
         dailyInit.check(matches(isDisplayed()));
@@ -114,16 +114,16 @@ public class ExampleInstrumentedTest {
         //switching to the subtasks activity of the first item
         onView(withId(R.id.recyclerView)).perform(
                 RecyclerViewActions.actionOnItemAtPosition
-                        (0, MyViewAction.clickChildViewWithId(R.id.subTasks)));
+                        (0, MyViewAction.clickChildViewWithId(R.id.btnSubtasks)));
         //check there are no subtasks
         onView(withId(R.id.subTasksRecyclerView))
                 .check(new RecyclerViewItemCountAssertion(0));
-        onView(withId(R.id.checklistEditText)).check(matches(withText("")));
-        onView(withId(R.id.checklistEditText)).perform(typeText("test"));
+        onView(withId(R.id.etSubtask)).check(matches(withText("")));
+        onView(withId(R.id.etSubtask)).perform(typeText("test"));
         SystemClock.sleep(2000);
         //clicking done on soft keyboard
-        onView(withId(R.id.checklistEditText)).perform(pressImeActionButton());
-        onView(withId(R.id.checklistEditText)).check(matches(withText("")));
+        onView(withId(R.id.etSubtask)).perform(pressImeActionButton());
+        onView(withId(R.id.etSubtask)).check(matches(withText("")));
         onView(withId(R.id.subTasksRecyclerView))
                 .check(new RecyclerViewItemCountAssertion(1));
         Espresso.pressBack();
@@ -135,12 +135,12 @@ public class ExampleInstrumentedTest {
         //switching to the note activity of the first item
         onView(withId(R.id.recyclerView)).perform(
                 RecyclerViewActions.actionOnItemAtPosition
-                        (0, MyViewAction.clickChildViewWithId(R.id.note)));
-        onView(withId(R.id.noteEditText)).check(matches(withText("")));
-        onView(withId(R.id.noteTextView)).check(matches(withText("")));
-        onView(withId(R.id.noteEditText)).perform(typeText("test"));
-        onView(withId(R.id.submitNoteBtnDark)).perform(click());
-        onView(withId(R.id.noteTextView)).check(matches(withText("test")));
+                        (0, MyViewAction.clickChildViewWithId(R.id.btnNote)));
+        onView(withId(R.id.etNote)).check(matches(withText("")));
+        onView(withId(R.id.tvNote)).check(matches(withText("")));
+        onView(withId(R.id.etNote)).perform(typeText("test"));
+        onView(withId(R.id.btnSubmitNote)).perform(click());
+        onView(withId(R.id.tvNote)).check(matches(withText("test")));
         Espresso.pressBack();
     }
 

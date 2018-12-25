@@ -116,7 +116,7 @@ public class MainActivityPresenterImpl implements MainActivityPresenter {
         //getting universal data and putting into shared preferences
         Cursor cursor = db.getUniversalData();
         while (cursor.moveToNext()) {
-            MainActivity.preferences.edit().putBoolean(StringConstants.MUTE_KEY, (cursor.getInt(1) > 0)).apply();
+//            MainActivity.preferences.edit().putBoolean(StringConstants.MUTE_KEY, (cursor.getInt(1) > 0)).apply();
             MainActivity.preferences.edit().putBoolean(StringConstants.ADS_REMOVED_KEY, (cursor.getInt(5) > 0)).apply();
             MainActivity.preferences.edit().putBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, (cursor.getInt(6) > 0)).apply();
             MainActivity.preferences.edit().putInt(StringConstants.DUES_SET, (cursor.getInt(19))).apply();

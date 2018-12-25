@@ -21,7 +21,7 @@
             <!--android:gravity="center"-->
             <!--android:layout_marginTop="5dp"-->
             <!--android:layout_marginRight="5dp"-->
-            <!--android:background="@drawable/color_picker_border_white">-->
+            <!--android:background="@drawable/item_background">-->
 
             <!--<TextView-->
                 <!--android:id="@+id/oneHourBtnText"-->
@@ -48,7 +48,7 @@
             <!--android:layout_weight="1"-->
             <!--android:gravity="center"-->
             <!--android:layout_marginTop="5dp"-->
-            <!--android:background="@drawable/color_picker_border_white">-->
+            <!--android:background="@drawable/item_background">-->
 
             <!--<TextView-->
                 <!--android:id="@+id/fourHoursBtnText"-->
@@ -76,7 +76,7 @@
             <!--android:gravity="center"-->
             <!--android:layout_marginTop="5dp"-->
             <!--android:layout_marginLeft="5dp"-->
-            <!--android:background="@drawable/color_picker_border_white">-->
+            <!--android:background="@drawable/item_background">-->
 
             <!--<TextView-->
                 <!--android:id="@+id/tomorrowBtnText"-->

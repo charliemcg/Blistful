@@ -70,7 +70,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/color_picker_border_white"
+        android:background="@drawable/item_background"
         app:layout_constraintBottom_toTopOf="@+id/btnTime"
         app:layout_constraintEnd_toStartOf="@+id/viewRepeatLayout"
         app:layout_constraintHorizontal_bias="0.419"
@@ -125,7 +125,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="28dp"
-        android:background="@drawable/color_picker_border_white"
+        android:background="@drawable/item_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/viewRepeatLayout"
         app:layout_constraintHorizontal_bias="0.412"
@@ -141,7 +141,7 @@
         app:layout_constraintLeft_toLeftOf="@+id/viewRepeatLayout"
         app:layout_constraintRight_toRightOf="@+id/viewRepeatLayout"
         app:layout_constraintTop_toTopOf="@+id/viewRepeatLayout"
-        app:layout_constraintBottom_toTopOf="@+id/imgDailyRepeat"/>
+        app:layout_constraintBottom_toTopOf="@+id/imgDailyRepeatFaded"/>
 
     <ImageView
         android:id="@+id/imgCancelRepeat"
@@ -154,7 +154,7 @@
         app:layout_constraintLeft_toLeftOf="@+id/viewRepeatLayout"
         app:layout_constraintRight_toRightOf="@+id/viewRepeatLayout"
         app:layout_constraintTop_toTopOf="@+id/viewRepeatLayout"
-        app:layout_constraintBottom_toTopOf="@+id/imgDailyRepeat"/>
+        app:layout_constraintBottom_toTopOf="@+id/imgDailyRepeatFaded"/>
 
     <ImageView
         android:id="@+id/imgDailyRepeatFaded"
@@ -165,8 +165,8 @@
         android:src="@drawable/repeat_day_light"
         app:layout_constraintLeft_toLeftOf="@+id/viewRepeatLayout"
         app:layout_constraintRight_toRightOf="@+id/viewRepeatLayout"
-        app:layout_constraintTop_toBottomOf="@+id/imgCancelRepeat"
-        app:layout_constraintBottom_toTopOf="@+id/imgWeeklyRepeat"/>
+        app:layout_constraintTop_toBottomOf="@+id/imgCancelRepeatFaded"
+        app:layout_constraintBottom_toTopOf="@+id/imgWeeklyRepeatFaded"/>
 
     <ImageView
         android:id="@+id/imgDailyRepeat"
@@ -178,8 +178,8 @@
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="@+id/viewRepeatLayout"
         app:layout_constraintRight_toRightOf="@+id/viewRepeatLayout"
-        app:layout_constraintTop_toBottomOf="@+id/imgCancelRepeat"
-        app:layout_constraintBottom_toTopOf="@+id/imgWeeklyRepeat" />
+        app:layout_constraintTop_toBottomOf="@+id/imgCancelRepeatFaded"
+        app:layout_constraintBottom_toTopOf="@+id/imgWeeklyRepeatFaded" />
 
     <ImageView
         android:id="@+id/imgWeeklyRepeatFaded"
@@ -190,8 +190,8 @@
         android:src="@drawable/repeat_week_light"
         app:layout_constraintLeft_toLeftOf="@+id/viewRepeatLayout"
         app:layout_constraintRight_toRightOf="@+id/viewRepeatLayout"
-        app:layout_constraintTop_toBottomOf="@+id/imgDailyRepeat"
-        app:layout_constraintBottom_toTopOf="@+id/imgMonthlyRepeat" />
+        app:layout_constraintTop_toBottomOf="@+id/imgDailyRepeatFaded"
+        app:layout_constraintBottom_toTopOf="@+id/imgMonthlyRepeatFaded" />
 
     <ImageView
         android:id="@+id/imgWeeklyRepeat"
@@ -203,8 +203,8 @@
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="@+id/viewRepeatLayout"
         app:layout_constraintRight_toRightOf="@+id/viewRepeatLayout"
-        app:layout_constraintTop_toBottomOf="@+id/imgDailyRepeat"
-        app:layout_constraintBottom_toTopOf="@+id/imgMonthlyRepeat"  />
+        app:layout_constraintTop_toBottomOf="@+id/imgDailyRepeatFaded"
+        app:layout_constraintBottom_toTopOf="@+id/imgMonthlyRepeatFaded"/>
 
     <ImageView
         android:id="@+id/imgMonthlyRepeatFaded"
@@ -215,7 +215,7 @@
         android:src="@drawable/repeat_month_light"
         app:layout_constraintLeft_toLeftOf="@+id/viewRepeatLayout"
         app:layout_constraintRight_toRightOf="@id/viewRepeatLayout"
-        app:layout_constraintTop_toBottomOf="@+id/imgWeeklyRepeat"
+        app:layout_constraintTop_toBottomOf="@+id/imgWeeklyRepeatFaded"
         app:layout_constraintBottom_toBottomOf="@+id/viewRepeatLayout" />
 
     <ImageView
@@ -228,7 +228,7 @@
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="@+id/viewRepeatLayout"
         app:layout_constraintRight_toRightOf="@id/viewRepeatLayout"
-        app:layout_constraintTop_toBottomOf="@+id/imgWeeklyRepeat"
+        app:layout_constraintTop_toBottomOf="@+id/imgWeeklyRepeatFaded"
         app:layout_constraintBottom_toBottomOf="@+id/viewRepeatLayout" />
 
     <View
@@ -239,7 +239,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/color_picker_border_white"
+        android:background="@drawable/item_background"
         app:layout_constraintBottom_toBottomOf="@+id/btnTime"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.96"

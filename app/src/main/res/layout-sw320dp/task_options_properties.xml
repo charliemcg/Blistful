@@ -21,7 +21,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginRight="5dp"
             android:layout_weight="1"
-            android:background="@drawable/color_picker_border_white"
+            android:background="@drawable/item_background"
             android:gravity="center"
             android:padding="5dp">
 
@@ -45,7 +45,7 @@
                 android:gravity="center"
                 android:lines="2"
                 android:text="@string/alarm"
-                android:textSize="15sp"
+                android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/imgAlarm"
                 app:layout_constraintTop_toTopOf="parent"
@@ -61,7 +61,7 @@
             android:gravity="center"
             android:padding="5dp"
             android:layout_marginTop="5dp"
-            android:background="@drawable/color_picker_border_white">
+            android:background="@drawable/item_background">
 
             <ImageView
                 android:id="@+id/imgSubtasks"
@@ -83,7 +83,7 @@
                 android:gravity="center"
                 android:lines="2"
                 android:text="@string/subTasks"
-                android:textSize="15sp"
+                android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/imgSubtasks"
                 app:layout_constraintTop_toTopOf="parent"
@@ -100,7 +100,7 @@
             android:padding="5dp"
             android:layout_marginTop="5dp"
             android:layout_marginLeft="5dp"
-            android:background="@drawable/color_picker_border_white">
+            android:background="@drawable/item_background">
 
             <ImageView
                 android:id="@+id/imgNote"
@@ -122,7 +122,7 @@
                 android:gravity="center"
                 android:lines="2"
                 android:text="@string/note"
-                android:textSize="15sp"
+                android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/imgNote"
                 app:layout_constraintTop_toTopOf="parent"

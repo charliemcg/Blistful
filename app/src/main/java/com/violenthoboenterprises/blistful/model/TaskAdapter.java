@@ -135,50 +135,38 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         });
 
         //rename task on long click
-        holder.taskLayout.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                mainActivityView.addTask(currentTask);
-                return true;
-            }
+        holder.taskLayout.setOnLongClickListener(view -> {
+            mainActivityView.addTask(currentTask);
+            return true;
         });
 
         //show reminder activity
-        holder.btnAlarm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                holder.taskProperties.setVisibility(View.GONE);
-                if (preferences.getInt(StringConstants.DUES_SET, 0) < 5 || currentTask/*.isDue()*/.getTimestamp() != 0
-                        || preferences.getBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, false)) {
-                    Intent intent = new Intent(context, ReminderActivity.class);
-                    intent.putExtra("task", currentTask);
-                    context.startActivity(intent);
-                } else {
-                    mainActivityPresenter.showPurchases();
-                }
+        holder.btnAlarm.setOnClickListener(view -> {
+            holder.taskProperties.setVisibility(View.GONE);
+            if (preferences.getInt(StringConstants.DUES_SET, 0) < 5 || currentTask/*.isDue()*/.getTimestamp() != 0
+                    || preferences.getBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, false)) {
+                Intent intent = new Intent(context, ReminderActivity.class);
+                intent.putExtra("task", currentTask);
+                context.startActivity(intent);
+            } else {
+                mainActivityPresenter.showPurchases();
             }
         });
 
         //show subtasks activity
-        holder.btnSubtasks.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                holder.taskProperties.setVisibility(View.GONE);
-                Intent intent = new Intent(context, SubtasksActivity.class);
-                intent.putExtra("task", currentTask);
-                context.startActivity(intent);
-            }
+        holder.btnSubtasks.setOnClickListener(view -> {
+            holder.taskProperties.setVisibility(View.GONE);
+            Intent intent = new Intent(context, SubtasksActivity.class);
+            intent.putExtra("task", currentTask);
+            context.startActivity(intent);
         });
 
         //show note activity
-        holder.btnNote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                holder.taskProperties.setVisibility(View.GONE);
-                Intent intent = new Intent(context, NoteActivity.class);
-                intent.putExtra("task", currentTask);
-                context.startActivity(intent);
-            }
+        holder.btnNote.setOnClickListener(view -> {
+            holder.taskProperties.setVisibility(View.GONE);
+            Intent intent = new Intent(context, NoteActivity.class);
+            intent.putExtra("task", currentTask);
+            context.startActivity(intent);
         });
     }
 

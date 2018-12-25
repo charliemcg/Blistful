@@ -33,8 +33,9 @@
     <EditText
         android:id="@+id/etNote"
         android:layout_width="333dp"
-        android:layout_height="39dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:padding="5dp"
         android:layout_marginTop="8dp"
         android:background="@color/purple"
         android:hint="@string/addYourNote"

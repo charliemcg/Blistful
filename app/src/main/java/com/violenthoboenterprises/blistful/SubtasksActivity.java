@@ -69,12 +69,7 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
         //TODO find out if observer is necessary
         subtaskViewModel = ViewModelProviders.of(this).get(SubtaskViewModel.class);
         //need to specifically get subtasks belonging to parent task
-        subtaskViewModel.getAllSubtasks(subtasksPresenter.getId()).observe(this, new Observer<List<Subtask>>() {
-            @Override
-            public void onChanged(@Nullable List<Subtask> subtasks) {
-                subtasksAdapter.setSubtasks(subtasks);
-            }
-        });
+        subtaskViewModel.getAllSubtasks(subtasksPresenter.getId()).observe(this, subtasks -> subtasksAdapter.setSubtasks(subtasks));
 
         //detect swipes
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
@@ -99,68 +94,63 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
         subTasksToolbar.setTitle(R.string.subTasks);
 
         //Actions to occur when keyboard's 'Done' button is pressed
-        etSubtask.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        etSubtask.setOnEditorActionListener((v, actionId, event) -> {
 
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            //Keyboard is inactive without this line
+            etSubtask.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
 
-                //Keyboard is inactive without this line
-                etSubtask.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
+            //Actions to occur when user submits new sub task
+            if (actionId == EditorInfo.IME_ACTION_DONE && subTaskBeingEdited == null) {
 
-                //Actions to occur when user submits new sub task
-                if (actionId == EditorInfo.IME_ACTION_DONE && subTaskBeingEdited == null) {
+                //Getting user data
+                String subtaskName = etSubtask.getText().toString();
 
-                    //Getting user data
-                    String subtaskName = etSubtask.getText().toString();
+                //Clear text from text box
+                etSubtask.setText("");
 
-                    //Clear text from text box
-                    etSubtask.setText("");
-
-                    //Don't allow blank tasks
-                    if (!subtaskName.equals("")) {
-
-                        vibrate.vibrate(50);
-
-                        if (!boolMute) {
-                            mpBlip.start();
-                        }
-
-                        subtasksPresenter.addSubtask(subtasksPresenter.getId(), subtaskName, Calendar.getInstance().getTimeInMillis());
-
-                    }
-
-                    return true;
-
-                //Actions to occur when editing sub tasks
-                } else if (actionId == EditorInfo.IME_ACTION_DONE) {
+                //Don't allow blank tasks
+                if (!subtaskName.equals("")) {
 
                     vibrate.vibrate(50);
 
-                    //Hide keyboard
-                    keyboard.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-
-                    //Getting user data
-                    String subtaskName = etSubtask.getText().toString();
-
-                    //Clear text from text box
-                    etSubtask.setText("");
-
-                    //Don't allow blank tasks
-                    if (!subtaskName.equals("")) {
-
-                        subtasksPresenter.rename(subTaskBeingEdited, subtaskName);
-
-                        subTaskBeingEdited = null;
-
+                    if (!boolMute) {
+                        mpBlip.start();
                     }
 
-                    return true;
+                    subtasksPresenter.addSubtask(subtasksPresenter.getId(), subtaskName, Calendar.getInstance().getTimeInMillis());
+
+                }
+
+                return true;
+
+            //Actions to occur when editing sub tasks
+            } else if (actionId == EditorInfo.IME_ACTION_DONE) {
+
+                vibrate.vibrate(50);
+
+                //Hide keyboard
+                keyboard.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+
+                //Getting user data
+                String subtaskName = etSubtask.getText().toString();
+
+                //Clear text from text box
+                etSubtask.setText("");
+
+                //Don't allow blank tasks
+                if (!subtaskName.equals("")) {
+
+                    subtasksPresenter.rename(subTaskBeingEdited, subtaskName);
+
+                    subTaskBeingEdited = null;
 
                 }
 
                 return true;
 
             }
+
+            return true;
 
         });
 

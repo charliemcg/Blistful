@@ -83,60 +83,53 @@ public class NoteActivity extends MainActivity implements NoteView {
         keyboard.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 
         //Actions to occur when user clicks submit
-        btnSubmitNote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        btnSubmitNote.setOnClickListener(v -> {
 
-                //Keyboard is inactive without this line
-                etNote.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
+            //Keyboard is inactive without this line
+            etNote.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
 
-                animateSubmitButton();
+            animateSubmitButton();
 
-                //new note being added
-                String newNote = etNote.getText().toString();
-                notePresenter.update(newNote);
+            //new note being added
+            String newNote = etNote.getText().toString();
+            notePresenter.update(newNote);
 
-                //display new note in the view
-                tvNote.setText(newNote);
+            //display new note in the view
+            tvNote.setText(newNote);
 
-                //clear the edit text
-                etNote.setText("");
-
-            }
+            //clear the edit text
+            etNote.setText("");
 
         });
 
         //Long click allows editing of text
-        tvNote.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
+        tvNote.setOnLongClickListener(view -> {
 
-                MainActivity.vibrate.vibrate(50);
+            MainActivity.vibrate.vibrate(50);
 
-                trashNote.setVisible(false);
+            trashNote.setVisible(false);
 
-                //show edit text
-                etNote.setVisibility(View.VISIBLE);
+            //show edit text
+            etNote.setVisibility(View.VISIBLE);
 
-                //show submit button
-                btnSubmitNote.setVisibility(View.VISIBLE);
+            //show submit button
+            btnSubmitNote.setVisibility(View.VISIBLE);
 
-                //Focus on edit text so that keyboard does not cover it up
-                etNote.requestFocus();
+            //Focus on edit text so that keyboard does not cover it up
+            etNote.requestFocus();
 
-                //show keyboard
-                keyboard.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+            //show keyboard
+            keyboard.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 
-                //set text to existing note
-                etNote.setText(notePresenter.getNote());
+            //set text to existing note
+            etNote.setText(notePresenter.getNote());
 
-                //put cursor at end of text
-                etNote.setSelection(etNote.getText().length());
+            //put cursor at end of text
+            etNote.setSelection(etNote.getText().length());
 
-                tvNote.setText("");
+            tvNote.setText("");
 
-                return true;
-            }
+            return true;
         });
 
     }
@@ -146,75 +139,63 @@ public class NoteActivity extends MainActivity implements NoteView {
         //Animating the submit icon
         final Handler handler = new Handler();
 
-        final Runnable runnable = new Runnable() {
-            public void run() {
+        final Runnable runnable = () -> {
 
-                btnSubmitNote.setVisibility(View.GONE);
-                btnSubmitNoteOne.setVisibility(View.VISIBLE);
+            btnSubmitNote.setVisibility(View.GONE);
+            btnSubmitNoteOne.setVisibility(View.VISIBLE);
 
-                final Handler handler2 = new Handler();
+            final Handler handler2 = new Handler();
 
-                final Runnable runnable2 = new Runnable() {
-                    public void run() {
+            final Runnable runnable2 = () -> {
 
-                        btnSubmitNoteOne.setVisibility(View.GONE);
-                        btnSubmitNoteTwo.setVisibility(View.VISIBLE);
+                btnSubmitNoteOne.setVisibility(View.GONE);
+                btnSubmitNoteTwo.setVisibility(View.VISIBLE);
 
-                        final Handler handler3 = new Handler();
+                final Handler handler3 = new Handler();
 
-                        final Runnable runnable3 = new Runnable() {
-                            public void run() {
+                final Runnable runnable3 = () -> {
 
-                                btnSubmitNoteTwo.setVisibility(View.GONE);
-                                btnSubmitNoteFour.setVisibility(View.VISIBLE);
+                    btnSubmitNoteTwo.setVisibility(View.GONE);
+                    btnSubmitNoteFour.setVisibility(View.VISIBLE);
 
-                                final Handler handler4 = new Handler();
+                    final Handler handler4 = new Handler();
 
-                                final Runnable runnable4 = new Runnable() {
-                                    @Override
-                                    public void run() {
+                    final Runnable runnable4 = () -> {
 
-                                        btnSubmitNoteFour.setVisibility(View.GONE);
-                                        btnSubmitNoteThree.setVisibility(View.VISIBLE);
+                        btnSubmitNoteFour.setVisibility(View.GONE);
+                        btnSubmitNoteThree.setVisibility(View.VISIBLE);
 
-                                        final Handler handler5 = new Handler();
+                        final Handler handler5 = new Handler();
 
-                                        final Runnable runnable5 = new Runnable() {
-                                            @Override
-                                            public void run() {
+                        final Runnable runnable5 = () -> {
 
-                                                vibrate.vibrate(50);
+                            vibrate.vibrate(50);
 
-                                                if (!boolMute) {
-                                                    mpBlip.start();
-                                                }
-
-                                                btnSubmitNoteThree.setVisibility(View.GONE);
-
-                                                //Hide text box
-                                                etNote.setVisibility(View.GONE);
-
-                                                btnSubmitNote.setVisibility(View.GONE);
-
-                                                trashNote.setVisible(true);
-
-                                                //Hide keyboard
-                                                keyboard.toggleSoftInput(InputMethodManager
-                                                        .HIDE_IMPLICIT_ONLY, 0);
-
-                                            }
-                                        };
-                                        handler5.postDelayed(runnable5, 50);
-                                    }
-                                };
-                                handler4.postDelayed(runnable4, 50);
+                            if (!boolMute) {
+                                mpBlip.start();
                             }
+
+                            btnSubmitNoteThree.setVisibility(View.GONE);
+
+                            //Hide text box
+                            etNote.setVisibility(View.GONE);
+
+                            btnSubmitNote.setVisibility(View.GONE);
+
+                            trashNote.setVisible(true);
+
+                            //Hide keyboard
+                            keyboard.toggleSoftInput(InputMethodManager
+                                    .HIDE_IMPLICIT_ONLY, 0);
+
                         };
-                        handler3.postDelayed(runnable3, 50);
-                    }
+                        handler5.postDelayed(runnable5, 50);
+                    };
+                    handler4.postDelayed(runnable4, 50);
                 };
-                handler2.postDelayed(runnable2, 50);
-            }
+                handler3.postDelayed(runnable3, 50);
+            };
+            handler2.postDelayed(runnable2, 50);
         };
         handler.postDelayed(runnable, 50);
     }
@@ -248,45 +229,38 @@ public class NoteActivity extends MainActivity implements NoteView {
             //animating the trash can
             final Handler handler = new Handler();
 
-            final Runnable runnable = new Runnable() {
-                public void run() {
+            final Runnable runnable = () -> {
 
-                    trashNote.setVisible(false);
-                    trashNoteOpen.setVisible(true);
+                trashNote.setVisible(false);
+                trashNoteOpen.setVisible(true);
 
-                    vibrate.vibrate(50);
+                vibrate.vibrate(50);
 
-                    if (!boolMute) {
-                        mpTrash.start();
-                    }
-
-                    final Handler handler2 = new Handler();
-                    final Runnable runnable2 = new Runnable() {
-                        public void run() {
-
-                            trashNote.setVisible(true);
-                            trashNoteOpen.setVisible(false);
-                            final Handler handler3 = new Handler();
-                            final Runnable runnable3 = new Runnable() {
-                                @Override
-                                public void run() {
-
-                                    trashNote.setVisible(false);
-
-                                    notePresenter.update(null);
-
-                                    tvNote.setText("");
-
-                                    //show edit text
-                                    etNote.setVisibility(View.VISIBLE);
-                                    btnSubmitNote.setVisibility(View.VISIBLE);
-                                }
-                            };
-                            handler3.postDelayed(runnable3, 100);
-                        }
-                    };
-                    handler2.postDelayed(runnable2, 100);
+                if (!boolMute) {
+                    mpTrash.start();
                 }
+
+                final Handler handler2 = new Handler();
+                final Runnable runnable2 = () -> {
+
+                    trashNote.setVisible(true);
+                    trashNoteOpen.setVisible(false);
+                    final Handler handler3 = new Handler();
+                    final Runnable runnable3 = () -> {
+
+                        trashNote.setVisible(false);
+
+                        notePresenter.update(null);
+
+                        tvNote.setText("");
+
+                        //show edit text
+                        etNote.setVisibility(View.VISIBLE);
+                        btnSubmitNote.setVisibility(View.VISIBLE);
+                    };
+                    handler3.postDelayed(runnable3, 100);
+                };
+                handler2.postDelayed(runnable2, 100);
             };
             handler.postDelayed(runnable, 100);
             return true;

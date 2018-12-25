@@ -272,12 +272,7 @@ public class MainActivity extends AppCompatActivity implements
         adView = findViewById(R.id.adView);
 
         fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addTask(null);
-            }
-        });
+        fab.setOnClickListener(view -> addTask(null));
 
         //Setting up the recycler view
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
@@ -292,20 +287,17 @@ public class MainActivity extends AppCompatActivity implements
         //observing the recycler view items for changes
         //TODO find out if observer is necessary
         taskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
-        taskViewModel.getAllTasks().observe(this, new Observer<List<Task>>() {
-            @Override
-            public void onChanged(@Nullable List<Task> tasks) {
-                adapter.setTasks(tasks);
-                if (adapter.getItemCount() > 0) {
-                    imgNoTasks.setVisibility(View.GONE);
-                    if (adapter.getItemCount() > 4 && !boolAdsRemoved) {
-                        showBannerAd();
-                    } else {
-                        imgBanner.setVisibility(View.GONE);
-                    }
+        taskViewModel.getAllTasks().observe(this, tasks -> {
+            adapter.setTasks(tasks);
+            if (adapter.getItemCount() > 0) {
+                imgNoTasks.setVisibility(View.GONE);
+                if (adapter.getItemCount() > 4 && !boolAdsRemoved) {
+                    showBannerAd();
                 } else {
-                    imgNoTasks.setVisibility(View.VISIBLE);
+                    imgBanner.setVisibility(View.GONE);
                 }
+            } else {
+                imgNoTasks.setVisibility(View.VISIBLE);
             }
         });
 
@@ -403,8 +395,6 @@ public class MainActivity extends AppCompatActivity implements
 
                     //Actions to take when editing existing task
                 } else if (actionId == EditorInfo.IME_ACTION_DONE) {
-
-                    Toast.makeText(MainActivity.this, "Editing task", Toast.LENGTH_SHORT).show();
 
                     if (!boolMute) {
                         mpBlip.start();
@@ -612,6 +602,7 @@ public class MainActivity extends AppCompatActivity implements
         if (taskBeingEdited != null) {
             //put task name in the edit text
             etTask.setText(taskBeingEdited.getTask());
+            etTask.setSelection(etTask.getText().length());
         } else {
             //Ensure that there is no previous text in the text box
             etTask.setText("");
@@ -703,6 +694,7 @@ public class MainActivity extends AppCompatActivity implements
             if (boolShowMotivation) {
                 miMotivation.setChecked(true);
             }
+            Log.d(TAG, "boolMute: " + boolMute);
             if (!boolMute) {
                 miMute.setChecked(true);
             }
@@ -836,31 +828,21 @@ public class MainActivity extends AppCompatActivity implements
         Button positive = dialog.findViewById(R.id.btnPositive);
         Button negative = dialog.findViewById(R.id.btnNegative);
 
-        positive.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        positive.setOnClickListener(v -> {
 
-                //show review prompt no more than four times. Setting times
-                //shown to five means it'll no long be shown
-                intShowReviewPrompt = 5;
-                preferences.edit().putInt(StringConstants.SHOW_REVIEW_KEY, intShowReviewPrompt).apply();
-                String URL = "https://play.google.com/store/apps/details?id=com.violenthoboenterprises.blistful";
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(URL));
-                startActivity(i);
-                dialog.dismiss();
+            //show review prompt no more than four times. Setting times
+            //shown to five means it'll no long be shown
+            intShowReviewPrompt = 5;
+            preferences.edit().putInt(StringConstants.SHOW_REVIEW_KEY, intShowReviewPrompt).apply();
+            String URL = "https://play.google.com/store/apps/details?id=com.violenthoboenterprises.blistful";
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(URL));
+            startActivity(i);
+            dialog.dismiss();
 
-            }
         });
 
-        negative.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                dialog.dismiss();
-
-            }
-        });
+        negative.setOnClickListener(v -> dialog.dismiss());
 
         dialog.show();
 

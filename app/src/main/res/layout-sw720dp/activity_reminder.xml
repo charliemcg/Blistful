@@ -67,7 +67,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="52dp"
         android:layout_marginEnd="8dp"
-        android:background="@drawable/color_picker_border_white"
+        android:background="@drawable/item_background"
         app:layout_constraintBottom_toTopOf="@+id/btnTime"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -122,7 +122,7 @@
         android:layout_marginTop="45dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="45dp"
-        android:background="@drawable/color_picker_border_white"
+        android:background="@drawable/item_background"
         app:layout_constraintBottom_toTopOf="@+id/viewRepeatLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -137,7 +137,7 @@
         android:elevation="100dp"
         android:src="@drawable/repeat_none_light"
         app:layout_constraintLeft_toLeftOf="@+id/viewRepeatLayout"
-        app:layout_constraintRight_toLeftOf="@+id/imgDailyRepeat"
+        app:layout_constraintRight_toLeftOf="@+id/imgDailyRepeatFaded"
         app:layout_constraintBottom_toBottomOf="@+id/viewRepeatLayout"
         app:layout_constraintTop_toTopOf="@+id/viewRepeatLayout"/>
 
@@ -150,7 +150,7 @@
         android:src="@drawable/repeat_none"
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="@+id/viewRepeatLayout"
-        app:layout_constraintRight_toLeftOf="@+id/imgDailyRepeat"
+        app:layout_constraintRight_toLeftOf="@+id/imgDailyRepeatFaded"
         app:layout_constraintBottom_toBottomOf="@+id/viewRepeatLayout"
         app:layout_constraintTop_toTopOf="@+id/viewRepeatLayout" />
 
@@ -161,8 +161,8 @@
         android:contentDescription="@string/accessDailyRepeat"
         android:elevation="100dp"
         android:src="@drawable/repeat_day_light"
-        app:layout_constraintLeft_toRightOf="@+id/imgCancelRepeat"
-        app:layout_constraintRight_toLeftOf="@+id/imgWeeklyRepeat"
+        app:layout_constraintLeft_toRightOf="@+id/imgCancelRepeatFaded"
+        app:layout_constraintRight_toLeftOf="@+id/imgWeeklyRepeatFaded"
         app:layout_constraintBottom_toBottomOf="@+id/viewRepeatLayout"
         app:layout_constraintTop_toTopOf="@+id/viewRepeatLayout" />
 
@@ -174,8 +174,8 @@
         android:elevation="100dp"
         android:src="@drawable/repeat_day"
         android:visibility="gone"
-        app:layout_constraintLeft_toRightOf="@+id/imgCancelRepeat"
-        app:layout_constraintRight_toLeftOf="@+id/imgWeeklyRepeat"
+        app:layout_constraintLeft_toRightOf="@+id/imgCancelRepeatFaded"
+        app:layout_constraintRight_toLeftOf="@+id/imgWeeklyRepeatFaded"
         app:layout_constraintBottom_toBottomOf="@+id/viewRepeatLayout"
         app:layout_constraintTop_toTopOf="@+id/viewRepeatLayout"/>
 
@@ -186,8 +186,8 @@
         android:contentDescription="@string/circularArrowRepeatWeekly"
         android:elevation="100dp"
         android:src="@drawable/repeat_week_light"
-        app:layout_constraintLeft_toRightOf="@+id/imgDailyRepeat"
-        app:layout_constraintRight_toLeftOf="@+id/imgMonthlyRepeat"
+        app:layout_constraintLeft_toRightOf="@+id/imgDailyRepeatFaded"
+        app:layout_constraintRight_toLeftOf="@+id/imgMonthlyRepeatFaded"
         app:layout_constraintBottom_toBottomOf="@+id/viewRepeatLayout"
         app:layout_constraintTop_toTopOf="@+id/viewRepeatLayout" />
 
@@ -199,8 +199,8 @@
         android:elevation="100dp"
         android:src="@drawable/repeat_week"
         android:visibility="gone"
-        app:layout_constraintLeft_toRightOf="@+id/imgDailyRepeat"
-        app:layout_constraintRight_toLeftOf="@+id/imgMonthlyRepeat"
+        app:layout_constraintLeft_toRightOf="@+id/imgDailyRepeatFaded"
+        app:layout_constraintRight_toLeftOf="@+id/imgMonthlyRepeatFaded"
         app:layout_constraintBottom_toBottomOf="@+id/viewRepeatLayout"
         app:layout_constraintTop_toTopOf="@+id/viewRepeatLayout"  />
 
@@ -211,7 +211,7 @@
         android:contentDescription="@string/accessMonthlyRepeat"
         android:elevation="100dp"
         android:src="@drawable/repeat_month_light"
-        app:layout_constraintLeft_toRightOf="@+id/imgWeeklyRepeat"
+        app:layout_constraintLeft_toRightOf="@+id/imgWeeklyRepeatFaded"
         app:layout_constraintRight_toRightOf="@id/viewRepeatLayout"
         app:layout_constraintBottom_toBottomOf="@+id/viewRepeatLayout"
         app:layout_constraintTop_toTopOf="@+id/viewRepeatLayout" />
@@ -224,7 +224,7 @@
         android:elevation="100dp"
         android:src="@drawable/repeat_month"
         android:visibility="gone"
-        app:layout_constraintLeft_toRightOf="@+id/imgWeeklyRepeat"
+        app:layout_constraintLeft_toRightOf="@+id/imgWeeklyRepeatFaded"
         app:layout_constraintRight_toRightOf="@id/viewRepeatLayout"
         app:layout_constraintBottom_toBottomOf="@+id/viewRepeatLayout"
         app:layout_constraintTop_toTopOf="@+id/viewRepeatLayout"/>
@@ -237,7 +237,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/color_picker_border_white"
+        android:background="@drawable/item_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

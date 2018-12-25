@@ -12,10 +12,10 @@
     tools:context="com.violenthoboenterprises.blistful.MainActivity">
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/viewTaskparent"
+        android:id="@+id/viewTaskParent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/color_picker_border_white"
+        android:background="@drawable/item_background"
         android:elevation="50dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -24,10 +24,11 @@
             android:id="@+id/tvTask"
             android:layout_width="0dp"
             android:layout_height="60dp"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="40dp"
             android:elevation="100dp"
             android:gravity="center_vertical"
             android:textSize="20sp"
+            android:text="klsjdhfklsjdhflkjasdhflkasjhdflkjsdhflksjhflk"
             ads:layout_constraintEnd_toEndOf="@+id/viewTaskParent"
             ads:layout_constraintStart_toStartOf="@+id/viewTaskParent"
             ads:layout_constraintTop_toTopOf="@+id/viewTaskParent" />
