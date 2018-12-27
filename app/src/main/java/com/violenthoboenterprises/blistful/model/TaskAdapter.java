@@ -189,6 +189,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
             if (Integer.parseInt(hour) == 0) {
                 hour = String.valueOf(12);
                 ampm = context.getString(R.string.am);
+            }else if(Integer.parseInt(hour) == 12){
+                ampm = context.getString(R.string.pm);
             } else if (Integer.parseInt(hour) > 12) {
                 hour = String.valueOf(Integer.parseInt(hour) - 12);
                 ampm = context.getString(R.string.pm);
@@ -241,29 +243,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
                 return cal.get(Calendar.DAY_OF_MONTH) + " " + formattedMonth;
             }
         }
-
-//                if (Integer.valueOf(hour) == 0) {
-//                    hour = getContext().getString(R.string.twelveNumerals);
-//                } else if (Integer.valueOf(hour) > 12) {
-//                    hour = String.valueOf(Integer.parseInt(hour) - 12);
-//                }
-//                if (Integer.valueOf(minute) < 10) {
-//                    if (Integer.valueOf(ampm) == 0) {
-//                        formattedTime = hour + getContext().getString(R.string.colonZero)
-//                                + minute + getContext().getString(R.string.am);
-//                    } else {
-//                        formattedTime = hour + getContext().getString(R.string.colonZero)
-//                                + minute + getContext().getString(R.string.pm);
-//                    }
-//                } else {
-//                    if (Integer.valueOf(ampm) == 0) {
-//                        formattedTime = hour + ":" + minute + getContext().getString(R.string.am);
-//                    } else {
-//                        formattedTime = hour + ":" + minute + getContext().getString(R.string.pm);
-//                    }
-//                }
-//
-//                dueTextView.setText(formattedTime);
 
     }
 
