@@ -48,7 +48,7 @@
     <TextView
         android:id="@+id/tvDate"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:elevation="100dp"
@@ -56,7 +56,7 @@
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="@+id/btnDate"
         app:layout_constraintEnd_toEndOf="@+id/btnDate"
-        app:layout_constraintStart_toEndOf="@+id/imgCalendar"
+        app:layout_constraintStart_toEndOf="@+id/imgCalendarFaded"
         app:layout_constraintTop_toTopOf="@+id/btnDate" />
 
     <View
@@ -105,6 +105,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:gravity="center"
         android:elevation="100dp"
         android:textSize="15sp"

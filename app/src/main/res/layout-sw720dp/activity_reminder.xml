@@ -57,7 +57,7 @@
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="@+id/btnDate"
         app:layout_constraintEnd_toEndOf="@+id/btnDate"
-        app:layout_constraintStart_toEndOf="@+id/imgCalendar"
+        app:layout_constraintStart_toEndOf="@+id/imgCalendarFaded"
         app:layout_constraintTop_toTopOf="@+id/btnDate" />
 
     <View

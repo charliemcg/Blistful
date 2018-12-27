@@ -137,6 +137,17 @@ public class ReminderActivity extends MainActivity implements ReminderView {
                 tvTime.setTextSize(25);
             }
 
+        }else{
+            if (screenSize == 3) {
+                tvDate.setTextSize(25);
+                tvTime.setTextSize(25);
+            } else if (screenSize == 4) {
+                tvDate.setTextSize(35);
+                tvTime.setTextSize(35);
+            } else {
+                tvDate.setTextSize(15);
+                tvTime.setTextSize(15);
+            }
         }
 
         //Highlight the repeat type or highlight "No Repeat" if none exists
