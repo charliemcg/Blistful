@@ -59,5 +59,7 @@ public interface ReminderPresenter {
 
     int getCurrentHour(long stamp);
 
+    int getCurrentMinute(long stamp);
+
 //    void setDue(boolean b);
 }

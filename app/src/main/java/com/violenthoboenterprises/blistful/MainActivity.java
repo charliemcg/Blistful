@@ -85,6 +85,8 @@ public class MainActivity extends AppCompatActivity implements
     public boolean boolRemindersAvailable;
     //used to determine whether or not to show motivational toasts
     private boolean boolShowMotivation;
+    //used to determine if user needs to be notified that they set a task to be due in the past
+    public static boolean boolDueInPast;
 
     //indicates how many due dates are set because free users have a limitation
     private int intDuesSet;
@@ -557,6 +559,31 @@ public class MainActivity extends AppCompatActivity implements
         handler.postDelayed(runnable, 500);
     }
 
+    public void showDueInPastToast() {
+        toast.setText(R.string.cannotSetTask);
+        final Handler handler = new Handler();
+
+        final Runnable runnable = () -> {
+            if (!boolMute) {
+                mpSweep.start();
+            }
+            toastView.startAnimation(AnimationUtils.loadAnimation
+                    (getApplicationContext(), R.anim.enter_from_right_fast));
+            toastView.setVisibility(View.VISIBLE);
+            final Handler handler2 = new Handler();
+            final Runnable runnable2 = () -> {
+                toastView.startAnimation(
+                        AnimationUtils.loadAnimation
+                                (MainActivity.this,
+                                        android.R.anim.fade_out));
+                toastView.setVisibility(View.GONE);
+            };
+            handler2.postDelayed(runnable2, 1500);
+        };
+
+        handler.postDelayed(runnable, 500);
+    }
+
     private void showBannerAd() {
         boolean networkAvailable = false;
         ConnectivityManager connectivityManager = (ConnectivityManager)
@@ -939,6 +966,11 @@ public class MainActivity extends AppCompatActivity implements
 
         adapter.notifyItemChanged(preferences.getInt("refresh_this_item", 0));
         toggleFab(true);
+
+        if(boolDueInPast){
+            showDueInPastToast();
+            boolDueInPast = false;
+        }
 
     }
 

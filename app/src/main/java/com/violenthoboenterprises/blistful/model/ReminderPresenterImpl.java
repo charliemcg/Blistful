@@ -253,6 +253,13 @@ public class ReminderPresenterImpl implements ReminderPresenter {
         return cal.get(Calendar.HOUR_OF_DAY);
     }
 
+    @Override
+    public int getCurrentMinute(long stamp) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(stamp);
+        return cal.get(Calendar.MINUTE);
+    }
+
 //    @Override
 //    public void setDue(boolean b) {
 //        task.setDue(b);
