@@ -49,5 +49,15 @@ public interface ReminderPresenter {
 
     long getTimeCreated();
 
+    long getCurrentDate();
+
+    int getCurrentYear(long stamp);
+
+    int getCurrentMonth(long stamp);
+
+    int getCurrentDay(long stamp);
+
+    int getCurrentHour(long stamp);
+
 //    void setDue(boolean b);
 }

@@ -49,6 +49,7 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
 
         //Getting the parent task to which the subtasks are related
         task = (Task) getIntent().getSerializableExtra("task");
+        subTasksToolbar.setSubtitle(task.getTask());
         subtaskViewModel = ViewModelProviders.of(this).get(SubtaskViewModel.class);
         subtasksPresenter = new SubtasksPresenterImpl(SubtasksActivity.this,
                 subtaskViewModel, task, getApplicationContext());

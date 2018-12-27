@@ -345,80 +345,79 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
             final Handler handler = new Handler();
 
-            final Runnable runnable = new Runnable() {
-                public void run() {
+            final Runnable runnable = () -> {
 
-                    killReminder.setVisible(false);
-                    killReminderOpen.setVisible(true);
+                killReminder.setVisible(false);
+                killReminderOpen.setVisible(true);
 
-                    final Handler handler2 = new Handler();
-                    final Runnable runnable2 = new Runnable() {
-                        public void run() {
-                            killReminder.setVisible(true);
-                            killReminderOpen.setVisible(false);
-                            final Handler handler3 = new Handler();
-                            final Runnable runnable3 = new Runnable() {
-                                @Override
-                                public void run() {
+                final Handler handler2 = new Handler();
+                final Runnable runnable2 = () -> {
+                    killReminder.setVisible(true);
+                    killReminderOpen.setVisible(false);
+                    final Handler handler3 = new Handler();
+                    final Runnable runnable3 = () -> {
 
-                                    killReminder.setVisible(false);
+                        killReminder.setVisible(false);
 
-                                    vibrate.vibrate(50);
+                        vibrate.vibrate(50);
 
-                                    if (!boolMute) {
-                                        mpTrash.start();
-                                    }
+                        if (!boolMute) {
+                            mpTrash.start();
+                        }
 
-                                    reminderPresenter.setRepeatInterval(null);
-                                    reminderPresenter.setTimestamp(reminderPresenter.getTimeCreated());
+                        reminderPresenter.setRepeatInterval(null);
+                        reminderPresenter.setTimestamp(/*reminderPresenter.getTimeCreated()*/0);
 //                                    reminderPresenter.setDue(false);
 
-                                    reminderPresenter.setYear(0);
-                                    reminderPresenter.setMonth(0);
-                                    reminderPresenter.setDay(0);
-                                    reminderPresenter.setHour(0);
-                                    reminderPresenter.setMinute(0);
+                        tempYear = -1;
+                        tempMonth = -1;
+                        tempDay = -1;
+                        tempHour = -1;
+                        tempMinute = -1;
 
-                                    imgCalendarFaded.setVisibility(View.VISIBLE);
-                                    imgCalendar.setVisibility(View.INVISIBLE);
-                                    imgTimeFaded.setVisibility(View.VISIBLE);
-                                    imgTime.setVisibility(View.INVISIBLE);
+                        reminderPresenter.setYear(0);
+                        reminderPresenter.setMonth(0);
+                        reminderPresenter.setDay(0);
+                        reminderPresenter.setHour(0);
+                        reminderPresenter.setMinute(0);
 
-                                    tvDate.setText(R.string.addDate);
-                                    tvTime.setText(R.string.addTime);
-                                    if (screenSize == 3) {
-                                        tvDate.setTextSize(25);
-                                        tvTime.setTextSize(25);
-                                    } else if (screenSize == 4) {
-                                        tvDate.setTextSize(35);
-                                        tvTime.setTextSize(35);
-                                    } else {
-                                        tvDate.setTextSize(15);
-                                        tvTime.setTextSize(15);
-                                    }
+                        imgCalendarFaded.setVisibility(View.VISIBLE);
+                        imgCalendar.setVisibility(View.INVISIBLE);
+                        imgTimeFaded.setVisibility(View.VISIBLE);
+                        imgTime.setVisibility(View.INVISIBLE);
 
-                                    imgCancelRepeat.setVisibility(View.INVISIBLE);
-                                    imgCancelRepeat.setVisibility(View.VISIBLE);
-                                    imgDailyFaded.setVisibility(View.VISIBLE);
-                                    imgDaily.setVisibility(View.INVISIBLE);
-                                    imgWeeklyFaded.setVisibility(View.VISIBLE);
-                                    imgWeekly.setVisibility(View.INVISIBLE);
-                                    imgMonthlyFaded.setVisibility(View.VISIBLE);
-                                    imgMonthly.setVisibility(View.INVISIBLE);
-
-                                    tvDate.setText(R.string.addDate);
-                                    tvTime.setText(R.string.addTime);
-
-                                    int duesset = preferences.getInt(StringConstants.DUES_SET, 0);
-                                    preferences.edit().putInt(StringConstants.DUES_SET, --duesset).apply();
-
-                                }
-                            };
-                            handler3.postDelayed(runnable3, 100);
+                        tvDate.setText(R.string.addDate);
+                        tvTime.setText(R.string.addTime);
+                        if (screenSize == 3) {
+                            tvDate.setTextSize(25);
+                            tvTime.setTextSize(25);
+                        } else if (screenSize == 4) {
+                            tvDate.setTextSize(35);
+                            tvTime.setTextSize(35);
+                        } else {
+                            tvDate.setTextSize(15);
+                            tvTime.setTextSize(15);
                         }
+
+                        imgCancelRepeat.setVisibility(View.INVISIBLE);
+                        imgCancelRepeat.setVisibility(View.VISIBLE);
+                        imgDailyFaded.setVisibility(View.VISIBLE);
+                        imgDaily.setVisibility(View.INVISIBLE);
+                        imgWeeklyFaded.setVisibility(View.VISIBLE);
+                        imgWeekly.setVisibility(View.INVISIBLE);
+                        imgMonthlyFaded.setVisibility(View.VISIBLE);
+                        imgMonthly.setVisibility(View.INVISIBLE);
+
+                        tvDate.setText(R.string.addDate);
+                        tvTime.setText(R.string.addTime);
+
+                        int duesset = preferences.getInt(StringConstants.DUES_SET, 0);
+                        preferences.edit().putInt(StringConstants.DUES_SET, --duesset).apply();
+
                     };
-                    handler2.postDelayed(runnable2, 100);
-                }
+                    handler3.postDelayed(runnable3, 100);
+                };
+                handler2.postDelayed(runnable2, 100);
             };
 
             handler.postDelayed(runnable, 100);
@@ -564,7 +563,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             ImageView timeFadedLight = getActivity().findViewById(R.id.imgTimeFaded);
             timeFadedLight.setVisibility(View.INVISIBLE);
 
-            ImageView time = getActivity().findViewById(R.id.time);
+            ImageView time = getActivity().findViewById(R.id.imgTime);
             time.setVisibility(View.VISIBLE);
 
             int screenSize = getResources().getConfiguration().screenLayout &
@@ -614,6 +613,13 @@ public class ReminderActivity extends MainActivity implements ReminderView {
         if (reminderPresenter.getYear() != 0 || reminderPresenter.getHour() != 0 ||
                 reminderPresenter.getRepeatInterval() != null) {
 
+            long stamp = reminderPresenter.getCurrentDate();
+
+            int currentYear = reminderPresenter.getCurrentYear(stamp);
+            int currentMonth = reminderPresenter.getCurrentMonth(stamp);
+            int currentDay = reminderPresenter.getCurrentDay(stamp);
+            int currentHour = reminderPresenter.getCurrentHour(stamp);
+
             Calendar calendar = Calendar.getInstance();
             //set current date if date wasn't picked
             if (reminderPresenter.getYear() == 0) {
@@ -623,7 +629,16 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             }
             //set current time if time wasn't picked
             if (reminderPresenter.getHour() == 0) {
-                reminderPresenter.setHour(calendar.get(Calendar.HOUR_OF_DAY));
+                //set unspecified time to be set one hour into the future
+                if(calendar.get(Calendar.YEAR) == currentYear
+                        && calendar.get(Calendar.MONTH) == currentMonth
+                        && calendar.get(Calendar.DAY_OF_MONTH) == currentDay
+                        && calendar.get(Calendar.HOUR_OF_DAY) == currentHour
+                        && calendar.get(Calendar.DAY_OF_MONTH) != 23){
+                    reminderPresenter.setHour(calendar.get(Calendar.HOUR_OF_DAY) + 1);
+                }else {
+                    reminderPresenter.setHour(calendar.get(Calendar.HOUR_OF_DAY));
+                }
                 reminderPresenter.setMinute(calendar.get(Calendar.MINUTE));
             }
             //Setting timestamp of the reminder

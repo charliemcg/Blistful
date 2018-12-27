@@ -87,7 +87,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
                 holder.dueIcon.setImageDrawable(context.getResources()
                         .getDrawable(R.drawable.overdue_icon_light));//TODO check that this works on all versions
                 holder.tvDue.setTextColor(Color.RED);
-            }else{
+            } else {
                 holder.dueIcon.setImageDrawable(context.getResources()
                         .getDrawable(R.drawable.due_icon_light));
             }
@@ -173,43 +173,98 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(timestamp);
         int intMonth = cal.get(Calendar.MONTH) + 1;
-        //getting string representation for month
-        if (intMonth == 1) {
-            formattedMonth = context.getString(R.string.jan);
-        } else if (intMonth == 2) {
-            formattedMonth = context.getString(R.string.feb);
-        } else if (intMonth == 3) {
-            formattedMonth = context.getString(R.string.mar);
-        } else if (intMonth == 4) {
-            formattedMonth = context.getString(R.string.apr);
-        } else if (intMonth == 5) {
-            formattedMonth = context.getString(R.string.may);
-        } else if (intMonth == 6) {
-            formattedMonth = context.getString(R.string.jun);
-        } else if (intMonth == 7) {
-            formattedMonth = context.getString(R.string.jul);
-        } else if (intMonth == 8) {
-            formattedMonth = context.getString(R.string.aug);
-        } else if (intMonth == 9) {
-            formattedMonth = context.getString(R.string.sep);
-        } else if (intMonth == 10) {
-            formattedMonth = context.getString(R.string.oct);
-        } else if (intMonth == 11) {
-            formattedMonth = context.getString(R.string.nov);
-        } else if (intMonth == 12) {
-            formattedMonth = context.getString(R.string.dec);
+
+        Calendar currentCal = Calendar.getInstance();
+
+        //Show time if due on same day, show date if due in future
+        if (cal.get(Calendar.YEAR) == currentCal.get(Calendar.YEAR)
+                && cal.get(Calendar.MONTH) == currentCal.get(Calendar.MONTH)
+                && cal.get(Calendar.DAY_OF_MONTH) == currentCal.get(Calendar.DAY_OF_MONTH)) {
+
+            String hour = String.valueOf(cal.get(Calendar.HOUR_OF_DAY));
+            String minute = String.valueOf(cal.get(Calendar.MINUTE));
+            String ampm;
+
+            //converting into 12 hour time
+            if (Integer.parseInt(hour) == 0) {
+                hour = String.valueOf(12);
+                ampm = context.getString(R.string.am);
+            } else if (Integer.parseInt(hour) > 12) {
+                hour = String.valueOf(Integer.parseInt(hour) - 12);
+                ampm = context.getString(R.string.pm);
+            } else {
+                ampm = context.getString(R.string.am);
+            }
+
+            if (Integer.parseInt(minute) < 10) {
+                minute = String.valueOf("0" + minute);
+            }
+
+            return hour + ":" + minute + ampm;
+
+        } else {
+            //getting string representation for month
+            if (intMonth == 1) {
+                formattedMonth = context.getString(R.string.jan);
+            } else if (intMonth == 2) {
+                formattedMonth = context.getString(R.string.feb);
+            } else if (intMonth == 3) {
+                formattedMonth = context.getString(R.string.mar);
+            } else if (intMonth == 4) {
+                formattedMonth = context.getString(R.string.apr);
+            } else if (intMonth == 5) {
+                formattedMonth = context.getString(R.string.may);
+            } else if (intMonth == 6) {
+                formattedMonth = context.getString(R.string.jun);
+            } else if (intMonth == 7) {
+                formattedMonth = context.getString(R.string.jul);
+            } else if (intMonth == 8) {
+                formattedMonth = context.getString(R.string.aug);
+            } else if (intMonth == 9) {
+                formattedMonth = context.getString(R.string.sep);
+            } else if (intMonth == 10) {
+                formattedMonth = context.getString(R.string.oct);
+            } else if (intMonth == 11) {
+                formattedMonth = context.getString(R.string.nov);
+            } else if (intMonth == 12) {
+                formattedMonth = context.getString(R.string.dec);
+            }
+
+            //setting date format based of locale
+            String lang = String.valueOf(Locale.getDefault());
+            if (lang.equals("en_AS") || lang.equals("en_BM")
+                    || lang.equals("en_GU") || lang.equals("en_PH")
+                    || lang.equals("en_PR") || lang.equals("en_UM")
+                    || lang.equals("en_US") || lang.equals("en_VI")) {
+                return formattedMonth + " " + cal.get(Calendar.DAY_OF_MONTH);
+            } else {
+                return cal.get(Calendar.DAY_OF_MONTH) + " " + formattedMonth;
+            }
         }
 
-        //setting date format based of locale
-        String lang = String.valueOf(Locale.getDefault());
-        if (lang.equals("en_AS") || lang.equals("en_BM")
-                || lang.equals("en_GU") || lang.equals("en_PH")
-                || lang.equals("en_PR") || lang.equals("en_UM")
-                || lang.equals("en_US") || lang.equals("en_VI")) {
-            return formattedMonth + " " + cal.get(Calendar.DAY_OF_MONTH);
-        } else {
-            return cal.get(Calendar.DAY_OF_MONTH) + " " + formattedMonth;
-        }
+//                if (Integer.valueOf(hour) == 0) {
+//                    hour = getContext().getString(R.string.twelveNumerals);
+//                } else if (Integer.valueOf(hour) > 12) {
+//                    hour = String.valueOf(Integer.parseInt(hour) - 12);
+//                }
+//                if (Integer.valueOf(minute) < 10) {
+//                    if (Integer.valueOf(ampm) == 0) {
+//                        formattedTime = hour + getContext().getString(R.string.colonZero)
+//                                + minute + getContext().getString(R.string.am);
+//                    } else {
+//                        formattedTime = hour + getContext().getString(R.string.colonZero)
+//                                + minute + getContext().getString(R.string.pm);
+//                    }
+//                } else {
+//                    if (Integer.valueOf(ampm) == 0) {
+//                        formattedTime = hour + ":" + minute + getContext().getString(R.string.am);
+//                    } else {
+//                        formattedTime = hour + ":" + minute + getContext().getString(R.string.pm);
+//                    }
+//                }
+//
+//                dueTextView.setText(formattedTime);
+
     }
 
     @Override

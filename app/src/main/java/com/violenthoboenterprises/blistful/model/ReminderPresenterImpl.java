@@ -7,6 +7,7 @@ import com.violenthoboenterprises.blistful.R;
 import com.violenthoboenterprises.blistful.presenter.ReminderPresenter;
 import com.violenthoboenterprises.blistful.view.ReminderView;
 
+import java.util.Calendar;
 import java.util.Locale;
 
 public class ReminderPresenterImpl implements ReminderPresenter {
@@ -216,6 +217,40 @@ public class ReminderPresenterImpl implements ReminderPresenter {
     @Override
     public long getTimeCreated() {
         return task.getTimeCreated();
+    }
+
+    @Override
+    public long getCurrentDate() {
+        Calendar cal = Calendar.getInstance();
+        return cal.getTimeInMillis();
+    }
+
+    @Override
+    public int getCurrentYear(long stamp) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(stamp);
+        return cal.get(Calendar.YEAR);
+    }
+
+    @Override
+    public int getCurrentMonth(long stamp) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(stamp);
+        return cal.get(Calendar.MONTH);
+    }
+
+    @Override
+    public int getCurrentDay(long stamp) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(stamp);
+        return cal.get(Calendar.DAY_OF_MONTH);
+    }
+
+    @Override
+    public int getCurrentHour(long stamp) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(stamp);
+        return cal.get(Calendar.HOUR_OF_DAY);
     }
 
 //    @Override

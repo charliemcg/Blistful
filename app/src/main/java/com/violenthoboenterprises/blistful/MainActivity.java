@@ -402,11 +402,11 @@ public class MainActivity extends AppCompatActivity implements
                         } else if (boolShowMotivation) {
                             showMotivationalToast();
                         }
+                        intRenameHint++;
+                        preferences.edit().putInt(StringConstants.RENAME_HINT_KEY, intRenameHint).apply();
+                    } else if (boolShowMotivation) {
+                        showMotivationalToast();
                     }
-                    intRenameHint++;
-                    preferences.edit().putInt(StringConstants.RENAME_HINT_KEY, intRenameHint).apply();
-                } else if (boolShowMotivation) {
-                    showMotivationalToast();
                 }
 
                 return true;
@@ -458,27 +458,23 @@ public class MainActivity extends AppCompatActivity implements
         toast.setText(strMotivation[i]);
         final Handler handler = new Handler();
 
-        final Runnable runnable = new Runnable() {
-            public void run() {
-                if (!boolMute) {
-                    mpSweep.start();
-                }
-                toastView.startAnimation(AnimationUtils.loadAnimation
-                        (MainActivity.this,
-                                R.anim.enter_from_right_fast));
-                toastView.setVisibility(View.VISIBLE);
-                final Handler handler2 = new Handler();
-                final Runnable runnable2 = new Runnable() {
-                    public void run() {
-                        toastView.startAnimation(
-                                AnimationUtils.loadAnimation
-                                        (MainActivity.this,
-                                                android.R.anim.fade_out));
-                        toastView.setVisibility(View.GONE);
-                    }
-                };
-                handler2.postDelayed(runnable2, 1500);
+        final Runnable runnable = () -> {
+            if (!boolMute) {
+                mpSweep.start();
             }
+            toastView.startAnimation(AnimationUtils.loadAnimation
+                    (MainActivity.this,
+                            R.anim.enter_from_right_fast));
+            toastView.setVisibility(View.VISIBLE);
+            final Handler handler2 = new Handler();
+            final Runnable runnable2 = () -> {
+                toastView.startAnimation(
+                        AnimationUtils.loadAnimation
+                                (MainActivity.this,
+                                        android.R.anim.fade_out));
+                toastView.setVisibility(View.GONE);
+            };
+            handler2.postDelayed(runnable2, 1500);
         };
 
         handler.postDelayed(runnable, 500);
@@ -488,25 +484,21 @@ public class MainActivity extends AppCompatActivity implements
         toast.setText(R.string.longClickToRename);
         final Handler handler = new Handler();
 
-        final Runnable runnable = new Runnable() {
-            public void run() {
-                mpHint.start();
-                toastView.startAnimation(AnimationUtils
-                        .loadAnimation(MainActivity.this,
-                                R.anim.enter_from_right_fast));
-                toastView.setVisibility(View.VISIBLE);
-                final Handler handler2 = new Handler();
-                final Runnable runnable2 = new Runnable() {
-                    public void run() {
-                        toastView.startAnimation
-                                (AnimationUtils.loadAnimation
-                                        (MainActivity.this,
-                                                android.R.anim.fade_out));
-                        toastView.setVisibility(View.GONE);
-                    }
-                };
-                handler2.postDelayed(runnable2, 2500);
-            }
+        final Runnable runnable = () -> {
+            mpHint.start();
+            toastView.startAnimation(AnimationUtils
+                    .loadAnimation(MainActivity.this,
+                            R.anim.enter_from_right_fast));
+            toastView.setVisibility(View.VISIBLE);
+            final Handler handler2 = new Handler();
+            final Runnable runnable2 = () -> {
+                toastView.startAnimation
+                        (AnimationUtils.loadAnimation
+                                (MainActivity.this,
+                                        android.R.anim.fade_out));
+                toastView.setVisibility(View.GONE);
+            };
+            handler2.postDelayed(runnable2, 2500);
         };
 
         handler.postDelayed(runnable, 500);
@@ -516,23 +508,19 @@ public class MainActivity extends AppCompatActivity implements
         toast.setText(R.string.youCanCancelRepeat);
         final Handler handler = new Handler();
 
-        final Runnable runnable = new Runnable() {
-            public void run() {
-                mpHint.start();
-                toastView.startAnimation(AnimationUtils.loadAnimation
-                        (MainActivity.this, R.anim.enter_from_right_fast));
-                toastView.setVisibility(View.VISIBLE);
-                final Handler handler2 = new Handler();
-                final Runnable runnable2 = new Runnable() {
-                    public void run() {
-                        toastView.startAnimation
-                                (AnimationUtils.loadAnimation
-                                        (MainActivity.this, android.R.anim.fade_out));
-                        toastView.setVisibility(View.GONE);
-                    }
-                };
-                handler2.postDelayed(runnable2, 2500);
-            }
+        final Runnable runnable = () -> {
+            mpHint.start();
+            toastView.startAnimation(AnimationUtils.loadAnimation
+                    (MainActivity.this, R.anim.enter_from_right_fast));
+            toastView.setVisibility(View.VISIBLE);
+            final Handler handler2 = new Handler();
+            final Runnable runnable2 = () -> {
+                toastView.startAnimation
+                        (AnimationUtils.loadAnimation
+                                (MainActivity.this, android.R.anim.fade_out));
+                toastView.setVisibility(View.GONE);
+            };
+            handler2.postDelayed(runnable2, 2500);
         };
 
         handler.postDelayed(runnable, 500);
@@ -548,26 +536,22 @@ public class MainActivity extends AppCompatActivity implements
         toast.setText(strKilledAffirmation[i]);
         final Handler handler = new Handler();
 
-        final Runnable runnable = new Runnable() {
-            public void run() {
-                if (!boolMute) {
-                    mpSweep.start();
-                }
-                toastView.startAnimation(AnimationUtils.loadAnimation
-                        (MainActivity.this, R.anim.enter_from_right_fast));
-                toastView.setVisibility(View.VISIBLE);
-                final Handler handler2 = new Handler();
-                final Runnable runnable2 = new Runnable() {
-                    public void run() {
-                        toastView.startAnimation(
-                                AnimationUtils.loadAnimation
-                                        (MainActivity.this,
-                                                android.R.anim.fade_out));
-                        toastView.setVisibility(View.GONE);
-                    }
-                };
-                handler2.postDelayed(runnable2, 1500);
+        final Runnable runnable = () -> {
+            if (!boolMute) {
+                mpSweep.start();
             }
+            toastView.startAnimation(AnimationUtils.loadAnimation
+                    (MainActivity.this, R.anim.enter_from_right_fast));
+            toastView.setVisibility(View.VISIBLE);
+            final Handler handler2 = new Handler();
+            final Runnable runnable2 = () -> {
+                toastView.startAnimation(
+                        AnimationUtils.loadAnimation
+                                (MainActivity.this,
+                                        android.R.anim.fade_out));
+                toastView.setVisibility(View.GONE);
+            };
+            handler2.postDelayed(runnable2, 1500);
         };
 
         handler.postDelayed(runnable, 500);
@@ -608,9 +592,6 @@ public class MainActivity extends AppCompatActivity implements
 
         vibrate.vibrate(50);
 
-        //Show keyboard
-        keyboard.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
-
         //Set return button to 'Done'
         etTask.setImeOptions(EditorInfo.IME_ACTION_DONE);
 
@@ -623,6 +604,14 @@ public class MainActivity extends AppCompatActivity implements
             //Ensure that there is no previous text in the text box
             etTask.setText("");
         }
+
+        //Show keyboard
+        keyboard.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+
+//        final Handler handler = new Handler();
+//        //Actions to occur when keyboard is showing
+//        final Runnable runnable = this::checkKeyboardShowing;
+//        handler.postDelayed(runnable, 2000);
 
         //Actions to occur when keyboard is showing
         checkKeyboardShowing();
@@ -780,16 +769,18 @@ public class MainActivity extends AppCompatActivity implements
 
                     if (screen.bottom != deviceheight) {
 
+
                         etTask.setFocusable(true);
 
                         etTask.requestFocus();
 
-                        //Keyboard is inactive without this line
-                        etTask.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
-
                         //Textbox is visible and 'add' button is gone
                         // whenever keyboard is showing
                         etTask.setVisibility(View.VISIBLE);
+
+                        //Keyboard is inactive without this line
+                        etTask.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
+
 
                         //remove fab when keyboard is up
                         fab.setVisibility(View.GONE);
