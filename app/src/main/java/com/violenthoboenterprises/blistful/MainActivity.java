@@ -14,11 +14,16 @@ import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.os.Build;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -99,6 +104,9 @@ public class MainActivity extends AppCompatActivity implements
     //keeps track of the selected task so recyclerview
     //knows which task to update in regards to icons etc
     public static int intPositionToUpdate;
+    //dimensions of the fab
+    int fabHeight;
+    int fabWidth;
 
     //Toasts which show up when adding new task
     private String[] strMotivation;
@@ -170,6 +178,9 @@ public class MainActivity extends AppCompatActivity implements
     public static PendingIntent pendingIntent;
     public static Intent alertIntent;
     public static AlarmManager alarmManager;
+
+    //layout parameters of the fab
+    ConstraintLayout.LayoutParams params;
 
     //preferences used for persisting app-wide data
     public static SharedPreferences preferences;
@@ -274,6 +285,10 @@ public class MainActivity extends AppCompatActivity implements
         fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> addTask(null));
 
+        params = (ConstraintLayout.LayoutParams) fab.getLayoutParams();
+        fabHeight = params.height;
+        fabWidth = params.width;
+
         //Setting up the recycler view
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -335,6 +350,7 @@ public class MainActivity extends AppCompatActivity implements
                             showRepeatHintToast();
                         }
                     } else if (boolShowMotivation) {
+                        //showing motivational toast
                         showKilledAffirmationToast();
                     }
                     int remindersSoFar = preferences.getInt(StringConstants.REPEAT_HINT_KEY, 0);
@@ -342,91 +358,89 @@ public class MainActivity extends AppCompatActivity implements
                     adapter.notifyDataSetChanged();
                 }
 
+                adapter.notifyDataSetChanged();
+                fab.setVisibility(View.VISIBLE);
+
             }
         }).attachToRecyclerView(recyclerView);
 
         //Actions to occur when user submits new task
-        etTask.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        etTask.setOnEditorActionListener((v, actionId, event) -> {
 
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            //Actions to take when creating new task
+            if (actionId == EditorInfo.IME_ACTION_DONE && taskBeingEdited == null) {
 
-                //Actions to take when creating new task
-                if (actionId == EditorInfo.IME_ACTION_DONE && taskBeingEdited == null) {
+                if (!boolMute) {
+                    mpBlip.start();
+                }
 
-                    if (!boolMute) {
-                        mpBlip.start();
-                    }
+                vibrate.vibrate(50);
 
-                    vibrate.vibrate(50);
+                //Text box and keyboard disappear
+                etTask.setVisibility(View.GONE);
 
-                    //Text box and keyboard disappear
-                    etTask.setVisibility(View.GONE);
+                //Hide keyboard
+                keyboard.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
 
-                    //Hide keyboard
-                    keyboard.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                //Getting user data
+                String taskName = etTask.getText().toString();
 
-                    //Getting user data
-                    String taskName = etTask.getText().toString();
+                //Clear text from text box
+                etTask.setText("");
 
-                    //Clear text from text box
-                    etTask.setText("");
+                if (!taskName.equals("")) {
 
-                    if (!taskName.equals("")) {
+                    Calendar calendar = new GregorianCalendar().getInstance();
+                    mainActivityPresenter.addTask(null, 0, taskName, null,
+                            calendar.getTimeInMillis(), false, false, 0);
 
-                        Calendar calendar = new GregorianCalendar().getInstance();
-                        mainActivityPresenter.addTask(null, 0, taskName, null,
-                                calendar.getTimeInMillis(), false, false, 0);
-
-                        if (intRenameHint <= 2) {
-                            if (intRenameHint == 2) {
-                                showRenameHintToast();
-                            } else if (boolShowMotivation) {
-                                showMotivationalToast();
-                            }
+                    if (intRenameHint <= 2) {
+                        if (intRenameHint == 2) {
+                            showRenameHintToast();
+                        } else if (boolShowMotivation) {
+                            showMotivationalToast();
                         }
-                        intRenameHint++;
-                        preferences.edit().putInt(StringConstants.RENAME_HINT_KEY, intRenameHint).apply();
-                    } else if (boolShowMotivation) {
-                        showMotivationalToast();
                     }
+                    intRenameHint++;
+                    preferences.edit().putInt(StringConstants.RENAME_HINT_KEY, intRenameHint).apply();
+                } else if (boolShowMotivation) {
+                    showMotivationalToast();
+                }
 
-                    return true;
+                return true;
 
-                    //Actions to take when editing existing task
-                } else if (actionId == EditorInfo.IME_ACTION_DONE) {
+                //Actions to take when editing existing task
+            } else if (actionId == EditorInfo.IME_ACTION_DONE) {
 
-                    if (!boolMute) {
-                        mpBlip.start();
-                    }
+                if (!boolMute) {
+                    mpBlip.start();
+                }
 
-                    vibrate.vibrate(50);
+                vibrate.vibrate(50);
 
-                    etTask.setVisibility(View.GONE);
+                etTask.setVisibility(View.GONE);
 
-                    //Hide keyboard
-                    keyboard.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                //Hide keyboard
+                keyboard.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
 
-                    //Getting user data
-                    String editedTaskString = etTask.getText().toString();
+                //Getting user data
+                String editedTaskString = etTask.getText().toString();
 
-                    etTask.setText("");
+                etTask.setText("");
 
-                    if (!editedTaskString.equals("")) {
+                if (!editedTaskString.equals("")) {
 
-                        mainActivityPresenter.setTask(taskBeingEdited, editedTaskString);
-
-                    }
-
-                    taskBeingEdited = null;
-
-                    return true;
+                    mainActivityPresenter.setTask(taskBeingEdited, editedTaskString);
 
                 }
 
-                return false;
+                taskBeingEdited = null;
+
+                return true;
 
             }
+
+            return false;
 
         });
 
@@ -646,14 +660,7 @@ public class MainActivity extends AppCompatActivity implements
         });
 
         //Cancel button options
-        negative.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                dialog.dismiss();
-
-            }
-        });
+        negative.setOnClickListener(v -> dialog.dismiss());
 
         dialog.show();
     }
@@ -661,9 +668,13 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void toggleFab(boolean showFab) {
         if (showFab) {
-            fab.setVisibility(View.VISIBLE);
+            params.height = fabHeight;
+            params.width = fabWidth;
+            fab.setLayoutParams(params);
         } else {
-            fab.setVisibility(View.GONE);
+            params.height = 1;
+            params.width = 1;
+            fab.setLayoutParams(params);
         }
     }
 
@@ -671,13 +682,10 @@ public class MainActivity extends AppCompatActivity implements
     private void showSnackbar(String stringSnack, final Task taskToReinstate) {
         View view = findViewById(R.id.activityRoot);
         Snackbar.make(view, stringSnack, Snackbar.LENGTH_SHORT)
-                .setAction("UNDO", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-                        scheduler.cancel(StringConstants.DELETE_TASK_ID);
-                        mainActivityPresenter.reinstateTask(taskToReinstate);
-                    }
+                .setAction("UNDO", view1 -> {
+                    JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+                    scheduler.cancel(StringConstants.DELETE_TASK_ID);
+                    mainActivityPresenter.reinstateTask(taskToReinstate);
                 })
                 .setActionTextColor(getResources().getColor(R.color.purple))
                 .show();
@@ -694,7 +702,6 @@ public class MainActivity extends AppCompatActivity implements
             if (boolShowMotivation) {
                 miMotivation.setChecked(true);
             }
-            Log.d(TAG, "boolMute: " + boolMute);
             if (!boolMute) {
                 miMute.setChecked(true);
             }
@@ -763,40 +770,36 @@ public class MainActivity extends AppCompatActivity implements
     void checkKeyboardShowing() {
 
         activityRootView.getViewTreeObserver().addOnGlobalLayoutListener
-                (new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @Override
-                    public void onGlobalLayout() {
+                (() -> {
 
-                        Rect screen = new Rect();
+                    Rect screen = new Rect();
 
-                        activityRootView.getWindowVisibleDisplayFrame(screen);
+                    activityRootView.getWindowVisibleDisplayFrame(screen);
 
-                        if (screen.bottom != deviceheight) {
+                    if (screen.bottom != deviceheight) {
 
-                            etTask.setFocusable(true);
+                        etTask.setFocusable(true);
 
-                            etTask.requestFocus();
+                        etTask.requestFocus();
 
-                            //Keyboard is inactive without this line
-                            etTask.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
+                        //Keyboard is inactive without this line
+                        etTask.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
 
-                            //Textbox is visible and 'add' button is gone
-                            // whenever keyboard is showing
-                            etTask.setVisibility(View.VISIBLE);
+                        //Textbox is visible and 'add' button is gone
+                        // whenever keyboard is showing
+                        etTask.setVisibility(View.VISIBLE);
 
-                            //remove fab when keybaord is up
-                            fab.setVisibility(View.GONE);
+                        //remove fab when keyboard is up
+                        fab.setVisibility(View.GONE);
 
-                        } else /*if (restoreNormalListView)*/ {
+                    } else {
 
-                            //Textbox is gone and 'add' button is visible whenever
-                            //keyboard is not showing
-                            etTask.setVisibility(View.GONE);
+                        //Textbox is gone and 'add' button is visible whenever
+                        //keyboard is not showing
+                        etTask.setVisibility(View.GONE);
 
-                            //fab must be visible when keyboard is down
-                            fab.setVisibility(View.VISIBLE);
-
-                        }
+                        //fab must be visible when keyboard is down
+                        fab.setVisibility(View.VISIBLE);
 
                     }
 
@@ -858,26 +861,24 @@ public class MainActivity extends AppCompatActivity implements
             toast.setText(R.string.thank_you_for_purchase);
             final Handler handler = new Handler();
 
-            final Runnable runnable = new Runnable() {
-                public void run() {
+            final Runnable runnable = () -> {
 
-                    if (!boolMute) {
-                        mpSweep.start();
-                    }
-
-                    toastView.startAnimation(AnimationUtils.loadAnimation
-                            (MainActivity.this, R.anim.enter_from_right_fast));
-                    toastView.setVisibility(View.VISIBLE);
-                    final Handler handler2 = new Handler();
-                    final Runnable runnable2 = new Runnable() {
-                        public void run() {
-                            toastView.startAnimation(AnimationUtils.loadAnimation
-                                    (MainActivity.this, android.R.anim.fade_out));
-                            toastView.setVisibility(View.GONE);
-                        }
-                    };
-                    handler2.postDelayed(runnable2, 2000);
+                if (!boolMute) {
+                    mpSweep.start();
                 }
+
+                toastView.startAnimation(AnimationUtils.loadAnimation
+                        (MainActivity.this, R.anim.enter_from_right_fast));
+                toastView.setVisibility(View.VISIBLE);
+                final Handler handler2 = new Handler();
+                final Runnable runnable2 = new Runnable() {
+                    public void run() {
+                        toastView.startAnimation(AnimationUtils.loadAnimation
+                                (MainActivity.this, android.R.anim.fade_out));
+                        toastView.setVisibility(View.GONE);
+                    }
+                };
+                handler2.postDelayed(runnable2, 2000);
             };
 
             handler.postDelayed(runnable, 500);

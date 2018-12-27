@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,11 +76,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         holder.repeatIcon.setVisibility(View.GONE);
         holder.dueIcon.setVisibility(View.GONE);
         holder.tvDue.setVisibility(View.GONE);
-//        holder.taskProperties.setVisibility(View.GONE);
+        holder.taskProperties.setVisibility(View.GONE);
         holder.tvDue.setTextColor(Color.BLACK);
 
         //checking if needed to display due icon
-        if (/*currentTask.isDue()*/currentTask.getTimestamp() != 0) {
+        if (currentTask.getTimestamp() != 0) {
             holder.dueIcon.setVisibility(View.VISIBLE);
             //Switch to overdue icon when appropriate
             if ((currentTask.getTimestamp() < Calendar.getInstance().getTimeInMillis())) {
@@ -113,24 +114,21 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         }
 
         //show properties on click
-        holder.taskLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //removing any other visible properties
-                if (preferences.getInt("refresh_this_item", 0) != position) {
-                    notifyItemChanged(preferences.getInt("refresh_this_item", 0));
-                }
-                //tracking this item as requiring updating upon return from a child activity
-                preferences.edit().putInt("refresh_this_item", position).apply();
-                if (holder.taskProperties.getVisibility() == View.VISIBLE) {
-                    holder.taskProperties.setVisibility(View.GONE);
-                    mainActivityPresenter.toggleFab(true);
-                    //redrawing the UI to remove properties from view
-                    activityRootView.postInvalidate();
-                } else {
-                    holder.taskProperties.setVisibility(View.VISIBLE);
-                    mainActivityPresenter.toggleFab(false);
-                }
+        holder.taskLayout.setOnClickListener(view -> {
+            //removing any other visible properties
+            if (preferences.getInt("refresh_this_item", 0) != position) {
+                notifyItemChanged(preferences.getInt("refresh_this_item", 0));
+            }
+            //tracking this item as requiring updating upon return from a child activity
+            preferences.edit().putInt("refresh_this_item", position).apply();
+            if (holder.taskProperties.getVisibility() == View.VISIBLE) {
+                holder.taskProperties.setVisibility(View.GONE);
+                mainActivityPresenter.toggleFab(true);
+                //redrawing the UI to remove properties from view
+                activityRootView.postInvalidate();
+            } else {
+                holder.taskProperties.setVisibility(View.VISIBLE);
+                mainActivityPresenter.toggleFab(false);
             }
         });
 
@@ -143,7 +141,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         //show reminder activity
         holder.btnAlarm.setOnClickListener(view -> {
             holder.taskProperties.setVisibility(View.GONE);
-            if (preferences.getInt(StringConstants.DUES_SET, 0) < 5 || currentTask/*.isDue()*/.getTimestamp() != 0
+            if (preferences.getInt(StringConstants.DUES_SET, 0) < 5 || currentTask.getTimestamp() != 0
                     || preferences.getBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, false)) {
                 Intent intent = new Intent(context, ReminderActivity.class);
                 intent.putExtra("task", currentTask);
@@ -234,7 +232,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         private TextView tvDue;
         private ConstraintLayout taskLayout;
         private ConstraintLayout taskProperties;
-        private ConstraintLayout taskOverdue;
         private ConstraintLayout btnAlarm;
         private ConstraintLayout btnSubtasks;
         private ConstraintLayout btnNote;
@@ -249,7 +246,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
             tvDue = itemView.findViewById(R.id.tvDue);
             taskLayout = itemView.findViewById(R.id.taskLayout);
             taskProperties = itemView.findViewById(R.id.viewProperties);
-//            taskOverdue = itemView.findViewById(R.id.taskIsOverdue);
             btnAlarm = itemView.findViewById(R.id.btnAlarm);
             btnSubtasks = itemView.findViewById(R.id.btnSubtasks);
             btnNote = itemView.findViewById(R.id.btnNote);
@@ -257,24 +253,18 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
             subtasksIcon = itemView.findViewById(R.id.imgSubtasks);
             repeatIcon = itemView.findViewById(R.id.imgRepeat);
             dueIcon = itemView.findViewById(R.id.imgDue);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int position = getAdapterPosition();
-                    if (listener != null && position != RecyclerView.NO_POSITION) {
-                        listener.onItemClick(tasks.get(position));
-                    }
+            itemView.setOnClickListener(view -> {
+                int position = getAdapterPosition();
+                if (listener != null && position != RecyclerView.NO_POSITION) {
+                    listener.onItemClick(tasks.get(position));
                 }
             });
-            itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    int position = getAdapterPosition();
-                    if (listener != null && position != RecyclerView.NO_POSITION) {
-                        listener.onItemClick(tasks.get(position));
-                    }
-                    return true;
+            itemView.setOnLongClickListener(view -> {
+                int position = getAdapterPosition();
+                if (listener != null && position != RecyclerView.NO_POSITION) {
+                    listener.onItemClick(tasks.get(position));
                 }
+                return true;
             });
         }
     }
