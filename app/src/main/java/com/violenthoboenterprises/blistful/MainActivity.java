@@ -358,7 +358,9 @@ public class MainActivity extends AppCompatActivity implements
                     adapter.notifyDataSetChanged();
                 }
 
-                adapter.notifyDataSetChanged();
+                final Handler handler = new Handler();
+                final Runnable runnable = () -> adapter.notifyDataSetChanged();
+                handler.postDelayed(runnable, 500);
                 fab.setVisibility(View.VISIBLE);
 
             }
