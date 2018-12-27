@@ -15,6 +15,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -366,8 +367,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
                         }
 
                         reminderPresenter.setRepeatInterval(null);
-                        reminderPresenter.setTimestamp(/*reminderPresenter.getTimeCreated()*/0);
-//                                    reminderPresenter.setDue(false);
+                        reminderPresenter.setTimestamp(0);
 
                         tempYear = -1;
                         tempMonth = -1;
@@ -610,7 +610,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
     public void onBackPressed() {
 
         //Timestamp needs to be saved if user has set a reminder
-        if (reminderPresenter.getYear() != 0 || reminderPresenter.getHour() != 0 ||
+        if (reminderPresenter.getYear() != 0 || reminderPresenter.getMinute() != 0 ||
                 reminderPresenter.getRepeatInterval() != null) {
 
             long stamp = reminderPresenter.getCurrentDate();
@@ -628,13 +628,13 @@ public class ReminderActivity extends MainActivity implements ReminderView {
                 reminderPresenter.setDay(calendar.get(Calendar.DAY_OF_MONTH));
             }
             //set current time if time wasn't picked
-            if (reminderPresenter.getHour() == 0) {
+            if (reminderPresenter.getMinute() == 0) {
                 //set unspecified time to be set one hour into the future
                 if(calendar.get(Calendar.YEAR) == currentYear
                         && calendar.get(Calendar.MONTH) == currentMonth
                         && calendar.get(Calendar.DAY_OF_MONTH) == currentDay
                         && calendar.get(Calendar.HOUR_OF_DAY) == currentHour
-                        && calendar.get(Calendar.DAY_OF_MONTH) != 23){
+                        && calendar.get(Calendar.HOUR_OF_DAY) != 23){
                     reminderPresenter.setHour(calendar.get(Calendar.HOUR_OF_DAY) + 1);
                 }else {
                     reminderPresenter.setHour(calendar.get(Calendar.HOUR_OF_DAY));
