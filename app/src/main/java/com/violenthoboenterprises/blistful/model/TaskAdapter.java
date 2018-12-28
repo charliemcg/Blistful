@@ -144,7 +144,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
             holder.taskProperties.setVisibility(View.GONE);
             if (/*preferences.getInt(StringConstants.DUES_SET, 0) < 5 || */
                     mainActivityPresenter.getDuesSet() < 5 || currentTask.getTimestamp() != 0
-                    || preferences.getBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, false)) {
+                            || preferences.getBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, false)) {
                 Intent intent = new Intent(context, ReminderActivity.class);
                 intent.putExtra("task", currentTask);
                 context.startActivity(intent);
@@ -191,7 +191,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
             if (Integer.parseInt(hour) == 0) {
                 hour = String.valueOf(12);
                 ampm = context.getString(R.string.am);
-            }else if(Integer.parseInt(hour) == 12){
+            } else if (Integer.parseInt(hour) == 12) {
                 ampm = context.getString(R.string.pm);
             } else if (Integer.parseInt(hour) > 12) {
                 hour = String.valueOf(Integer.parseInt(hour) - 12);
@@ -207,6 +207,43 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
             return hour + ":" + minute + ampm;
 
         } else {
+
+            boolean tomorrow = false;
+
+            //Checking if date due tomorrow
+            if (currentCal.get(Calendar.YEAR) == cal.get(Calendar.YEAR)) {
+                if (((currentCal.get(Calendar.MONTH) == 0) || (currentCal.get(Calendar.MONTH) == 2)
+                        || (currentCal.get(Calendar.MONTH) == 4) || (currentCal.get(Calendar.MONTH) == 6)
+                        || (currentCal.get(Calendar.MONTH) == 7) || (currentCal.get(Calendar.MONTH) == 9))
+                        && (currentCal.get(Calendar.DAY_OF_MONTH) == 31) && (cal.get(Calendar.DAY_OF_MONTH) == 1)
+                        && (currentCal.get(Calendar.MONTH) == (cal.get(Calendar.MONTH) - 1))) {
+                    tomorrow = true;
+                } else if (((currentCal.get(Calendar.MONTH) == 1) || (currentCal.get(Calendar.MONTH) == 3)
+                        || (currentCal.get(Calendar.MONTH) == 5) || (currentCal.get(Calendar.MONTH) == 8)
+                        || (currentCal.get(Calendar.MONTH) == 10)) && (currentCal.get(Calendar.DAY_OF_MONTH) == 30)
+                        && (cal.get(Calendar.DAY_OF_MONTH) == 1)
+                        && (currentCal.get(Calendar.MONTH) == (cal.get(Calendar.MONTH) - 1))) {
+                    tomorrow = true;
+                } else if ((currentCal.get(Calendar.MONTH) == 11) && (currentCal.get(Calendar.DAY_OF_MONTH) == 31)
+                        && (cal.get(Calendar.DAY_OF_MONTH) == 1)
+                        && (currentCal.get(Calendar.MONTH) == (cal.get(Calendar.MONTH) - 1))) {
+                    tomorrow = true;
+                } else if ((currentCal.get(Calendar.MONTH) == 1) && (currentCal.get(Calendar.DAY_OF_MONTH) == 28)
+                        && (currentCal.get(Calendar.YEAR) % 4 != 0) && (cal.get(Calendar.DAY_OF_MONTH) == 1)
+                        && (currentCal.get(Calendar.MONTH) == (cal.get(Calendar.MONTH) - 1))) {
+                    tomorrow = true;
+                } else if ((currentCal.get(Calendar.MONTH) == 1) && (currentCal.get(Calendar.DAY_OF_MONTH) == 29)
+                        && (currentCal.get(Calendar.YEAR) % 4 == 0) && (cal.get(Calendar.DAY_OF_MONTH) == 1)
+                        && (currentCal.get(Calendar.MONTH) == (cal.get(Calendar.MONTH) - 1))) {
+                    tomorrow = true;
+                } else if (currentCal.get(Calendar.DAY_OF_MONTH) == (cal.get(Calendar.DAY_OF_MONTH) - 1) &&
+                        currentCal.get(Calendar.MONTH) == cal.get(Calendar.MONTH)) {
+                    tomorrow = true;
+                }
+            }
+
+            if(tomorrow){return context.getString(R.string.tomorrow);}
+
             //getting string representation for month
             if (intMonth == 1) {
                 formattedMonth = context.getString(R.string.jan);
