@@ -20,7 +20,7 @@ import java.util.GregorianCalendar;
 /*
  * This is where the database is built
  */
-@Database(entities = {Task.class, Subtask.class, Reminder.class}, version = 1)
+@Database(entities = {Task.class, Subtask.class, Reminder.class}, version = 3)
 public abstract class TaskDatabase extends RoomDatabase {
 
     private static String TAG = "TaskDatabase";

@@ -260,6 +260,12 @@ public class ReminderPresenterImpl implements ReminderPresenter {
         return cal.get(Calendar.MINUTE);
     }
 
+    @Override
+    public void setOriginalDay(int originalDay) {
+        task.setOriginalDay(originalDay);
+        taskViewModel.update(task);
+    }
+
 //    @Override
 //    public void setDue(boolean b) {
 //        task.setDue(b);

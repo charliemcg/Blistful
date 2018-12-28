@@ -21,6 +21,7 @@ import java.util.GregorianCalendar;
 
 public class MainActivityPresenterImpl implements MainActivityPresenter {
 
+    private static String TAG = "MainActivityPresenter";
     private TaskViewModel taskViewModel;
     private MainActivityView mainActivityView;
     private Context context;
@@ -75,6 +76,7 @@ public class MainActivityPresenterImpl implements MainActivityPresenter {
     @Override
     public void migrateDatabase() {
 
+        //Step 1 is only needed for testing purposes. Not to be used in production code.
         ///////////////Step 1. Create mock data. Remove once created
 //        Database db = new Database(context);
 //        db.insertUniversalData(true);
@@ -119,14 +121,14 @@ public class MainActivityPresenterImpl implements MainActivityPresenter {
 //            MainActivity.preferences.edit().putBoolean(StringConstants.MUTE_KEY, (cursor.getInt(1) > 0)).apply();
             MainActivity.preferences.edit().putBoolean(StringConstants.ADS_REMOVED_KEY, (cursor.getInt(5) > 0)).apply();
             MainActivity.preferences.edit().putBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, (cursor.getInt(6) > 0)).apply();
-            MainActivity.preferences.edit().putInt(StringConstants.DUES_SET, (cursor.getInt(19))).apply();
+//            MainActivity.preferences.edit().putInt(StringConstants.DUES_SET, (cursor.getInt(19))).apply();
             MainActivity.preferences.edit().putBoolean(StringConstants.MOTIVATION_KEY, (cursor.getInt(20) > 0)).apply();
             MainActivity.preferences.edit().putInt(StringConstants.REPEAT_HINT_KEY, (cursor.getInt(21))).apply();
             MainActivity.preferences.edit().putInt(StringConstants.RENAME_HINT_KEY, (cursor.getInt(22))).apply();
             long stampToAdjust = cursor.getInt(24);
             stampToAdjust = stampToAdjust * 1000 * 60 * 60;
             MainActivity.preferences.edit().putLong(StringConstants.TIME_INSTALLED_KEY, stampToAdjust).apply();
-            if(cursor.getInt(25) > 0){
+            if (cursor.getInt(25) > 0) {
                 MainActivity.preferences.edit().putInt(StringConstants.SHOW_REVIEW_KEY, 5).apply();
             }
         }
@@ -196,6 +198,78 @@ public class MainActivityPresenterImpl implements MainActivityPresenter {
         //Only need to perform migration once
         MainActivity.preferences.edit().putBoolean(StringConstants.DATABASE_MERGED_KEY, true).apply();
 
+    }
+
+    @Override
+    public int getDuesSet() {
+        return taskViewModel.getDuesSet();
+    }
+
+    @Override
+    public long getInterval(String repeatInterval, long stamp, int originalDay) {
+        if (repeatInterval.equals(StringConstants.DAY)) {
+            return 1000 * 60 * 60 * 24;
+        } else if (repeatInterval.equals(StringConstants.WEEK)) {
+            return 1000 * 60 * 60 * 24 * 7;
+        } else if (repeatInterval.equals(StringConstants.MONTH)) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTimeInMillis(stamp);
+            int year = cal.get(Calendar.YEAR);
+            int month = cal.get(Calendar.MONTH);
+            int day = cal.get(Calendar.DAY_OF_MONTH);
+            //Determining if it's a leap year
+            int leapYear = 0;
+            if (year % 4 == 0) {
+                leapYear = 1;
+            }
+            Log.d(TAG, day + "/" + month + "/" + year);
+            Log.d(TAG, "Original: " + originalDay);
+            long twentyFourHours = 1000 * 60 * 60 * 24;
+            int multiplier;
+            //months that have 31 days
+            if (month == 0 || month == 2 || month == 4 || month == 6
+                    || month == 7 || month == 9 || month == 11) {
+                //if due on 31st day and following month doesn't have 31 days set to last day of following month
+                if (originalDay == 31 && month != 6 && month != 11 && month != 0) {
+                    multiplier = 30;
+                //if due on 31st and following month is February set to last day of February
+                } else if (originalDay == 31 && month == 0) {
+                    multiplier = 28 + leapYear;
+                //if due on 30th and following month is February set to last day of February
+                }else if(originalDay == 30 && month == 0) {
+                    multiplier = 29 + leapYear;
+                //if due on 29th and following month is February set to last day of February
+                }else if(originalDay == 29 && month == 0){
+                    multiplier = 30 + leapYear;
+                } else {
+                    multiplier = 31;
+                }
+            //February
+            } else if (month == 1) {
+                //if original due day is 31 then set to 31st of following month
+                if (originalDay == 31) {
+                    multiplier = 31;
+                //if original due day is 30 then set to 30th of following month
+                } else if(originalDay == 30){
+                    multiplier = 30;
+                //if original due day is 39 then set to 39th of following month
+                } else if(originalDay == 29){
+                    multiplier = 29;
+                }else{
+                    multiplier = 28 + leapYear;
+                }
+            //months that have 30 days
+            } else {
+                //if original due day is 31 then set to 31st of following month
+                if (originalDay == 31) {
+                    multiplier = 31;
+                } else {
+                    multiplier = 30;
+                }
+            }
+            return twentyFourHours * multiplier;
+        }
+        return 0;
     }
 
     @Override

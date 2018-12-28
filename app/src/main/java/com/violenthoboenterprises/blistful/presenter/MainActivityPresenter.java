@@ -24,4 +24,8 @@ public interface MainActivityPresenter {
     int getTaskIdByName(String taskName);
 
     void migrateDatabase();
+
+    int getDuesSet();
+
+    long getInterval(String repeatInterval, long stamp, int originalDay);
 }

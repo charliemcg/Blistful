@@ -61,5 +61,7 @@ public interface ReminderPresenter {
 
     int getCurrentMinute(long stamp);
 
+    void setOriginalDay(int originalDay);
+
 //    void setDue(boolean b);
 }

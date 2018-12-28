@@ -426,8 +426,8 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 //                        tvDate.setText(R.string.addDate);
 //                        tvTime.setText(R.string.addTime);
 
-                        int duesset = preferences.getInt(StringConstants.DUES_SET, 0);
-                        preferences.edit().putInt(StringConstants.DUES_SET, --duesset).apply();
+//                        int duesset = preferences.getInt(StringConstants.DUES_SET, 0);
+//                        preferences.edit().putInt(StringConstants.DUES_SET, --duesset).apply();
 
                     };
                     handler3.postDelayed(runnable3, 100);
@@ -748,10 +748,11 @@ public class ReminderActivity extends MainActivity implements ReminderView {
                     scheduleNotification();
                 }
 
+                reminderPresenter.setOriginalDay(reminderPresenter.getDay());
+
 //            reminderPresenter.setDue(true);
 
-                int duesset = preferences.getInt(StringConstants.DUES_SET, 0);
-                preferences.edit().putInt(StringConstants.DUES_SET, ++duesset).apply();
+            //don't save. Due time set to in the past
             /*}}}}*/}else{
                 deleteData();
                 MainActivity.boolDueInPast = true;

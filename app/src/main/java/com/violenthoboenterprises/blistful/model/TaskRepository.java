@@ -68,12 +68,20 @@ public class TaskRepository {
     public int getTaskIdByName(String taskName) {
         AsyncTask<String, Void, Integer> result = new GetTaskIdByNameAsyncTask(taskDao).execute(taskName);
         try {
-            int simpleResult = result.get();
-            return simpleResult;
+            return result.get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
-        Log.d(TAG, "I should not be here");
+        return 0;
+    }
+
+    public int getDuesSet() {
+        AsyncTask<Void, Void, Integer> result = new GetDuesSetAsyncTask(taskDao).execute();
+        try{
+            return result.get();
+        }catch (InterruptedException | ExecutionException e){
+            e.printStackTrace();
+        }
         return 0;
     }
 
@@ -140,6 +148,16 @@ public class TaskRepository {
         @Override
         protected Integer doInBackground(String... strings) {
             return taskDao.getTaskIdByName(strings[0]);
+        }
+    }
+
+    private class GetDuesSetAsyncTask extends AsyncTask<Void, Void, Integer> {
+        private TaskDao taskDao;
+        GetDuesSetAsyncTask(TaskDao taskDao) {this.taskDao = taskDao;}
+
+        @Override
+        protected Integer doInBackground(Void... voids) {
+            return taskDao.getDuesSet();
         }
     }
 }

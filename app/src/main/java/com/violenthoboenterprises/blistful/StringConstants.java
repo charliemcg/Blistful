@@ -14,7 +14,11 @@ public class StringConstants {
     public static int DELETE_TASK_ID = 0;
     public static String UNLOCK_ALL = "unlock_all";
     public static String TEST_PURCHASE = "android.test.purchased";//TODO remove this
-    public static String DUES_SET = "dues_set";
+//    public static String DUES_SET = "dues_set";
     public static String DATABASE_MERGED_KEY = "database_merged_key";
+    public static String REFRESH_THIS_ITEM = "refresh_this_item";
+    public static String DAY = "day";
+    public static String WEEK = "week";
+    public static String MONTH = "month";
 
 }

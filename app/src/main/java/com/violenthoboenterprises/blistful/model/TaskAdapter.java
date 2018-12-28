@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
@@ -116,11 +117,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         //show properties on click
         holder.taskLayout.setOnClickListener(view -> {
             //removing any other visible properties
-            if (preferences.getInt("refresh_this_item", 0) != position) {
-                notifyItemChanged(preferences.getInt("refresh_this_item", 0));
+            if (preferences.getInt(StringConstants.REFRESH_THIS_ITEM, 0) != position) {
+                notifyItemChanged(preferences.getInt(StringConstants.REFRESH_THIS_ITEM, 0));
             }
             //tracking this item as requiring updating upon return from a child activity
-            preferences.edit().putInt("refresh_this_item", position).apply();
+            preferences.edit().putInt(StringConstants.REFRESH_THIS_ITEM, position).apply();
             if (holder.taskProperties.getVisibility() == View.VISIBLE) {
                 holder.taskProperties.setVisibility(View.GONE);
                 mainActivityPresenter.toggleFab(true);
@@ -141,7 +142,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         //show reminder activity
         holder.btnAlarm.setOnClickListener(view -> {
             holder.taskProperties.setVisibility(View.GONE);
-            if (preferences.getInt(StringConstants.DUES_SET, 0) < 5 || currentTask.getTimestamp() != 0
+            if (/*preferences.getInt(StringConstants.DUES_SET, 0) < 5 || */
+                    mainActivityPresenter.getDuesSet() < 5 || currentTask.getTimestamp() != 0
                     || preferences.getBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, false)) {
                 Intent intent = new Intent(context, ReminderActivity.class);
                 intent.putExtra("task", currentTask);

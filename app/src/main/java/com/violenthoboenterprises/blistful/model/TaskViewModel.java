@@ -40,4 +40,6 @@ public class TaskViewModel extends AndroidViewModel {
     }
 
     public int getTaskIdByName(String taskName) {return repository.getTaskIdByName(taskName);}
+
+    public int getDuesSet(){return repository.getDuesSet();}
 }

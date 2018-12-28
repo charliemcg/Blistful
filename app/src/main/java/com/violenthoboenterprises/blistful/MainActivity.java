@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements
     public static boolean boolDueInPast;
 
     //indicates how many due dates are set because free users have a limitation
-    private int intDuesSet;
+//    private int intDuesSet;
     //indicates if the repeat hint should be shown
     private int intRepeatHint;
     //indicates if the rename hint should be shown
@@ -279,7 +279,7 @@ public class MainActivity extends AppCompatActivity implements
         DisplayMetrics displayMetrics = new DisplayMetrics();
         this.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         deviceheight = displayMetrics.heightPixels;
-        intDuesSet = 0;
+//        intDuesSet = 0;
         imgNoTasks = findViewById(R.id.imgNoTasks);
         imgBanner = findViewById(R.id.imgBanner);
         adView = findViewById(R.id.adView);
@@ -331,6 +331,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
 
+                //Actions to occur when deleting non repeating task
                 if (adapter.getTaskAt(viewHolder.getAdapterPosition()).getRepeatInterval() == null) {
                     //Saving a temporary instance of the deleted task should it need to be reinstated
                     Task taskToReinstate = adapter.getTaskAt(viewHolder.getAdapterPosition());
@@ -341,9 +342,28 @@ public class MainActivity extends AppCompatActivity implements
                         //showing motivational toast
                         showKilledAffirmationToast();
                     }
+                //Actions to occur when deleting repeating task
                 } else {
+
+                    long interval = 0;
+                    if(adapter.getTaskAt(viewHolder.getAdapterPosition())
+                            .getRepeatInterval().equals(StringConstants.DAY)){
+                        interval = mainActivityPresenter.getInterval(StringConstants.DAY,
+                                adapter.getTaskAt(viewHolder.getAdapterPosition()).getTimestamp(),
+                                adapter.getTaskAt(viewHolder.getAdapterPosition()).getOriginalDay());
+                    }else if(adapter.getTaskAt(viewHolder.getAdapterPosition())
+                            .getRepeatInterval().equals(StringConstants.WEEK)){
+                        interval = mainActivityPresenter.getInterval(StringConstants.WEEK,
+                                adapter.getTaskAt(viewHolder.getAdapterPosition()).getTimestamp(),
+                                adapter.getTaskAt(viewHolder.getAdapterPosition()).getOriginalDay());
+                    }else if(adapter.getTaskAt(viewHolder.getAdapterPosition())
+                            .getRepeatInterval().equals(StringConstants.MONTH)){
+                        interval = mainActivityPresenter.getInterval(StringConstants.MONTH,
+                                adapter.getTaskAt(viewHolder.getAdapterPosition()).getTimestamp(),
+                                adapter.getTaskAt(viewHolder.getAdapterPosition()).getOriginalDay());
+                    }
                     long newTimestamp = adapter.getTaskAt(viewHolder.getAdapterPosition())
-                            .getTimestamp() + (AlarmManager.INTERVAL_DAY * 7);
+                            .getTimestamp() + interval;
                     adapter.getTaskAt(viewHolder.getAdapterPosition()).setTimestamp(newTimestamp);
                     mainActivityPresenter.update(adapter.getTaskAt(viewHolder.getAdapterPosition()));
                     if (preferences.getInt(StringConstants.REPEAT_HINT_KEY, 0) <= 10) {
@@ -841,7 +861,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void prompt() {
-
         final Dialog dialog = new Dialog(MainActivity.this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
@@ -964,13 +983,15 @@ public class MainActivity extends AppCompatActivity implements
         super.onResume();
         showPrompt();
 
-        adapter.notifyItemChanged(preferences.getInt("refresh_this_item", 0));
+        adapter.notifyItemChanged(preferences.getInt(StringConstants.REFRESH_THIS_ITEM, 0));
         toggleFab(true);
 
         if(boolDueInPast){
             showDueInPastToast();
             boolDueInPast = false;
         }
+
+//        Toast.makeText(this, "Dues Set: " + mainActivityPresenter.getDuesSet(), Toast.LENGTH_LONG).show();
 
     }
 

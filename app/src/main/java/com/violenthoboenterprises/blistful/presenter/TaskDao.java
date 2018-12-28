@@ -41,4 +41,8 @@ public interface TaskDao {
 
     @Query("SELECT id FROM task_table WHERE task= :taskName")
     int getTaskIdByName(String taskName);
+
+    @Query("SELECT COUNT() FROM task_table WHERE timestamp!=0")
+    int getDuesSet();
+
 }
