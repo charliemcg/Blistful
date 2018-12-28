@@ -60,6 +60,10 @@ public class ReminderActivity extends MainActivity implements ReminderView {
     private static int tempDay;
     private static int tempMonth;
     private static int tempYear;
+    //flags for determining if values have been set
+    private static boolean repeatSet;
+    private static boolean dateSet;
+    private static boolean timeSet;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,6 +100,9 @@ public class ReminderActivity extends MainActivity implements ReminderView {
         imgCancelRepeat = findViewById(R.id.imgCancelRepeat);
         preferences = this.getSharedPreferences("com.violenthoboenterprises.blistful",
                 Context.MODE_PRIVATE);
+        repeatSet = false;
+        dateSet = false;
+        timeSet = false;
 
         screenSize = getResources().getConfiguration().screenLayout &
                 Configuration.SCREENLAYOUT_SIZE_MASK;
@@ -166,163 +173,137 @@ public class ReminderActivity extends MainActivity implements ReminderView {
         }
 
         //Actions to occur when user selects to set/change date
-        btnDate.setOnClickListener(new View.OnClickListener() {
+        btnDate.setOnClickListener(v -> {
 
-            @Override
-            public void onClick(View v) {
+            vibrate.vibrate(50);
 
-                vibrate.vibrate(50);
+            DialogFragment dialogfragment = new DatePickerDialogFrag();
 
-                DialogFragment dialogfragment = new DatePickerDialogFrag();
-
-                dialogfragment.show(getFragmentManager(), "Date");
-
-            }
+            dialogfragment.show(getFragmentManager(), "Date");
 
         });
 
         //Actions to occur when user selects to set/change time
-        btnTime.setOnClickListener(new View.OnClickListener() {
+        btnTime.setOnClickListener(v -> {
 
-            @Override
-            public void onClick(View v) {
+            vibrate.vibrate(50);
 
-                vibrate.vibrate(50);
+            DialogFragment dialogfragment = new TimePickerDialogFrag();
 
-                DialogFragment dialogfragment = new TimePickerDialogFrag();
-
-                dialogfragment.show(getFragmentManager(), "Time");
-
-            }
+            dialogfragment.show(getFragmentManager(), "Time");
 
         });
 
         //Actions to occur when user chooses to cancel the repeat
-        imgCancelRepeatFaded.setOnClickListener(new View.OnClickListener() {
+        imgCancelRepeatFaded.setOnClickListener(v -> {
 
-            @Override
-            public void onClick(View v) {
+            if (!boolMute && reminderPresenter.getRepeatInterval() == null) {
+                mpBlip.start();
+            }
 
-                if (!boolMute && reminderPresenter.getRepeatInterval() == null) {
-                    mpBlip.start();
-                }
+            vibrate.vibrate(50);
 
-                vibrate.vibrate(50);
+            imgCancelRepeatFaded.setVisibility(View.INVISIBLE);
+            imgCancelRepeat.setVisibility(View.VISIBLE);
+            imgDailyFaded.setVisibility(View.VISIBLE);
+            imgDaily.setVisibility(View.INVISIBLE);
+            imgWeeklyFaded.setVisibility(View.VISIBLE);
+            imgWeekly.setVisibility(View.INVISIBLE);
+            imgMonthlyFaded.setVisibility(View.VISIBLE);
+            imgMonthly.setVisibility(View.INVISIBLE);
 
-                imgCancelRepeatFaded.setVisibility(View.INVISIBLE);
-                imgCancelRepeat.setVisibility(View.VISIBLE);
-                imgDailyFaded.setVisibility(View.VISIBLE);
-                imgDaily.setVisibility(View.INVISIBLE);
-                imgWeeklyFaded.setVisibility(View.VISIBLE);
-                imgWeekly.setVisibility(View.INVISIBLE);
-                imgMonthlyFaded.setVisibility(View.VISIBLE);
-                imgMonthly.setVisibility(View.INVISIBLE);
+            if (reminderPresenter.getYear() == 0 && reminderPresenter.getHour() == 0) {
 
-                if (reminderPresenter.getYear() == 0 && reminderPresenter.getHour() == 0) {
-
-                    killReminder.setVisible(false);
-
-                }
-
-                reminderPresenter.setRepeatInterval(null);
+                killReminder.setVisible(false);
 
             }
+
+            reminderPresenter.setRepeatInterval(null);
+            repeatSet = false;
 
         });
 
         //Actions to occur if user selects to set a daily recurring alarm
-        imgDailyFaded.setOnClickListener(new View.OnClickListener() {
+        imgDailyFaded.setOnClickListener(v -> {
 
-            @Override
-            public void onClick(View v) {
-
-                if (!boolMute && reminderPresenter.getRepeatInterval() != null) {
-                    if (!reminderPresenter.getRepeatInterval().equals(REPEAT_DAY)) {
-                        mpBlip.start();
-                    }
+            if (!boolMute && reminderPresenter.getRepeatInterval() != null) {
+                if (!reminderPresenter.getRepeatInterval().equals(REPEAT_DAY)) {
+                    mpBlip.start();
                 }
-
-                vibrate.vibrate(50);
-
-                //Show user which button they selected by highlighting it
-                imgCancelRepeatFaded.setVisibility(View.VISIBLE);
-                imgCancelRepeat.setVisibility(View.INVISIBLE);
-                imgDailyFaded.setVisibility(View.INVISIBLE);
-                imgDaily.setVisibility(View.VISIBLE);
-                imgWeeklyFaded.setVisibility(View.VISIBLE);
-                imgWeekly.setVisibility(View.INVISIBLE);
-                imgMonthlyFaded.setVisibility(View.VISIBLE);
-                imgMonthly.setVisibility(View.INVISIBLE);
-
-                killReminder.setVisible(true);
-
-                reminderPresenter.setRepeatInterval(REPEAT_DAY);
-
             }
+
+            vibrate.vibrate(50);
+
+            //Show user which button they selected by highlighting it
+            imgCancelRepeatFaded.setVisibility(View.VISIBLE);
+            imgCancelRepeat.setVisibility(View.INVISIBLE);
+            imgDailyFaded.setVisibility(View.INVISIBLE);
+            imgDaily.setVisibility(View.VISIBLE);
+            imgWeeklyFaded.setVisibility(View.VISIBLE);
+            imgWeekly.setVisibility(View.INVISIBLE);
+            imgMonthlyFaded.setVisibility(View.VISIBLE);
+            imgMonthly.setVisibility(View.INVISIBLE);
+
+            killReminder.setVisible(true);
+
+            reminderPresenter.setRepeatInterval(REPEAT_DAY);
+            repeatSet = true;
 
         });
 
         //Actions to occur if user selects to set a weekly recurring alarm
-        imgWeeklyFaded.setOnClickListener(new View.OnClickListener() {
+        imgWeeklyFaded.setOnClickListener(v -> {
 
-            @Override
-            public void onClick(View v) {
-
-                if (!boolMute && reminderPresenter.getRepeatInterval() != null) {
-                    if (!reminderPresenter.getRepeatInterval().equals(REPEAT_WEEK)) {
-                        mpBlip.start();
-                    }
+            if (!boolMute && reminderPresenter.getRepeatInterval() != null) {
+                if (!reminderPresenter.getRepeatInterval().equals(REPEAT_WEEK)) {
+                    mpBlip.start();
                 }
-
-                vibrate.vibrate(50);
-
-                //Show user which button they selected by highlighting it
-                imgCancelRepeatFaded.setVisibility(View.VISIBLE);
-                imgCancelRepeat.setVisibility(View.INVISIBLE);
-                imgDailyFaded.setVisibility(View.VISIBLE);
-                imgDaily.setVisibility(View.INVISIBLE);
-                imgWeeklyFaded.setVisibility(View.INVISIBLE);
-                imgWeekly.setVisibility(View.VISIBLE);
-                imgMonthlyFaded.setVisibility(View.VISIBLE);
-                imgMonthly.setVisibility(View.INVISIBLE);
-
-                killReminder.setVisible(true);
-
-                reminderPresenter.setRepeatInterval(REPEAT_WEEK);
-
             }
+
+            vibrate.vibrate(50);
+
+            //Show user which button they selected by highlighting it
+            imgCancelRepeatFaded.setVisibility(View.VISIBLE);
+            imgCancelRepeat.setVisibility(View.INVISIBLE);
+            imgDailyFaded.setVisibility(View.VISIBLE);
+            imgDaily.setVisibility(View.INVISIBLE);
+            imgWeeklyFaded.setVisibility(View.INVISIBLE);
+            imgWeekly.setVisibility(View.VISIBLE);
+            imgMonthlyFaded.setVisibility(View.VISIBLE);
+            imgMonthly.setVisibility(View.INVISIBLE);
+
+            killReminder.setVisible(true);
+
+            reminderPresenter.setRepeatInterval(REPEAT_WEEK);
+            repeatSet = true;
 
         });
 
         //Actions to occur if user selects to set a monthly  recurring alarm
-        imgMonthlyFaded.setOnClickListener(new View.OnClickListener() {
+        imgMonthlyFaded.setOnClickListener(v -> {
 
-            @Override
-            public void onClick(View v) {
-
-                if (!boolMute && reminderPresenter.getRepeatInterval() != null) {
-                    if (!reminderPresenter.getRepeatInterval().equals(REPEAT_MONTH)) {
-                        mpBlip.start();
-                    }
+            if (!boolMute && reminderPresenter.getRepeatInterval() != null) {
+                if (!reminderPresenter.getRepeatInterval().equals(REPEAT_MONTH)) {
+                    mpBlip.start();
                 }
-
-                vibrate.vibrate(50);
-
-                //Show user which button they selected by highlighting it
-                imgCancelRepeatFaded.setVisibility(View.VISIBLE);
-                imgCancelRepeat.setVisibility(View.INVISIBLE);
-                imgDailyFaded.setVisibility(View.VISIBLE);
-                imgDaily.setVisibility(View.INVISIBLE);
-                imgWeeklyFaded.setVisibility(View.VISIBLE);
-                imgWeekly.setVisibility(View.INVISIBLE);
-                imgMonthlyFaded.setVisibility(View.INVISIBLE);
-                imgMonthly.setVisibility(View.VISIBLE);
-
-                killReminder.setVisible(true);
-
-                reminderPresenter.setRepeatInterval(REPEAT_MONTH);
-
             }
+
+            vibrate.vibrate(50);
+
+            //Show user which button they selected by highlighting it
+            imgCancelRepeatFaded.setVisibility(View.VISIBLE);
+            imgCancelRepeat.setVisibility(View.INVISIBLE);
+            imgDailyFaded.setVisibility(View.VISIBLE);
+            imgDaily.setVisibility(View.INVISIBLE);
+            imgWeeklyFaded.setVisibility(View.VISIBLE);
+            imgWeekly.setVisibility(View.INVISIBLE);
+            imgMonthlyFaded.setVisibility(View.INVISIBLE);
+            imgMonthly.setVisibility(View.VISIBLE);
+
+            killReminder.setVisible(true);
+
+            reminderPresenter.setRepeatInterval(REPEAT_MONTH);
+            repeatSet = true;
 
         });
 
@@ -453,6 +434,10 @@ public class ReminderActivity extends MainActivity implements ReminderView {
         tempHour = -1;
         tempMinute = -1;
 
+        repeatSet = false;
+        dateSet = false;
+        timeSet = false;
+
         reminderPresenter.setYear(0);
         reminderPresenter.setMonth(0);
         reminderPresenter.setDay(0);
@@ -569,6 +554,8 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             tempMonth = month;
             tempYear = year;
 
+            dateSet = true;
+
             tvDate.setText(reminderPresenter.getFormattedDate());
 
         }
@@ -647,6 +634,8 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             tempMinute = minute;
             tempHour = hour;
 
+            timeSet = true;
+
             timeTextView.setText(reminderPresenter.getFormattedTime());
 
         }
@@ -672,8 +661,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
     public void onBackPressed() {
 
         //Timestamp needs to be saved if user has set a reminder
-        if (reminderPresenter.getYear() != 0 || reminderPresenter.getMinute() != 0 ||
-                reminderPresenter.getRepeatInterval() != null) {
+        if (dateSet || timeSet || repeatSet) {
 
             long stamp = reminderPresenter.getCurrentDate();
 
@@ -681,7 +669,6 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             int currentMonth = reminderPresenter.getCurrentMonth(stamp);
             int currentDay = reminderPresenter.getCurrentDay(stamp);
             int currentHour = reminderPresenter.getCurrentHour(stamp);
-            int currentMinute = reminderPresenter.getCurrentMinute(stamp);
 
             Calendar calendar = Calendar.getInstance();
             //set current date if date wasn't picked
@@ -704,37 +691,15 @@ public class ReminderActivity extends MainActivity implements ReminderView {
                 }
                 reminderPresenter.setMinute(calendar.get(Calendar.MINUTE));
             }
-//            //set current time if time wasn't picked
-//            if (reminderPresenter.getMinute() == 0) {
-//                //set unspecified time to be set one hour into the future
-//                if(calendar.get(Calendar.YEAR) == currentYear
-//                        && calendar.get(Calendar.MONTH) == currentMonth
-//                        && calendar.get(Calendar.DAY_OF_MONTH) == currentDay
-//                        && calendar.get(Calendar.HOUR_OF_DAY) == currentHour
-//                        && calendar.get(Calendar.HOUR_OF_DAY) != 23){
-//                    reminderPresenter.setHour(calendar.get(Calendar.HOUR_OF_DAY) + 1);
-//                }else {
-//                    reminderPresenter.setHour(calendar.get(Calendar.HOUR_OF_DAY));
-//                }
-//                reminderPresenter.setMinute(calendar.get(Calendar.MINUTE));
-//            }
 
-//            Log.d(TAG, "\n" + reminderPresenter.getYear() + " " + reminderPresenter.getMonth() + " " + reminderPresenter.getDay() + " " + reminderPresenter.getHour() + " " + reminderPresenter.getMinute());
-//            Log.d(TAG, "\n" + currentYear + " " + currentMonth + " " + currentDay + " " + currentHour + " " + currentMinute + " ");
-            Calendar blahCal = Calendar.getInstance();
-            blahCal.set(Calendar.YEAR, reminderPresenter.getYear());
-            blahCal.set(Calendar.MONTH, reminderPresenter.getMonth());
-            blahCal.set(Calendar.DAY_OF_MONTH, reminderPresenter.getDay());
-            blahCal.set(Calendar.HOUR_OF_DAY, reminderPresenter.getHour());
-            blahCal.set(Calendar.MINUTE, reminderPresenter.getMinute());
-            Log.d(TAG, "saved: " + blahCal.getTimeInMillis());
-            Log.d(TAG, "current: " + calendar.getTimeInMillis());
+            Calendar reminderCal = Calendar.getInstance();
+            reminderCal.set(Calendar.YEAR, reminderPresenter.getYear());
+            reminderCal.set(Calendar.MONTH, reminderPresenter.getMonth());
+            reminderCal.set(Calendar.DAY_OF_MONTH, reminderPresenter.getDay());
+            reminderCal.set(Calendar.HOUR_OF_DAY, reminderPresenter.getHour());
+            reminderCal.set(Calendar.MINUTE, reminderPresenter.getMinute());
 
-            if(blahCal.getTimeInMillis() >= calendar.getTimeInMillis()){/*reminderPresenter.getYear() >= currentYear){
-                    if(reminderPresenter.getMonth() >= currentMonth){
-                    if(reminderPresenter.getDay() >= currentDay){
-                    if(reminderPresenter.getHour() >= currentHour){
-                    if(reminderPresenter.getMinute() > currentMinute) {*/
+            if(reminderCal.getTimeInMillis() >= calendar.getTimeInMillis()){
                 //Setting timestamp of the reminder
                 calendar.set(Calendar.YEAR, reminderPresenter.getYear());
                 calendar.set(Calendar.MONTH, reminderPresenter.getMonth());
@@ -750,10 +715,8 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
                 reminderPresenter.setOriginalDay(reminderPresenter.getDay());
 
-//            reminderPresenter.setDue(true);
-
             //don't save. Due time set to in the past
-            /*}}}}*/}else{
+            }else{
                 deleteData();
                 MainActivity.boolDueInPast = true;
             }
