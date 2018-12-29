@@ -176,12 +176,13 @@ public class AlertReceiver extends BroadcastReceiver {
         } else {
 
             //don't inform user that task is due if they marked it as done
-            if (/*!dbKilledEarly && */true) {//TODO check if killed early
+            if (!task.isKilledEarly()) {//TODO check if killed early
 
                 notificationManager.notify(1, builder.build());
 
             } else {
 
+                task.setKilledEarly(false);
 //                theDB.updateKilledEarly(String.valueOf(broadId), false);
 
             }

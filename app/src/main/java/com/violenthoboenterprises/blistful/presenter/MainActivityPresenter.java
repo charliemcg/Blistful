@@ -28,4 +28,6 @@ public interface MainActivityPresenter {
     int getDuesSet();
 
     long getInterval(String repeatInterval, long stamp, int originalDay);
+
+    void detectIfKilledEarly(Task taskAt);
 }
