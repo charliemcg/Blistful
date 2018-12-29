@@ -30,4 +30,6 @@ public interface MainActivityPresenter {
     long getInterval(String repeatInterval, long stamp, int originalDay);
 
     void detectIfKilledEarly(Task taskAt);
+
+    void setManualKill(Task taskAt);
 }

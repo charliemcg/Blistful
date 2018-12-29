@@ -714,6 +714,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
                 }
 
                 reminderPresenter.setOriginalDay(reminderPresenter.getDay());
+                reminderPresenter.setKilledEarly();
 
             //don't save. Due time set to in the past
             }else{

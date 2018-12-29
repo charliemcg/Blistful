@@ -175,8 +175,10 @@ public class AlertReceiver extends BroadcastReceiver {
         //need to set up next notification for repeating task
         } else {
 
+            Log.d(TAG, "I'm in here");
+
             //don't inform user that task is due if they marked it as done
-            if (!task.isKilledEarly()) {//TODO check if killed early
+            if (!task.isKilledEarly()) {
 
                 notificationManager.notify(1, builder.build());
 
@@ -234,8 +236,8 @@ public class AlertReceiver extends BroadcastReceiver {
                 Calendar alarmCalendar = Calendar.getInstance();
                 Long diff;
 //
-//                //Setting a repeat alarm
-                if (/*!dbKilledEarly*/true) {//TODO check if killed early
+//              //Setting a repeat alarm
+                if (/*!task.isKilledEarly()*/!task.isKilledEarly()) {//TODO check if killed early
 
                     Calendar currentCal = Calendar.getInstance();
                     Calendar futureCal = Calendar.getInstance();
@@ -269,8 +271,8 @@ public class AlertReceiver extends BroadcastReceiver {
                 int alarmDay = dayCal.get(Calendar.DAY_OF_MONTH);
 
                 //alarm data is already updated if user marked task as done
-                if (/*!dbManualKill
-                        && */(alarmDay != currentCal.get(Calendar.DAY_OF_MONTH))) {//TODO detect manual kill
+                if (!task.isManualKill() && (alarmDay != currentCal.get(Calendar.DAY_OF_MONTH))) {
+                    Log.d(TAG, "not manual kill");
                     diff = futureStamp - AlarmManager.INTERVAL_DAY - currentCal.getTimeInMillis();
 
                     if (diff > 0) {
@@ -283,6 +285,10 @@ public class AlertReceiver extends BroadcastReceiver {
                     task.setTimestamp(/*alarmCalendar.getTimeInMillis()*/futureStamp);
                     MainActivity.taskViewModel.update(task);
 
+                    Calendar blah = Calendar.getInstance();
+                    blah.setTimeInMillis(futureStamp);
+                    Log.d(TAG, "Day: " + blah.get(Calendar.DAY_OF_MONTH));
+
 //                    //updating due date in database
 ////                    theDB.updateAlarmData(String.valueOf(broadId),
 ////                            String.valueOf(alarmCalendar.get(Calendar.HOUR)),
@@ -293,6 +299,7 @@ public class AlertReceiver extends BroadcastReceiver {
 ////                            String.valueOf(alarmCalendar.get(Calendar.YEAR)));
 //
                 }else{
+                    Log.d(TAG, "manual kill");
                     diff = futureStamp - AlarmManager.INTERVAL_DAY - currentCal.getTimeInMillis();
 
                     if (diff > 0) {
@@ -303,6 +310,7 @@ public class AlertReceiver extends BroadcastReceiver {
                     }
 
                     task.setTimestamp(alarmCalendar.getTimeInMillis());
+                    task.setManualKill(false);
                     MainActivity.taskViewModel.update(task);
                 }
 //

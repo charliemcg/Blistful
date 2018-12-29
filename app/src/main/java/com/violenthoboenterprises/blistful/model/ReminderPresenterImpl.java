@@ -266,6 +266,12 @@ public class ReminderPresenterImpl implements ReminderPresenter {
         taskViewModel.update(task);
     }
 
+    @Override
+    public void setKilledEarly() {
+        task.setKilledEarly(true);
+        taskViewModel.update(task);
+    }
+
 //    @Override
 //    public void setDue(boolean b) {
 //        task.setDue(b);

@@ -274,11 +274,16 @@ public class MainActivityPresenterImpl implements MainActivityPresenter {
 
     @Override
     public void detectIfKilledEarly(Task taskAt) {
-        Log.d(TAG, "difference should be non negative: " + (taskAt.getTimestamp() - Calendar.getInstance().getTimeInMillis()));
         if(taskAt.getTimestamp() < Calendar.getInstance().getTimeInMillis()){
             taskAt.setKilledEarly(true);
             update(taskAt);
         }
+    }
+
+    @Override
+    public void setManualKill(Task taskAt) {
+        taskAt.setManualKill(true);
+        update(taskAt);
     }
 
     @Override

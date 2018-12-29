@@ -366,6 +366,7 @@ public class MainActivity extends AppCompatActivity implements
                             .getTimestamp() + interval;
                     adapter.getTaskAt(viewHolder.getAdapterPosition()).setTimestamp(newTimestamp);
                     mainActivityPresenter.detectIfKilledEarly(adapter.getTaskAt(viewHolder.getAdapterPosition()));
+                    mainActivityPresenter.setManualKill(adapter.getTaskAt(viewHolder.getAdapterPosition()));
                     mainActivityPresenter.update(adapter.getTaskAt(viewHolder.getAdapterPosition()));
                     if (preferences.getInt(StringConstants.REPEAT_HINT_KEY, 0) <= 10) {
                         if ((preferences.getInt(StringConstants.REPEAT_HINT_KEY, 0) == 1)

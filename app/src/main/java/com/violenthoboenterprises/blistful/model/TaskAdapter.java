@@ -83,8 +83,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         //checking if needed to display due icon
         if (currentTask.getTimestamp() != 0) {
             holder.dueIcon.setVisibility(View.VISIBLE);
+            long repeatsAdjustedTimestamp = getRepeatsAdjustedTimestamp(currentTask);
             //Switch to overdue icon when appropriate
-            if ((currentTask.getTimestamp() < Calendar.getInstance().getTimeInMillis())) {
+            if (/*currentTask.getTimestamp()*/repeatsAdjustedTimestamp < Calendar.getInstance().getTimeInMillis()) {
                 holder.dueIcon.setImageDrawable(context.getResources()
                         .getDrawable(R.drawable.overdue_icon_light));//TODO check that this works on all versions
                 holder.tvDue.setTextColor(Color.RED);
@@ -93,7 +94,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
                         .getDrawable(R.drawable.due_icon_light));
             }
             holder.tvDue.setVisibility(View.VISIBLE);
-            String formattedDate = getFormattedDate(currentTask.getTimestamp());
+            String formattedDate = getFormattedDate(currentTask);
             holder.tvDue.setText(formattedDate);
         }
 
@@ -170,9 +171,21 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         });
     }
 
-    private String getFormattedDate(long timestamp) {
+    private long getRepeatsAdjustedTimestamp(Task task) {
+        if(task.getRepeatInterval() != null && !task.isKilledEarly()){
+            return task.getTimestamp() - (1000 * 60 * 60 * 24);//TODO account for all repeat intervals
+        }
+        return task.getTimestamp();
+    }
+
+    private String getFormattedDate(Task task) {
         String formattedMonth = "";
         Calendar cal = Calendar.getInstance();
+        long timestamp = getRepeatsAdjustedTimestamp(task);
+//        long timestamp = task.getTimestamp();
+//        if(task.getRepeatInterval() != null && !task.isKilledEarly()){
+//            timestamp = task.getTimestamp() - (1000 * 60 * 60 * 24);//TODO account for all repeat intervals
+//        }
         cal.setTimeInMillis(timestamp);
         int intMonth = cal.get(Calendar.MONTH) + 1;
 
