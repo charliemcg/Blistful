@@ -364,54 +364,6 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
                         deleteData();
 
-//                        reminderPresenter.setRepeatInterval(null);
-//                        reminderPresenter.setTimestamp(0);
-//
-//                        tempYear = -1;
-//                        tempMonth = -1;
-//                        tempDay = -1;
-//                        tempHour = -1;
-//                        tempMinute = -1;
-//
-//                        reminderPresenter.setYear(0);
-//                        reminderPresenter.setMonth(0);
-//                        reminderPresenter.setDay(0);
-//                        reminderPresenter.setHour(0);
-//                        reminderPresenter.setMinute(0);
-//
-//                        imgCalendarFaded.setVisibility(View.VISIBLE);
-//                        imgCalendar.setVisibility(View.INVISIBLE);
-//                        imgTimeFaded.setVisibility(View.VISIBLE);
-//                        imgTime.setVisibility(View.INVISIBLE);
-//
-//                        tvDate.setText(R.string.addDate);
-//                        tvTime.setText(R.string.addTime);
-//                        if (screenSize == 3) {
-//                            tvDate.setTextSize(25);
-//                            tvTime.setTextSize(25);
-//                        } else if (screenSize == 4) {
-//                            tvDate.setTextSize(35);
-//                            tvTime.setTextSize(35);
-//                        } else {
-//                            tvDate.setTextSize(15);
-//                            tvTime.setTextSize(15);
-//                        }
-//
-//                        imgCancelRepeat.setVisibility(View.INVISIBLE);
-//                        imgCancelRepeat.setVisibility(View.VISIBLE);
-//                        imgDailyFaded.setVisibility(View.VISIBLE);
-//                        imgDaily.setVisibility(View.INVISIBLE);
-//                        imgWeeklyFaded.setVisibility(View.VISIBLE);
-//                        imgWeekly.setVisibility(View.INVISIBLE);
-//                        imgMonthlyFaded.setVisibility(View.VISIBLE);
-//                        imgMonthly.setVisibility(View.INVISIBLE);
-//
-//                        tvDate.setText(R.string.addDate);
-//                        tvTime.setText(R.string.addTime);
-
-//                        int duesset = preferences.getInt(StringConstants.DUES_SET, 0);
-//                        preferences.edit().putInt(StringConstants.DUES_SET, --duesset).apply();
-
                     };
                     handler3.postDelayed(runnable3, 100);
                 };
@@ -428,12 +380,11 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
     private void deleteData() {
         reminderPresenter.setRepeatInterval(null);
-        Log.d("Stamp", "setting timestamp 1");
         reminderPresenter.setTimestamp(0);
 
         try {
-            PendingIntent.getBroadcast(getApplicationContext(), task.getId(), MainActivity.alertIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT).cancel();
+            PendingIntent.getBroadcast(getApplicationContext(), task.getId(),
+                    MainActivity.alertIntent, PendingIntent.FLAG_UPDATE_CURRENT).cancel();
         }catch(NullPointerException e){e.printStackTrace();}
 
         tempYear = -1;
@@ -496,10 +447,6 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             int day;
 
             DatePickerDialog datePickerDialog;
-
-//            year = calendar.get(Calendar.YEAR);
-//            month = calendar.get(Calendar.MONTH);
-//            day = calendar.get(Calendar.DAY_OF_MONTH);
 
             if(task.getTimestamp() != 0){
                 Calendar cal = Calendar.getInstance();

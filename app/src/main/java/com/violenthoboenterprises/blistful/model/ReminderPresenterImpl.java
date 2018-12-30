@@ -76,7 +76,6 @@ public class ReminderPresenterImpl implements ReminderPresenter {
 
     @Override
     public void setTimestamp(long stamp) {
-        Log.d("Stamp", "setting timestamp 3");
         task.setTimestamp(stamp);
         updateTask(task);
     }

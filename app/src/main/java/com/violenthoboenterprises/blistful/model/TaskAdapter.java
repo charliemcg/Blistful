@@ -85,7 +85,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
             holder.dueIcon.setVisibility(View.VISIBLE);
             long repeatsAdjustedTimestamp = getRepeatsAdjustedTimestamp(currentTask);
             //Switch to overdue icon when appropriate
-            if (/*currentTask.getTimestamp()*/(repeatsAdjustedTimestamp < Calendar.getInstance().getTimeInMillis()) && currentTask.isInitialDueElapsed()) {
+            if ((repeatsAdjustedTimestamp < Calendar.getInstance().getTimeInMillis())/* && currentTask.isInitialDueElapsed()*/) {
                 holder.dueIcon.setImageDrawable(context.getResources()
                         .getDrawable(R.drawable.overdue_icon_light));//TODO check that this works on all versions
                 holder.tvDue.setTextColor(Color.RED);
@@ -172,17 +172,25 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
     }
 
     private long getRepeatsAdjustedTimestamp(Task task) {
-
         Calendar currentCal = Calendar.getInstance();
         Calendar displayedCal = Calendar.getInstance();
         displayedCal.setTimeInMillis(task.getDisplayedTimestamp());
         long diff = currentCal.getTimeInMillis() - displayedCal.getTimeInMillis();
-        Log.d(TAG, "diff: " + diff);
-        //Can't have daily repeating task overdue for more than 24 hours
-        if(diff > 86400000) {
-            task.setDisplayedTimestamp(task.getTimestamp() - (1000 * 60 * 60 * 24));
-            mainActivityPresenter.update(task);
-         }
+        if(task.getRepeatInterval().equals("day")) {
+            //Can't have daily repeating task overdue for more than 24 hours
+            if (diff > 86400000) {
+                task.setDisplayedTimestamp(task.getTimestamp() - (1000 * 60 * 60 * 24));//TODO account for all repeat intervals
+                mainActivityPresenter.update(task);
+            }
+        }else if(task.getRepeatInterval().equals("week")){
+            //Can't have weekly repeating task overdue for more than 7 days
+            long threshold = 86400000 * 7;
+            if (diff > threshold) {
+                long amountToSubtract = 1000 * 60 * 60 * 24 * 7;
+                task.setDisplayedTimestamp(task.getTimestamp() - amountToSubtract);//TODO account for all repeat intervals
+                mainActivityPresenter.update(task);
+            }
+        }
         return task.getDisplayedTimestamp();
     }
 
@@ -190,10 +198,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         String formattedMonth = "";
         Calendar cal = Calendar.getInstance();
         long timestamp = getRepeatsAdjustedTimestamp(task);
-//        long timestamp = task.getTimestamp();
-//        if(task.getRepeatInterval() != null && !task.isKilledEarly()){
-//            timestamp = task.getTimestamp() - (1000 * 60 * 60 * 24);//TODO account for all repeat intervals
-//        }
         cal.setTimeInMillis(timestamp);
         int intMonth = cal.get(Calendar.MONTH) + 1;
 

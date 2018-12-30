@@ -345,50 +345,57 @@ public class MainActivity extends AppCompatActivity implements
                         //showing motivational toast
                         showKilledAffirmationToast();
                     }
-                //Actions to occur when deleting repeating task
+                    //Actions to occur when deleting repeating task
                 } else {
 
-                    long interval = 0;
-                    if(adapter.getTaskAt(viewHolder.getAdapterPosition())
-                            .getRepeatInterval().equals(StringConstants.DAY)){
-                        interval = mainActivityPresenter.getInterval(StringConstants.DAY,
-                                adapter.getTaskAt(viewHolder.getAdapterPosition()).getTimestamp(),
-                                adapter.getTaskAt(viewHolder.getAdapterPosition()).getOriginalDay());
-                    }else if(adapter.getTaskAt(viewHolder.getAdapterPosition())
-                            .getRepeatInterval().equals(StringConstants.WEEK)){
-                        interval = mainActivityPresenter.getInterval(StringConstants.WEEK,
-                                adapter.getTaskAt(viewHolder.getAdapterPosition()).getTimestamp(),
-                                adapter.getTaskAt(viewHolder.getAdapterPosition()).getOriginalDay());
-                    }else if(adapter.getTaskAt(viewHolder.getAdapterPosition())
-                            .getRepeatInterval().equals(StringConstants.MONTH)){
-                        interval = mainActivityPresenter.getInterval(StringConstants.MONTH,
-                                adapter.getTaskAt(viewHolder.getAdapterPosition()).getTimestamp(),
-                                adapter.getTaskAt(viewHolder.getAdapterPosition()).getOriginalDay());
-                    }
+//                    long interval = 0;
+//                    if(adapter.getTaskAt(viewHolder.getAdapterPosition())
+//                            .getRepeatInterval().equals(StringConstants.DAY)){
+//                        interval = mainActivityPresenter.getInterval(StringConstants.DAY,
+//                                adapter.getTaskAt(viewHolder.getAdapterPosition()).getTimestamp(),
+//                                adapter.getTaskAt(viewHolder.getAdapterPosition()).getOriginalDay());
+//                    }else if(adapter.getTaskAt(viewHolder.getAdapterPosition())
+//                            .getRepeatInterval().equals(StringConstants.WEEK)){
+//                        interval = mainActivityPresenter.getInterval(StringConstants.WEEK,
+//                                adapter.getTaskAt(viewHolder.getAdapterPosition()).getTimestamp(),
+//                                adapter.getTaskAt(viewHolder.getAdapterPosition()).getOriginalDay());
+//                    }else if(adapter.getTaskAt(viewHolder.getAdapterPosition())
+//                            .getRepeatInterval().equals(StringConstants.MONTH)){
+//                        interval = mainActivityPresenter.getInterval(StringConstants.MONTH,
+//                                adapter.getTaskAt(viewHolder.getAdapterPosition()).getTimestamp(),
+//                                adapter.getTaskAt(viewHolder.getAdapterPosition()).getOriginalDay());
+//                    }
                     long newTimestamp = adapter.getTaskAt(viewHolder.getAdapterPosition()).getTimestamp()/*adapter.getTaskAt(viewHolder.getAdapterPosition())
                             .getTimestamp() + interval*/;
-                            Calendar cal = Calendar.getInstance();
-                            cal.setTimeInMillis(newTimestamp);
-                    //////////////////////////////////////////
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTimeInMillis(newTimestamp);
                     Calendar currentCal = Calendar.getInstance();
                     Calendar displayedCal = Calendar.getInstance();
                     displayedCal.setTimeInMillis(adapter.getTaskAt(viewHolder.getAdapterPosition()).getDisplayedTimestamp());
                     long diff = currentCal.getTimeInMillis() - displayedCal.getTimeInMillis();
-                    if(diff < 0){
-                        Log.d(TAG, "I'm in here");
+                    //actions to occur if user kills a task early
+                    if (diff < 0) {
+                        //cancel reminder
                         PendingIntent.getBroadcast(getApplicationContext(),
                                 adapter.getTaskAt(viewHolder.getAdapterPosition()).getId(),
                                 MainActivity.alertIntent,
                                 PendingIntent.FLAG_UPDATE_CURRENT).cancel();
-                        newTimestamp += AlarmManager.INTERVAL_DAY;
+                        if(adapter.getTaskAt(viewHolder.getAdapterPosition()).getRepeatInterval().equals("day")) {
+                            //Add another day to the timestamp
+                            newTimestamp += AlarmManager.INTERVAL_DAY;
+                        }else if(adapter.getTaskAt(viewHolder.getAdapterPosition()).getRepeatInterval().equals("week")){
+                            //Add another week to the timestamp
+                            newTimestamp += (AlarmManager.INTERVAL_DAY * 7);
+                        }
                         adapter.getTaskAt(viewHolder.getAdapterPosition()).setTimestamp(newTimestamp);
                         adapter.getTaskAt(viewHolder.getAdapterPosition()).setDisplayedTimestamp(newTimestamp);
 
+                        //creating new reminder
                         MainActivity.alertIntent = new Intent(getApplicationContext(), AlertReceiver.class);
                         MainActivity.alertIntent.putExtra
                                 ("snoozeStatus", false);
                         MainActivity.alertIntent.putExtra("task", adapter.getTaskAt(viewHolder.getAdapterPosition()));
-                        List<Integer> timestamps = taskViewModel.getAllTimestamps();//TODO make sure to get data a due time and no sooner
+                        List<Integer> timestamps = taskViewModel.getAllTimestamps();//TODO make sure to get data at due time and no sooner
                         MainActivity.alertIntent.putExtra("timestamps", (Serializable) timestamps);
 
                         //Setting alarm
@@ -402,18 +409,11 @@ public class MainActivity extends AppCompatActivity implements
                                 newTimestamp,
                                 MainActivity.pendingIntent);
                     }
-                    /////////////////////////////////////////
-                    mainActivityPresenter.detectIfKilledEarly(adapter.getTaskAt(viewHolder.getAdapterPosition()));
-                    mainActivityPresenter.setManualKill(adapter.getTaskAt(viewHolder.getAdapterPosition()));
-//                    if(adapter.getTaskAt(viewHolder.getAdapterPosition()).isKilledEarly()){
-//                        newTimestamp -= interval;
-//                    }
-//                    adapter.getTaskAt(viewHolder.getAdapterPosition()).setTimestamp(newTimestamp);
+//                    mainActivityPresenter.detectIfKilledEarly(adapter.getTaskAt(viewHolder.getAdapterPosition()));
+//                    mainActivityPresenter.setManualKill(adapter.getTaskAt(viewHolder.getAdapterPosition()));
                     adapter.getTaskAt(viewHolder.getAdapterPosition()).setDisplayedTimestamp(newTimestamp);
                     mainActivityPresenter.update(adapter.getTaskAt(viewHolder.getAdapterPosition()));
-//                    Calendar cal = Calendar.getInstance();
-//                    cal.setTimeInMillis(newTimestamp);
-//                    Log.d(TAG, "Day: " + cal.get(Calendar.DAY_OF_MONTH));
+                    //display toast
                     if (preferences.getInt(StringConstants.REPEAT_HINT_KEY, 0) <= 10) {
                         if ((preferences.getInt(StringConstants.REPEAT_HINT_KEY, 0) == 1)
                                 || (preferences.getInt(StringConstants.REPEAT_HINT_KEY, 0) == 10)) {
@@ -423,8 +423,8 @@ public class MainActivity extends AppCompatActivity implements
                         //showing motivational toast
                         showKilledAffirmationToast();
                     }
-                    int remindersSoFar = preferences.getInt(StringConstants.REPEAT_HINT_KEY, 0);
-                    preferences.edit().putInt(StringConstants.REPEAT_HINT_KEY, ++remindersSoFar).apply();
+//                    int remindersSoFar = preferences.getInt(StringConstants.REPEAT_HINT_KEY, 0);
+//                    preferences.edit().putInt(StringConstants.REPEAT_HINT_KEY, ++remindersSoFar).apply();
                     adapter.notifyDataSetChanged();
                 }
 
@@ -1034,7 +1034,7 @@ public class MainActivity extends AppCompatActivity implements
         adapter.notifyItemChanged(preferences.getInt(StringConstants.REFRESH_THIS_ITEM, 0));
         toggleFab(true);
 
-        if(boolDueInPast){
+        if (boolDueInPast) {
             showDueInPastToast();
             boolDueInPast = false;
         }

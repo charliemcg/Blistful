@@ -274,20 +274,12 @@ public class MainActivityPresenterImpl implements MainActivityPresenter {
 
     @Override
     public void detectIfKilledEarly(Task taskAt) {
-        Calendar stampCal = Calendar.getInstance();
-        stampCal.setTimeInMillis(taskAt.getTimestamp());
-        Calendar currentCal = Calendar.getInstance();
-//        Log.d(TAG, "Due: " + stampCal.get(Calendar.HOUR_OF_DAY) + ":" + stampCal.get(Calendar.MINUTE) + " " + stampCal.get(Calendar.DAY_OF_MONTH) + "/" + stampCal.get(Calendar.MONTH) + "/" + stampCal.get(Calendar.YEAR));
-//        Log.d(TAG, "Now: " + currentCal.get(Calendar.HOUR_OF_DAY) + ":" + currentCal.get(Calendar.MINUTE) + " " + currentCal.get(Calendar.DAY_OF_MONTH) + "/" + currentCal.get(Calendar.MONTH) + "/" + currentCal.get(Calendar.YEAR));
-////        if(taskAt.getTimestamp() < Calendar.getInstance().getTimeInMillis()){
-//          Log.d(TAG, "difference: " + (taskAt.getTimestamp() - Calendar.getInstance().getTimeInMillis()));
-        if((taskAt.getTimestamp() - Calendar.getInstance().getTimeInMillis()) > (1000 * 60 * 60 * 24)){//TODO adjust for weekly and monthly
-            Log.d(TAG, "I'm in here!!!!!!!!!!!!!");
-            MainActivity.preferences.edit().putBoolean("KILLED", true).apply();
-//            Log.d("killed early", "killed early four");
-            taskAt.setKilledEarly(true);
-//            update(taskAt);
-        }
+//        Calendar stampCal = Calendar.getInstance();
+//        stampCal.setTimeInMillis(taskAt.getTimestamp());
+//        Calendar currentCal = Calendar.getInstance();
+//        if((taskAt.getTimestamp() - Calendar.getInstance().getTimeInMillis()) > (1000 * 60 * 60 * 24)){//TODO adjust for weekly and monthly
+//            taskAt.setKilledEarly(true);
+//        }
     }
 
     @Override

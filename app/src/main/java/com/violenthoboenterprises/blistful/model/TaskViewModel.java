@@ -36,7 +36,7 @@ public class TaskViewModel extends AndroidViewModel {
     //TODO see if LiveData is needed
     public LiveData<List<Task>> getAllTasks(){return allTasks;}
 
-    public Task getTask(int id){/*return task;*/return repository.getTaskById(id);}
+    public Task getTask(int id){return repository.getTaskById(id);}
 
     public List<Integer> getAllTimestamps() {
         return repository.getAllTimestamps();
@@ -46,8 +46,4 @@ public class TaskViewModel extends AndroidViewModel {
 
     public int getDuesSet(){return repository.getDuesSet();}
 
-    public boolean isKilledEarly(int id) {
-        Task task = repository.getTaskById(id);
-        return task.isKilledEarly();
-    }
 }
