@@ -67,6 +67,7 @@ import com.violenthoboenterprises.blistful.presenter.MainActivityPresenter;
 import com.violenthoboenterprises.blistful.presenter.SubtasksPresenter;
 import com.violenthoboenterprises.blistful.view.MainActivityView;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -168,6 +169,7 @@ public class MainActivity extends AppCompatActivity implements
     private static BillingProcessor billingProcessor;
 
     public static TaskViewModel taskViewModel;
+//    public static AlertViewModel alertViewModel;
 
     private FloatingActionButton fab;
 
@@ -230,6 +232,7 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         taskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
+//        alertViewModel = ViewModelProviders.of(this).get(AlertViewModel.class);
         SubtaskViewModel subtaskViewModel =
                 ViewModelProviders.of(this).get(SubtaskViewModel.class);
         SubtasksPresenter subtasksPresenter = new SubtasksPresenterImpl
@@ -362,12 +365,55 @@ public class MainActivity extends AppCompatActivity implements
                                 adapter.getTaskAt(viewHolder.getAdapterPosition()).getTimestamp(),
                                 adapter.getTaskAt(viewHolder.getAdapterPosition()).getOriginalDay());
                     }
-                    long newTimestamp = adapter.getTaskAt(viewHolder.getAdapterPosition())
-                            .getTimestamp() + interval;
-                    adapter.getTaskAt(viewHolder.getAdapterPosition()).setTimestamp(newTimestamp);
+                    long newTimestamp = adapter.getTaskAt(viewHolder.getAdapterPosition()).getTimestamp()/*adapter.getTaskAt(viewHolder.getAdapterPosition())
+                            .getTimestamp() + interval*/;
+                            Calendar cal = Calendar.getInstance();
+                            cal.setTimeInMillis(newTimestamp);
+                    //////////////////////////////////////////
+                    Calendar currentCal = Calendar.getInstance();
+                    Calendar displayedCal = Calendar.getInstance();
+                    displayedCal.setTimeInMillis(adapter.getTaskAt(viewHolder.getAdapterPosition()).getDisplayedTimestamp());
+                    long diff = currentCal.getTimeInMillis() - displayedCal.getTimeInMillis();
+                    if(diff < 0){
+                        Log.d(TAG, "I'm in here");
+                        PendingIntent.getBroadcast(getApplicationContext(),
+                                adapter.getTaskAt(viewHolder.getAdapterPosition()).getId(),
+                                MainActivity.alertIntent,
+                                PendingIntent.FLAG_UPDATE_CURRENT).cancel();
+                        newTimestamp += AlarmManager.INTERVAL_DAY;
+                        adapter.getTaskAt(viewHolder.getAdapterPosition()).setTimestamp(newTimestamp);
+                        adapter.getTaskAt(viewHolder.getAdapterPosition()).setDisplayedTimestamp(newTimestamp);
+
+                        MainActivity.alertIntent = new Intent(getApplicationContext(), AlertReceiver.class);
+                        MainActivity.alertIntent.putExtra
+                                ("snoozeStatus", false);
+                        MainActivity.alertIntent.putExtra("task", adapter.getTaskAt(viewHolder.getAdapterPosition()));
+                        List<Integer> timestamps = taskViewModel.getAllTimestamps();//TODO make sure to get data a due time and no sooner
+                        MainActivity.alertIntent.putExtra("timestamps", (Serializable) timestamps);
+
+                        //Setting alarm
+                        MainActivity.pendingIntent = PendingIntent.getBroadcast(
+                                getApplicationContext(), adapter.getTaskAt(viewHolder.getAdapterPosition()).getId(), MainActivity.alertIntent,
+                                PendingIntent.FLAG_UPDATE_CURRENT);
+
+                        MainActivity.alarmManager.cancel(MainActivity.pendingIntent);
+
+                        MainActivity.alarmManager.set(AlarmManager.RTC,
+                                newTimestamp,
+                                MainActivity.pendingIntent);
+                    }
+                    /////////////////////////////////////////
                     mainActivityPresenter.detectIfKilledEarly(adapter.getTaskAt(viewHolder.getAdapterPosition()));
                     mainActivityPresenter.setManualKill(adapter.getTaskAt(viewHolder.getAdapterPosition()));
+//                    if(adapter.getTaskAt(viewHolder.getAdapterPosition()).isKilledEarly()){
+//                        newTimestamp -= interval;
+//                    }
+//                    adapter.getTaskAt(viewHolder.getAdapterPosition()).setTimestamp(newTimestamp);
+                    adapter.getTaskAt(viewHolder.getAdapterPosition()).setDisplayedTimestamp(newTimestamp);
                     mainActivityPresenter.update(adapter.getTaskAt(viewHolder.getAdapterPosition()));
+//                    Calendar cal = Calendar.getInstance();
+//                    cal.setTimeInMillis(newTimestamp);
+//                    Log.d(TAG, "Day: " + cal.get(Calendar.DAY_OF_MONTH));
                     if (preferences.getInt(StringConstants.REPEAT_HINT_KEY, 0) <= 10) {
                         if ((preferences.getInt(StringConstants.REPEAT_HINT_KEY, 0) == 1)
                                 || (preferences.getInt(StringConstants.REPEAT_HINT_KEY, 0) == 10)) {

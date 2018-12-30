@@ -45,4 +45,6 @@ public interface TaskDao {
     @Query("SELECT COUNT() FROM task_table WHERE timestamp!=0")
     int getDuesSet();
 
+    @Query("SELECT * FROM task_table WHERE id= :id")
+    Task getTaskById(Integer id);
 }

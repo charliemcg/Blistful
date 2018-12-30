@@ -76,7 +76,14 @@ public class ReminderPresenterImpl implements ReminderPresenter {
 
     @Override
     public void setTimestamp(long stamp) {
+        Log.d("Stamp", "setting timestamp 3");
         task.setTimestamp(stamp);
+        updateTask(task);
+    }
+
+    @Override
+    public void setDisplayedTimestamp(long stamp) {
+        task.setDisplayedTimestamp(stamp);
         updateTask(task);
     }
 
@@ -267,8 +274,14 @@ public class ReminderPresenterImpl implements ReminderPresenter {
     }
 
     @Override
-    public void setKilledEarly() {
-        task.setKilledEarly(true);
+    public void setKilledEarly(boolean killed) {
+        task.setKilledEarly(killed);
+        taskViewModel.update(task);
+    }
+
+    @Override
+    public void setInitialDueTime(boolean bool) {
+        task.setInitialDueElapsed(bool);
         taskViewModel.update(task);
     }
 

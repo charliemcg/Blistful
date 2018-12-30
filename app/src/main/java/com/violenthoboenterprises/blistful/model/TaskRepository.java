@@ -14,6 +14,7 @@ import android.util.Log;
 import com.violenthoboenterprises.blistful.presenter.TaskDao;
 import com.violenthoboenterprises.blistful.presenter.TaskDatabase;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -83,6 +84,16 @@ public class TaskRepository {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public Task getTaskById(int id) {
+        AsyncTask<Integer, Void, Task> result = new GetTaskByIdAsyncTask(taskDao).execute(id);
+        try{
+            return result.get();
+        }catch (InterruptedException | ExecutionException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
     //Performing these tasks off of the UI thread
@@ -158,6 +169,16 @@ public class TaskRepository {
         @Override
         protected Integer doInBackground(Void... voids) {
             return taskDao.getDuesSet();
+        }
+    }
+
+    private class GetTaskByIdAsyncTask extends AsyncTask<Integer, Void, Task> {
+        private TaskDao taskDao;
+        GetTaskByIdAsyncTask(TaskDao taskDao) {this.taskDao = taskDao;}
+
+        @Override
+        protected Task doInBackground(Integer... integers) {
+            return taskDao.getTaskById(integers[0]);
         }
     }
 }

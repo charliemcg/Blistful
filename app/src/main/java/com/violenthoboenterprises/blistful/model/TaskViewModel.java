@@ -5,11 +5,14 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.violenthoboenterprises.blistful.model.Task;
 import com.violenthoboenterprises.blistful.model.TaskRepository;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +36,7 @@ public class TaskViewModel extends AndroidViewModel {
     //TODO see if LiveData is needed
     public LiveData<List<Task>> getAllTasks(){return allTasks;}
 
-    public Task getTask(int id){return task;}
+    public Task getTask(int id){/*return task;*/return repository.getTaskById(id);}
 
     public List<Integer> getAllTimestamps() {
         return repository.getAllTimestamps();
@@ -42,4 +45,9 @@ public class TaskViewModel extends AndroidViewModel {
     public int getTaskIdByName(String taskName) {return repository.getTaskIdByName(taskName);}
 
     public int getDuesSet(){return repository.getDuesSet();}
+
+    public boolean isKilledEarly(int id) {
+        Task task = repository.getTaskById(id);
+        return task.isKilledEarly();
+    }
 }

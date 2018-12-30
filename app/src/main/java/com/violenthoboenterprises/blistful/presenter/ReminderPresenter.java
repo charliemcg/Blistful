@@ -63,7 +63,11 @@ public interface ReminderPresenter {
 
     void setOriginalDay(int originalDay);
 
-    void setKilledEarly();
+    void setKilledEarly(boolean killed);
+
+    void setInitialDueTime(boolean bool);
+
+    void setDisplayedTimestamp(long stamp);
 
 //    void setDue(boolean b);
 }

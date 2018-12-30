@@ -85,7 +85,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
             holder.dueIcon.setVisibility(View.VISIBLE);
             long repeatsAdjustedTimestamp = getRepeatsAdjustedTimestamp(currentTask);
             //Switch to overdue icon when appropriate
-            if (/*currentTask.getTimestamp()*/repeatsAdjustedTimestamp < Calendar.getInstance().getTimeInMillis()) {
+            if (/*currentTask.getTimestamp()*/(repeatsAdjustedTimestamp < Calendar.getInstance().getTimeInMillis()) && currentTask.isInitialDueElapsed()) {
                 holder.dueIcon.setImageDrawable(context.getResources()
                         .getDrawable(R.drawable.overdue_icon_light));//TODO check that this works on all versions
                 holder.tvDue.setTextColor(Color.RED);
@@ -172,10 +172,18 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
     }
 
     private long getRepeatsAdjustedTimestamp(Task task) {
-        if(task.getRepeatInterval() != null && !task.isKilledEarly()){
-            return task.getTimestamp() - (1000 * 60 * 60 * 24);//TODO account for all repeat intervals
-        }
-        return task.getTimestamp();
+
+        Calendar currentCal = Calendar.getInstance();
+        Calendar displayedCal = Calendar.getInstance();
+        displayedCal.setTimeInMillis(task.getDisplayedTimestamp());
+        long diff = currentCal.getTimeInMillis() - displayedCal.getTimeInMillis();
+        Log.d(TAG, "diff: " + diff);
+        //Can't have daily repeating task overdue for more than 24 hours
+        if(diff > 86400000) {
+            task.setDisplayedTimestamp(task.getTimestamp() - (1000 * 60 * 60 * 24));
+            mainActivityPresenter.update(task);
+         }
+        return task.getDisplayedTimestamp();
     }
 
     private String getFormattedDate(Task task) {
@@ -255,7 +263,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
                 }
             }
 
-            if(tomorrow){return context.getString(R.string.tomorrow);}
+            if (tomorrow) {
+                return context.getString(R.string.tomorrow);
+            }
 
             //getting string representation for month
             if (intMonth == 1) {

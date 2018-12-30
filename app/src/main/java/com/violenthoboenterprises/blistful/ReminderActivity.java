@@ -14,6 +14,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -37,6 +38,7 @@ import com.violenthoboenterprises.blistful.view.ReminderView;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class ReminderActivity extends MainActivity implements ReminderView {
 
@@ -426,7 +428,13 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
     private void deleteData() {
         reminderPresenter.setRepeatInterval(null);
+        Log.d("Stamp", "setting timestamp 1");
         reminderPresenter.setTimestamp(0);
+
+        try {
+            PendingIntent.getBroadcast(getApplicationContext(), task.getId(), MainActivity.alertIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT).cancel();
+        }catch(NullPointerException e){e.printStackTrace();}
 
         tempYear = -1;
         tempMonth = -1;
@@ -708,13 +716,15 @@ public class ReminderActivity extends MainActivity implements ReminderView {
                 calendar.set(Calendar.MINUTE, reminderPresenter.getMinute());
                 //Updating the task
                 reminderPresenter.setTimestamp(calendar.getTimeInMillis());
+                reminderPresenter.setDisplayedTimestamp(calendar.getTimeInMillis());
 
                 if (boolRemindersAvailable) {
                     scheduleNotification();
                 }
 
                 reminderPresenter.setOriginalDay(reminderPresenter.getDay());
-                reminderPresenter.setKilledEarly();
+                reminderPresenter.setInitialDueTime(false);
+                reminderPresenter.setKilledEarly(false);
 
             //don't save. Due time set to in the past
             }else{

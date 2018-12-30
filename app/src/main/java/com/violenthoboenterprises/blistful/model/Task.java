@@ -28,6 +28,9 @@ public class Task implements Serializable {
     //when the task is due if there is a due date
     private long timestamp;
 
+    //due to the need to display overdues etc the displayed due date is separate from reminder due date
+    private long displayedTimestamp;
+
     //task name
     @NonNull
     private String task;
@@ -82,6 +85,9 @@ public class Task implements Serializable {
     //when the snooze alarm is due
     private long snoozedTimestamp;
 
+    //don't set repeating task as overdue until after the first due time
+    private boolean initialDueElapsed;
+
     public Task(/*int id, */String note, /*boolean subtasks, */long timestamp, String task, /*boolean due,
                 boolean killed, boolean repeat, boolean overdue, boolean snoozed, boolean showonce,
                 int interval, */String repeatInterval, /*boolean ignored, */long timeCreated, /*
@@ -115,6 +121,7 @@ public class Task implements Serializable {
         note = in.readString();
         subtasks = in.readByte() != 0;
         timestamp = in.readInt();
+        displayedTimestamp = in.readLong();
         task = in.readString();
 //        due = in.readByte() != 0;
         killed = in.readByte() != 0;
@@ -132,6 +139,7 @@ public class Task implements Serializable {
         killedEarly = in.readByte() != 0;
         originalDay = in.readInt();
         snoozedTimestamp = in.readLong();
+        initialDueElapsed = in.readByte() != 0;
     }
 
 //    public static final Creator<Task> CREATOR = new Creator<Task>() {
@@ -177,6 +185,12 @@ public class Task implements Serializable {
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
+
+    public long getDisplayedTimestamp() {
+        return displayedTimestamp;
+    }
+
+    public void setDisplayedTimestamp(long displayedTimestamp) {this.displayedTimestamp = displayedTimestamp;}
 
     public String getTask() {
         return task;
@@ -313,6 +327,10 @@ public class Task implements Serializable {
     public void setSnoozedTimestamp(long snoozedTimestamp) {
         this.snoozedTimestamp = snoozedTimestamp;
     }
+
+    public boolean isInitialDueElapsed(){return initialDueElapsed;}
+
+    public void setInitialDueElapsed(boolean initialDueElapsed){this.initialDueElapsed = initialDueElapsed;}
 
 //    @Override
 //    public int describeContents() {
