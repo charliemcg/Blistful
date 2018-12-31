@@ -90,7 +90,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
                 repeatsAdjustedTimestamp = currentTask.getDisplayedTimestamp();
             }
             //Switch to overdue icon when appropriate
-            if ((repeatsAdjustedTimestamp < Calendar.getInstance().getTimeInMillis())/* && currentTask.isInitialDueElapsed()*/) {
+            if ((repeatsAdjustedTimestamp < Calendar.getInstance().getTimeInMillis())) {
                 holder.dueIcon.setImageDrawable(context.getResources()
                         .getDrawable(R.drawable.overdue_icon_light));//TODO check that this works on all versions
                 holder.tvDue.setTextColor(Color.RED);
@@ -148,8 +148,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         //show reminder activity
         holder.btnAlarm.setOnClickListener(view -> {
             holder.taskProperties.setVisibility(View.GONE);
-            if (/*preferences.getInt(StringConstants.DUES_SET, 0) < 5 || */
-                    mainActivityPresenter.getDuesSet() < 5 || currentTask.getTimestamp() != 0
+            if (mainActivityPresenter.getDuesSet() < 5 || currentTask.getTimestamp() != 0
                             || preferences.getBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, false)) {
                 Intent intent = new Intent(context, ReminderActivity.class);
                 intent.putExtra("task", currentTask);
@@ -177,19 +176,20 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
     }
 
     private long getRepeatsAdjustedTimestamp(Task task) {
+        //timestamps have been converted from millis to seconds to prevent memory errors
         Calendar currentCal = Calendar.getInstance();
         Calendar displayedCal = Calendar.getInstance();
         displayedCal.setTimeInMillis(task.getDisplayedTimestamp());
-        long diff = (currentCal.getTimeInMillis() / 1000) - (displayedCal.getTimeInMillis() / 1000);//TODO
+        long diff = (currentCal.getTimeInMillis() / 1000) - (displayedCal.getTimeInMillis() / 1000);
         if(task.getRepeatInterval().equals("day")) {
             //Can't have daily repeating task overdue for more than 24 hours
-            if (diff > 86400) {//TODO
+            if (diff > 86400) {
                 task.setDisplayedTimestamp(task.getTimestamp() - (1000 * 60 * 60 * 24));
                 mainActivityPresenter.update(task);
             }
         }else if(task.getRepeatInterval().equals("week")){
             //Can't have weekly repeating task overdue for more than 7 days
-            long threshold = 86400 * 7;//TODO
+            long threshold = 86400 * 7;
             if (diff > threshold) {
                 long amountToSubtract = 1000 * 60 * 60 * 24 * 7;
                 task.setDisplayedTimestamp(task.getTimestamp() - amountToSubtract);
@@ -197,7 +197,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
             }
         }else if(task.getRepeatInterval().equals("month")){
             Calendar cal = Calendar.getInstance();
-            cal.setTimeInMillis(task.getTimestamp());//TODO may be wrong timestamp
+            cal.setTimeInMillis(task.getTimestamp());
             int year = cal.get(Calendar.YEAR);
             int month = cal.get(Calendar.MONTH);
             int originalDay = task.getOriginalDay();
@@ -208,112 +208,52 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
             }
             int multiplier;
             //months that have 31 days
-//            if (month == 0 || month == 2 || month == 4 || month == 6
-//                    || month == 7 || month == 9 || month == 11) {
-//                //if due on 31st day and following month doesn't have 31 days set to last day of following month
-//                if (originalDay == 31 && month != 6 && month != 11 && month != 0) {
-//                    multiplier = 30;
-//                    //if due on 31st and following month is February set to last day of February
-//                } else if (originalDay == 31 && month == 0) {
-//                    multiplier = 28 + leapYear;
-//                    //if due on 30th and following month is February set to last day of February
-//                }else if(originalDay == 30 && month == 0) {
-//                    multiplier = 29 + leapYear;
-//                    //if due on 29th and following month is February set to last day of February
-//                }else if(originalDay == 29 && month == 0){
-//                    multiplier = 30 + leapYear;
-//                } else {
-//                    multiplier = 31;
-//                }
-//                //February
-//            } else if (month == 1) {
-//                //if original due day is 31 then set to 31st of following month
-//                if (originalDay == 31) {
-//                    multiplier = 31;
-//                    //if original due day is 30 then set to 30th of following month
-//                } else if(originalDay == 30){
-//                    multiplier = 30;
-//                    //if original due day is 39 then set to 39th of following month
-//                } else if(originalDay == 29){
-//                    multiplier = 29;
-//                }else{
-//                    multiplier = 28 + leapYear;
-//                }
-//                //months that have 30 days
-//            } else {
-//                //if original due day is 31 then set to 31st of following month
-//                if (originalDay == 31) {
-//                    multiplier = 31;
-//                } else {
-//                    multiplier = 30;
-//                }
-//            }
-            Log.d(TAG, "///////////////////////////////////");
-            Log.d(TAG, "month:" + month);
             if (month == 1 || month == 3 || month == 5 || month == 7
                     || month == 8 || month == 10 || month == 0) {
-                Log.d(TAG, "if");
                 //if due on 31st day and following month doesn't have 31 days set to last day of following month
                 if (originalDay == 31 && month != 7 && month != 0 && month != 1) {
-                    Log.d(TAG, "if");
                     multiplier = 30;
-//                    multiplier = 31;
-                    //if due on 31st and following month is February set to last day of February
+                //if due on 31st and following month is February set to last day of February
                 } else if (originalDay == 31 && month == 1) {
-                    Log.d(TAG, "else if 1");
                     multiplier = 28 + leapYear;
-                    //if due on 30th and following month is February set to last day of February
+                //if due on 30th and following month is February set to last day of February
                 }else if(originalDay == 30 && month == 1) {
-                    Log.d(TAG, "else if 2");
                     multiplier = 29 + leapYear;
-                    //if due on 29th and following month is February set to last day of February
+                //if due on 29th and following month is February set to last day of February
                 }else if(originalDay == 29 && month == 1){
-                    Log.d(TAG, "else if 3");
                     multiplier = 30 + leapYear;
                 } else {
-                    Log.d(TAG, "else");
                     multiplier = 31;
                 }
             //February
             } else if (month == 2) {
-                Log.d(TAG, "else if");
                 //if original due day is 31 then set to 31st of following month
                 if (originalDay == 31) {
-                    Log.d(TAG, "if");
                     multiplier = 31;
-                    //if original due day is 30 then set to 30th of following month
+                //if original due day is 30 then set to 30th of following month
                 } else if(originalDay == 30){
-                    Log.d(TAG, "else if 1");
                     multiplier = 30;
-                    //if original due day is 39 then set to 39th of following month
+                //if original due day is 39 then set to 39th of following month
                 } else if(originalDay == 29){
-                    Log.d(TAG, "else if 2");
                     multiplier = 29;
                 }else{
-                    Log.d(TAG, "else");
                     multiplier = 28 + leapYear;
                 }
-                //months that have 30 days
+            //months that have 30 days
             } else {
-                Log.d(TAG, "else");
                 //if original due day is 31 then set to 31st of following month
                 if (originalDay == 31) {
-                    Log.d(TAG, "if");
                     multiplier = 31;
-//                    multiplier = 30;
                 } else {
-                    Log.d(TAG, "else");
                     multiplier = 30;
                 }
             }
-            //Can't have monthly repeating task overdue for more than a month
+            //getting the amount of time between now and one month ago accounting for
+            // end-of-month days and leap years. Needed for updating displayed overdue time
             int daysToMultiply;
-//            long threshold = 86400 * multiplier;
             if(month == 0 || month == 5 || month == 7 || month == 10){
-                Log.d(TAG, "days to multiply if");
                 daysToMultiply = 30;
             }else if(month == 2 || month == 4 || month == 6 || month == 8 || month == 9 || month == 11){
-                Log.d(TAG, "days to multiply else if");
                 if(originalDay == 31){
                     if(month != 2) {
                         daysToMultiply = 30;
@@ -336,20 +276,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
                     daysToMultiply = 31;
                 }
             }else{
-                Log.d(TAG, "days to multiply else");
-//                if(originalDay == 31) {
-//                    daysToMultiply = 30;
-//                }else{
-                    daysToMultiply = 28;
-//                }
+                daysToMultiply = 28;
             }
+            //Can't have monthly repeating task overdue for more than a month
             long threshold = 86400 * daysToMultiply;
-//            long printMe = diff - threshold;
-//            Log.d(TAG, "diff " + diff);
-//            Log.d(TAG, "" + threshold);
-//            Log.d(TAG, "diff - thresh" + printMe);
             if(diff > threshold){
-                Log.i(TAG, "adjusting");
                 long amountToSubtract = 1000 * 60;
                 amountToSubtract *= 60;
                 amountToSubtract *= 24;

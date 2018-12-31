@@ -634,19 +634,23 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             }
             //set current time if time wasn't picked
             if (reminderPresenter.getMinute() == 0) {
-                Log.d(TAG, "currentDay: " + currentDay);
-                Log.d(TAG, "savedDay: " + reminderPresenter.getDay());
                 //set unspecified time to be set one hour into the future
                 if(reminderPresenter.getYear() == currentYear
                         && reminderPresenter.getMonth() == currentMonth
                         && reminderPresenter.getDay() == currentDay
-                        /*&& calendar.get(Calendar.HOUR_OF_DAY) == currentHour*/
-                        /*&& calendar.get(Calendar.HOUR_OF_DAY) != 23*/&& currentHour != 23){
+                        && currentHour < 10){
+                    reminderPresenter.setHour(10);
+                    reminderPresenter.setMinute(0);
+                }else if(reminderPresenter.getYear() == currentYear
+                        && reminderPresenter.getMonth() == currentMonth
+                        && reminderPresenter.getDay() == currentDay
+                        && currentHour != 23){
                     reminderPresenter.setHour(calendar.get(Calendar.HOUR_OF_DAY) + 1);
+                    reminderPresenter.setMinute(calendar.get(Calendar.MINUTE));
                 }else {
                     reminderPresenter.setHour(calendar.get(Calendar.HOUR_OF_DAY));
+                    reminderPresenter.setMinute(calendar.get(Calendar.MINUTE));
                 }
-                reminderPresenter.setMinute(calendar.get(Calendar.MINUTE));
             }
 
             Calendar reminderCal = Calendar.getInstance();
