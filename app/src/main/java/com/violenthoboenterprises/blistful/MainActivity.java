@@ -348,7 +348,7 @@ public class MainActivity extends AppCompatActivity implements
                     //Actions to occur when deleting repeating task
                 } else {
 
-//                    long interval = 0;
+                    long interval = 0;
 //                    if(adapter.getTaskAt(viewHolder.getAdapterPosition())
 //                            .getRepeatInterval().equals(StringConstants.DAY)){
 //                        interval = mainActivityPresenter.getInterval(StringConstants.DAY,
@@ -359,12 +359,13 @@ public class MainActivity extends AppCompatActivity implements
 //                        interval = mainActivityPresenter.getInterval(StringConstants.WEEK,
 //                                adapter.getTaskAt(viewHolder.getAdapterPosition()).getTimestamp(),
 //                                adapter.getTaskAt(viewHolder.getAdapterPosition()).getOriginalDay());
-//                    }else if(adapter.getTaskAt(viewHolder.getAdapterPosition())
-//                            .getRepeatInterval().equals(StringConstants.MONTH)){
-//                        interval = mainActivityPresenter.getInterval(StringConstants.MONTH,
-//                                adapter.getTaskAt(viewHolder.getAdapterPosition()).getTimestamp(),
-//                                adapter.getTaskAt(viewHolder.getAdapterPosition()).getOriginalDay());
-//                    }
+                    /*}else */if(adapter.getTaskAt(viewHolder.getAdapterPosition())
+                            .getRepeatInterval().equals(StringConstants.MONTH)){
+                        interval = mainActivityPresenter.getInterval(StringConstants.MONTH,
+                                adapter.getTaskAt(viewHolder.getAdapterPosition()).getTimestamp(),
+                                adapter.getTaskAt(viewHolder.getAdapterPosition()).getOriginalDay());
+                        Log.d(TAG, "interval: " + interval);
+                    }
                     long newTimestamp = adapter.getTaskAt(viewHolder.getAdapterPosition()).getTimestamp()/*adapter.getTaskAt(viewHolder.getAdapterPosition())
                             .getTimestamp() + interval*/;
                     Calendar cal = Calendar.getInstance();
@@ -386,6 +387,9 @@ public class MainActivity extends AppCompatActivity implements
                         }else if(adapter.getTaskAt(viewHolder.getAdapterPosition()).getRepeatInterval().equals("week")){
                             //Add another week to the timestamp
                             newTimestamp += (AlarmManager.INTERVAL_DAY * 7);
+                        }else if(adapter.getTaskAt(viewHolder.getAdapterPosition()).getRepeatInterval().equals("month")){
+                            //Add another month to the timestamp
+                            newTimestamp += interval;
                         }
                         adapter.getTaskAt(viewHolder.getAdapterPosition()).setTimestamp(newTimestamp);
                         adapter.getTaskAt(viewHolder.getAdapterPosition()).setDisplayedTimestamp(newTimestamp);

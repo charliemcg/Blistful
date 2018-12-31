@@ -325,6 +325,138 @@ public class AlertReceiver extends BroadcastReceiver {
                 }
 
             } else if (task.getRepeatInterval().equals("month") && !snoozeStatus) {
+
+                /////////////////////////////////////////////////////
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeInMillis(task.getTimestamp());
+                int year = cal.get(Calendar.YEAR);
+                int month = cal.get(Calendar.MONTH);
+                int originalDay = task.getOriginalDay();
+                //Determining if it's a leap year
+                int leapYear = 0;
+                if (year % 4 == 0) {
+                    leapYear = 1;
+                }
+                int multiplier;
+                //months that have 31 days
+                if (month == 0 || month == 2 || month == 4 || month == 6
+                        || month == 7 || month == 9 || month == 11) {
+                    //if due on 31st day and following month doesn't have 31 days set to last day of following month
+                    if (originalDay == 31 && month != 6 && month != 11 && month != 0) {
+                        multiplier = 30;
+                        //if due on 31st and following month is February set to last day of February
+                    } else if (originalDay == 31 && month == 0) {
+                        multiplier = 28 + leapYear;
+                        //if due on 30th and following month is February set to last day of February
+                    }else if(originalDay == 30 && month == 0) {
+                        multiplier = 29 + leapYear;
+                        //if due on 29th and following month is February set to last day of February
+                    }else if(originalDay == 29 && month == 0){
+                        multiplier = 30 + leapYear;
+                    } else {
+                        multiplier = 31;
+                    }
+                    //February
+                } else if (month == 1) {
+                    //if original due day is 31 then set to 31st of following month
+                    if (originalDay == 31) {
+                        multiplier = 31;
+                        //if original due day is 30 then set to 30th of following month
+                    } else if(originalDay == 30){
+                        multiplier = 30;
+                        //if original due day is 39 then set to 39th of following month
+                    } else if(originalDay == 29){
+                        multiplier = 29;
+                    }else{
+                        multiplier = 28 + leapYear;
+                    }
+                    //months that have 30 days
+                } else {
+                    //if original due day is 31 then set to 31st of following month
+                    if (originalDay == 31) {
+                        multiplier = 31;
+                    } else {
+                        multiplier = 30;
+                    }
+                }
+                /////////////////////////////////////////////////////
+
+                //App crashes if exact duplicate of timestamp is saved in database. Attempting to
+                // detect duplicates and then adjusting the timestamp on the millisecond level//TODO reinstate duplicate detection. Use the list of timestamps
+                long futureStamp = task.getTimestamp() + (AlarmManager.INTERVAL_DAY * multiplier);
+                futureStamp = getFutureStamp(futureStamp);
+                task.setTimestamp(futureStamp);
+                Calendar blah = Calendar.getInstance();
+                blah.setTimeInMillis(futureStamp);
+                Log.d(TAG, "Due: hour." + blah.get(Calendar.HOUR_OF_DAY) + " day." + blah.get(Calendar.DAY_OF_MONTH) + " month." + blah.get(Calendar.MONTH));
+                MainActivity.taskViewModel.update(task);
+
+                Intent alertIntent = new Intent(context, AlertReceiver.class);
+                alertIntent.putExtra
+                        ("snoozeStatus", false);
+                alertIntent.putExtra("task", task);
+                List<Integer> timestamps = MainActivity.taskViewModel.getAllTimestamps();//TODO check that it gets data at due time and no sooner
+                alertIntent.putExtra("timestamps", (Serializable) timestamps);
+
+                //Setting alarm
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                        context, task.getId(), alertIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+
+                Calendar alarmCalendar = Calendar.getInstance();
+                Long diff;
+
+                Calendar currentCal = Calendar.getInstance();
+                Calendar futureCal = Calendar.getInstance();
+                futureCal.setTimeInMillis(futureStamp);
+                diff = futureCal.getTimeInMillis() - currentCal.getTimeInMillis();
+                //checking if timestamp has been updated or not
+//                if (diff < (86400000 * multiplier)) {
+                    MainActivity.alarmManager.set(AlarmManager.RTC, futureStamp, pendingIntent);
+//                    Calendar blah = Calendar.getInstance();
+//                    blah.setTimeInMillis(futureStamp);
+//                    Log.d(TAG, "Due: hour." + blah.get(Calendar.HOUR_OF_DAY) + " day." + blah.get(Calendar.DAY_OF_MONTH) + " month." + blah.get(Calendar.MONTH));
+//                } else {
+//                    long daysOut = diff / (86400000 * multiplier);
+//                    MainActivity.alarmManager.set(AlarmManager.RTC, (futureStamp - ((86400000 * multiplier) * daysOut)),
+//                            pendingIntent);
+////                    Calendar blah = Calendar.getInstance();
+////                    blah.setTimeInMillis(futureStamp - ((86400000 * multiplier) * daysOut));
+////                    Log.d(TAG, "Due: hour." + blah.get(Calendar.HOUR_OF_DAY) + " day." + blah.get(Calendar.DAY_OF_MONTH) + " month." + blah.get(Calendar.MONTH));
+//                }
+
+                alarmCalendar.setTimeInMillis(futureStamp - (AlarmManager.INTERVAL_DAY * multiplier));
+
+                Calendar dayCal = Calendar.getInstance();
+                dayCal.setTimeInMillis(task.getTimestamp());
+                int alarmDay = dayCal.get(Calendar.DAY_OF_MONTH);
+
+                //alarm data is already updated if user marked task as done
+                if ((alarmDay != currentCal.get(Calendar.DAY_OF_MONTH))) {//TODO found out if these conditions do anything
+                    diff = futureStamp - (AlarmManager.INTERVAL_DAY * multiplier) - currentCal.getTimeInMillis();
+
+                    if (diff > 0) {
+                        long daysOut = diff / (86400000 * multiplier);
+                        futureStamp = futureStamp - ((86400000 * multiplier) * (daysOut + 1));
+                        alarmCalendar.setTimeInMillis(futureStamp
+                                - (AlarmManager.INTERVAL_DAY * multiplier));
+                    }
+
+                    MainActivity.taskViewModel.update(task);
+
+                } else {
+                    diff = futureStamp - (AlarmManager.INTERVAL_DAY * multiplier) - currentCal.getTimeInMillis();
+
+                    if (diff > 0) {
+                        long daysOut = diff / (86400000 * multiplier);
+                        futureStamp = futureStamp - ((86400000 * multiplier) * (daysOut + 1));
+                        alarmCalendar.setTimeInMillis(futureStamp
+                                - (AlarmManager.INTERVAL_DAY * multiplier));
+                    }
+
+                    MainActivity.taskViewModel.update(task);
+                }
+
 //
 //                //Getting interval in seconds based on specific day and month
 //                int interval = 0;

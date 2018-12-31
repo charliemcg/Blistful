@@ -222,8 +222,6 @@ public class MainActivityPresenterImpl implements MainActivityPresenter {
             if (year % 4 == 0) {
                 leapYear = 1;
             }
-//            Log.d(TAG, day + "/" + month + "/" + year);
-//            Log.d(TAG, "Original: " + originalDay);
             long twentyFourHours = 1000 * 60 * 60 * 24;
             int multiplier;
             //months that have 31 days
