@@ -1,10 +1,9 @@
-package com.violenthoboenterprises.blistful;
+package com.violenthoboenterprises.blistful.activities;
 
 import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.job.JobScheduler;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
@@ -14,16 +13,12 @@ import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.nfc.Tag;
 import android.os.Build;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.support.constraint.ConstraintSet;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -35,11 +30,9 @@ import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
@@ -57,6 +50,11 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.violenthoboenterprises.blistful.utils.AlertReceiver;
+import com.violenthoboenterprises.blistful.Database;
+import com.violenthoboenterprises.blistful.R;
+import com.violenthoboenterprises.blistful.utils.BootReceiver;
+import com.violenthoboenterprises.blistful.utils.StringConstants;
 import com.violenthoboenterprises.blistful.model.MainActivityPresenterImpl;
 import com.violenthoboenterprises.blistful.model.SubtaskViewModel;
 import com.violenthoboenterprises.blistful.model.SubtasksPresenterImpl;
@@ -91,14 +89,8 @@ public class MainActivity extends AppCompatActivity implements
     //used to indicate that task properties are showing when deciding on what action back button should task
     public static boolean boolPropertiesShowing;
 
-    //indicates how many due dates are set because free users have a limitation
-//    private int intDuesSet;
-    //indicates if the repeat hint should be shown
-    private int intRepeatHint;
     //indicates if the rename hint should be shown
     private int intRenameHint;
-    //indicates if the reinstate hint should be shown
-    private int intReinstateHint;
     //timestamp that keeps record of when user downloaded the app.
     // Used for determining when to prompt for a review
     private long lngTimeInstalled;
@@ -106,9 +98,6 @@ public class MainActivity extends AppCompatActivity implements
     private int intShowReviewPrompt;
     //height of device minus keyboard
     private int deviceheight;
-    //keeps track of the selected task so recyclerview
-    //knows which task to update in regards to icons etc
-    public static int intPositionToUpdate;
     //dimensions of the fab
     int fabHeight;
     int fabWidth;
@@ -166,12 +155,12 @@ public class MainActivity extends AppCompatActivity implements
     //The action bar
     private Toolbar toolbarLight;
 
+    //button that allows user to upgrade to pro
     private MenuItem miPro;
 
     private static BillingProcessor billingProcessor;
 
     public static TaskViewModel taskViewModel;
-//    public static AlertViewModel alertViewModel;
 
     private FloatingActionButton fab;
 
@@ -190,18 +179,6 @@ public class MainActivity extends AppCompatActivity implements
 
     //preferences used for persisting app-wide data
     public static SharedPreferences preferences;
-    //keys for shared preferences
-//    public String MUTE_KEY = "mute_key";
-//    public String ADS_REMOVED_KEY = "ads_removed_key";
-//    public String REMINDERS_AVAILABLE_KEY = "reminders_available_key";
-//    public String MOTIVATION_KEY = "motivation_key";
-//    public String REPEAT_HINT_KEY = "repeat_hint_key";
-//    public String RENAME_HINT_KEY = "rename_hint_key";
-//    public String REINSTATE_HINT_KEY = "reinstate_hint_key";
-//    public String SHOW_REVIEW_KEY = "show_review_key";
-//    public String TIME_INSTALLED_KEY = "time_installed_key";
-//    public String REFRESH_THIS_ITEM = "refresh_this_item";
-//    public int DELETE_TASK_ID = 0;
 
     public static Database db;
 
@@ -228,17 +205,16 @@ public class MainActivity extends AppCompatActivity implements
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
         if (lngTimeInstalled == 0) {
-            long defaultTime = new GregorianCalendar().getInstance().getTimeInMillis();
+            long defaultTime = Calendar.getInstance().getTimeInMillis();
             preferences.edit().putLong(StringConstants.TIME_INSTALLED_KEY, defaultTime).apply();
             lngTimeInstalled = preferences.getLong(StringConstants.TIME_INSTALLED_KEY, 0);
         }
 
         taskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
-//        alertViewModel = ViewModelProviders.of(this).get(AlertViewModel.class);
         SubtaskViewModel subtaskViewModel =
                 ViewModelProviders.of(this).get(SubtaskViewModel.class);
         SubtasksPresenter subtasksPresenter = new SubtasksPresenterImpl
-                (null, subtaskViewModel, null, getApplicationContext());
+                (subtaskViewModel, null);
         mainActivityPresenter = new MainActivityPresenterImpl
                 (MainActivity.this, taskViewModel, getApplicationContext(), subtasksPresenter);
 
@@ -246,13 +222,17 @@ public class MainActivity extends AppCompatActivity implements
             mainActivityPresenter.migrateDatabase();
         }
 
+        if(preferences.getBoolean(StringConstants.REINSTATE_REMINDERS_AFTER_REBOOT, false)){
+            BootReceiver bootReceiver = new BootReceiver();
+            bootReceiver.reinstateReminders(this);
+            preferences.edit().putBoolean(StringConstants.REINSTATE_REMINDERS_AFTER_REBOOT, false).apply();
+        }
+
         boolMute = preferences.getBoolean(StringConstants.MUTE_KEY, false);
         boolAdsRemoved = preferences.getBoolean(StringConstants.ADS_REMOVED_KEY, false);//TODO change to false
         boolRemindersAvailable = preferences.getBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, false);//TODO change to false
         boolShowMotivation = preferences.getBoolean(StringConstants.MOTIVATION_KEY, true);
-        intRepeatHint = preferences.getInt(StringConstants.REPEAT_HINT_KEY, 0);
         intRenameHint = preferences.getInt(StringConstants.RENAME_HINT_KEY, 0);
-//        intReinstateHint = preferences.getInt(StringConstants.REINSTATE_HINT_KEY, 0);
         intShowReviewPrompt = preferences.getInt(StringConstants.SHOW_REVIEW_KEY, 0);
         lngTimeInstalled = preferences.getLong(StringConstants.TIME_INSTALLED_KEY, 0);
 
@@ -284,7 +264,6 @@ public class MainActivity extends AppCompatActivity implements
         DisplayMetrics displayMetrics = new DisplayMetrics();
         this.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         deviceheight = displayMetrics.heightPixels;
-//        intDuesSet = 0;
         imgNoTasks = findViewById(R.id.imgNoTasks);
         imgBanner = findViewById(R.id.imgBanner);
         adView = findViewById(R.id.adView);
@@ -303,11 +282,10 @@ public class MainActivity extends AppCompatActivity implements
 
         //setting up the adapter
         adapter = new TaskAdapter(this, mainActivityPresenter,
-                subtasksPresenter, activityRootView, this, taskViewModel);
+                subtasksPresenter, activityRootView, this);
         recyclerView.setAdapter(adapter);
 
         //observing the recycler view items for changes
-        //TODO find out if observer is necessary
         taskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
         taskViewModel.getAllTasks().observe(this, tasks -> {
             adapter.setTasks(tasks);
@@ -341,34 +319,22 @@ public class MainActivity extends AppCompatActivity implements
                     //Saving a temporary instance of the deleted task should it need to be reinstated
                     Task taskToReinstate = adapter.getTaskAt(viewHolder.getAdapterPosition());
                     taskViewModel.delete(adapter.getTaskAt(viewHolder.getAdapterPosition()));
-                    String stringSnack = "Task deleted";
-                    showSnackbar(stringSnack, taskToReinstate);
+                    showSnackbar(taskToReinstate);
                     if (boolShowMotivation) {
                         //showing motivational toast
                         showKilledAffirmationToast();
                     }
-                    //Actions to occur when deleting repeating task
+                //Actions to occur when deleting repeating task
                 } else {
 
                     long interval = 0;
-//                    if(adapter.getTaskAt(viewHolder.getAdapterPosition())
-//                            .getRepeatInterval().equals(StringConstants.DAY)){
-//                        interval = mainActivityPresenter.getInterval(StringConstants.DAY,
-//                                adapter.getTaskAt(viewHolder.getAdapterPosition()).getTimestamp(),
-//                                adapter.getTaskAt(viewHolder.getAdapterPosition()).getOriginalDay());
-//                    }else if(adapter.getTaskAt(viewHolder.getAdapterPosition())
-//                            .getRepeatInterval().equals(StringConstants.WEEK)){
-//                        interval = mainActivityPresenter.getInterval(StringConstants.WEEK,
-//                                adapter.getTaskAt(viewHolder.getAdapterPosition()).getTimestamp(),
-//                                adapter.getTaskAt(viewHolder.getAdapterPosition()).getOriginalDay());
-                    /*}else */if(adapter.getTaskAt(viewHolder.getAdapterPosition())
+                    if(adapter.getTaskAt(viewHolder.getAdapterPosition())
                             .getRepeatInterval().equals(StringConstants.MONTH)){
                         interval = mainActivityPresenter.getInterval(StringConstants.MONTH,
                                 adapter.getTaskAt(viewHolder.getAdapterPosition()).getTimestamp(),
                                 adapter.getTaskAt(viewHolder.getAdapterPosition()).getOriginalDay());
                     }
-                    long newTimestamp = adapter.getTaskAt(viewHolder.getAdapterPosition()).getTimestamp()/*adapter.getTaskAt(viewHolder.getAdapterPosition())
-                            .getTimestamp() + interval*/;
+                    long newTimestamp = adapter.getTaskAt(viewHolder.getAdapterPosition()).getTimestamp();
                     Calendar cal = Calendar.getInstance();
                     cal.setTimeInMillis(newTimestamp);
                     Calendar currentCal = Calendar.getInstance();
@@ -399,8 +365,6 @@ public class MainActivity extends AppCompatActivity implements
                         MainActivity.alertIntent = new Intent(getApplicationContext(), AlertReceiver.class);
                         MainActivity.alertIntent.putExtra("snoozeStatus", false);
                         MainActivity.alertIntent.putExtra("task", adapter.getTaskAt(viewHolder.getAdapterPosition()));
-                        List<Integer> timestamps = taskViewModel.getAllTimestamps();//TODO make sure to get data at due time and no sooner
-                        MainActivity.alertIntent.putExtra("timestamps", (Serializable) timestamps);
 
                         //Setting alarm
                         MainActivity.pendingIntent = PendingIntent.getBroadcast(
@@ -481,7 +445,7 @@ public class MainActivity extends AppCompatActivity implements
 
                 return true;
 
-                //Actions to take when editing existing task
+            //Actions to take when editing existing task
             } else if (actionId == EditorInfo.IME_ACTION_DONE) {
 
                 if (!boolMute) {
@@ -703,11 +667,6 @@ public class MainActivity extends AppCompatActivity implements
         //Show keyboard
         keyboard.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
 
-//        final Handler handler = new Handler();
-//        //Actions to occur when keyboard is showing
-//        final Runnable runnable = this::checkKeyboardShowing;
-//        handler.postDelayed(runnable, 2000);
-
         //Actions to occur when keyboard is showing
         checkKeyboardShowing();
 
@@ -763,9 +722,9 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     //Give user option to undo deletion of task
-    private void showSnackbar(String stringSnack, final Task taskToReinstate) {
+    private void showSnackbar(final Task taskToReinstate) {
         View view = findViewById(R.id.activityRoot);
-        Snackbar.make(view, stringSnack, Snackbar.LENGTH_SHORT)
+        Snackbar.make(view, R.string.taskDeleted, Snackbar.LENGTH_SHORT)
                 .setAction("UNDO", view1 -> {
                     JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
                     scheduler.cancel(StringConstants.DELETE_TASK_ID);
@@ -941,7 +900,7 @@ public class MainActivity extends AppCompatActivity implements
                                    @Nullable TransactionDetails details) {
 
         //Inform user of successful purchase
-        if (productId.equals(StringConstants.TEST_PURCHASE)) {
+        if (productId.equals(StringConstants.UNLOCK_ALL)) {
 
             toast.setText(R.string.thank_you_for_purchase);
             final Handler handler = new Handler();
@@ -986,19 +945,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onBillingError(int errorCode, @Nullable Throwable error) {
 
-
-        Log.d(TAG, "error in purchasing...");
-
-
-        //try purchasing again in case error was a once off
-//        if (tryAgain) {
-//            tryAgain = false;
-//        billingProcessor.purchase(MainActivity.this, "unlock_all");
-        //inform user of error
-//        } else {
-//            Toast.makeText(MainActivity.this, R.string.somethingWentWrong,
-//                    Toast.LENGTH_LONG).show();
-//        }
+        Toast.makeText(this, "Error in purchasing...", Toast.LENGTH_LONG).show();
 
     }
 
@@ -1025,6 +972,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
+
         showPrompt();
 
         adapter.notifyItemChanged(preferences.getInt(StringConstants.REFRESH_THIS_ITEM, 0));
@@ -1039,6 +987,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onBackPressed() {
+        //If task properties are showing then the back button should close them
         if(boolPropertiesShowing){
             adapter.notifyItemChanged(preferences.getInt(StringConstants.REFRESH_THIS_ITEM, 0));
             boolPropertiesShowing = false;

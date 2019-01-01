@@ -1,4 +1,4 @@
-package com.violenthoboenterprises.blistful;
+package com.violenthoboenterprises.blistful.activities;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.violenthoboenterprises.blistful.R;
 import com.violenthoboenterprises.blistful.model.NotePresenterImpl;
 import com.violenthoboenterprises.blistful.model.Task;
 import com.violenthoboenterprises.blistful.model.TaskViewModel;
@@ -46,8 +46,7 @@ public class NoteActivity extends MainActivity implements NoteView {
         //getting the task to which this note is related
         task = (Task) getIntent().getSerializableExtra("task");
         taskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
-        notePresenter = new NotePresenterImpl
-                (NoteActivity.this, taskViewModel, task, getApplicationContext());
+        notePresenter = new NotePresenterImpl(taskViewModel, task);
 
         tvNote = findViewById(R.id.tvNote);
         etNote = findViewById(R.id.etNote);

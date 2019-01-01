@@ -1,7 +1,5 @@
 package com.violenthoboenterprises.blistful.presenter;
 
-import android.os.Parcelable;
-
 import com.violenthoboenterprises.blistful.model.Task;
 
 public interface MainActivityPresenter {
@@ -29,7 +27,4 @@ public interface MainActivityPresenter {
 
     long getInterval(String repeatInterval, long stamp, int originalDay);
 
-    void detectIfKilledEarly(Task taskAt);
-
-    void setManualKill(Task taskAt);
 }

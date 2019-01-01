@@ -20,16 +20,11 @@ public class SubtaskViewModel extends AndroidViewModel {
     public void update(Subtask subtask){subtaskRepository.update(subtask);}
     public void delete(Subtask subtask){subtaskRepository.delete(subtask);}
 
-    //TODO see if LiveData is needed
     public LiveData<List<Subtask>> getAllSubtasks(int parentId){
         return subtaskRepository.getAllSubtasks(parentId);
     }
 
-    public Subtask getSubtask(int parentId, int subtaskId) {
-        return subtaskRepository.getSubtask(parentId, subtaskId);
-    }
-
-    public List<Subtask> getSubtasksByParent(int parentId) {
+    List<Subtask> getSubtasksByParent(int parentId) {
         return subtaskRepository.getSubtasksByParent(parentId);
     }
 

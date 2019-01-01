@@ -10,7 +10,9 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-
+/*
+ * This is the old database. Though no longer used by the app it is still needed for migration purposes.
+ */
 public class Database extends SQLiteOpenHelper {
 
     private static final String DBNAME = "Notes.db";

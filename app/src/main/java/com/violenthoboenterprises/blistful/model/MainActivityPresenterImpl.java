@@ -1,16 +1,11 @@
 package com.violenthoboenterprises.blistful.model;
 
-import android.annotation.SuppressLint;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.database.Cursor;
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.util.Log;
 
 import com.violenthoboenterprises.blistful.Database;
-import com.violenthoboenterprises.blistful.MainActivity;
-import com.violenthoboenterprises.blistful.StringConstants;
+import com.violenthoboenterprises.blistful.activities.MainActivity;
+import com.violenthoboenterprises.blistful.utils.StringConstants;
 import com.violenthoboenterprises.blistful.presenter.MainActivityPresenter;
 import com.violenthoboenterprises.blistful.presenter.SubtasksPresenter;
 import com.violenthoboenterprises.blistful.view.MainActivityView;
@@ -27,7 +22,8 @@ public class MainActivityPresenterImpl implements MainActivityPresenter {
     private Context context;
     private SubtasksPresenter subtasksPresenter;
 
-    public MainActivityPresenterImpl(MainActivityView mainActivityView, TaskViewModel taskViewModel, Context context, SubtasksPresenter subtasksPresenter) {
+    public MainActivityPresenterImpl(MainActivityView mainActivityView, TaskViewModel taskViewModel,
+                                     Context context, SubtasksPresenter subtasksPresenter) {
         this.mainActivityView = mainActivityView;
         this.context = context;
         this.taskViewModel = taskViewModel;
@@ -38,7 +34,7 @@ public class MainActivityPresenterImpl implements MainActivityPresenter {
     public void addTask(String note, long dueTimestamp, String taskName, String repeatInterval,
                         long timeCreated, boolean manualKill, boolean killedEarly, int originalDay) {
         Task task = new Task(note, dueTimestamp, taskName, repeatInterval,
-                timeCreated, manualKill, killedEarly, originalDay);
+                timeCreated, originalDay);
         taskViewModel.insert(task);
     }
 
@@ -118,10 +114,8 @@ public class MainActivityPresenterImpl implements MainActivityPresenter {
         //getting universal data and putting into shared preferences
         Cursor cursor = db.getUniversalData();
         while (cursor.moveToNext()) {
-//            MainActivity.preferences.edit().putBoolean(StringConstants.MUTE_KEY, (cursor.getInt(1) > 0)).apply();
             MainActivity.preferences.edit().putBoolean(StringConstants.ADS_REMOVED_KEY, (cursor.getInt(5) > 0)).apply();
             MainActivity.preferences.edit().putBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, (cursor.getInt(6) > 0)).apply();
-//            MainActivity.preferences.edit().putInt(StringConstants.DUES_SET, (cursor.getInt(19))).apply();
             MainActivity.preferences.edit().putBoolean(StringConstants.MOTIVATION_KEY, (cursor.getInt(20) > 0)).apply();
             MainActivity.preferences.edit().putInt(StringConstants.REPEAT_HINT_KEY, (cursor.getInt(21))).apply();
             MainActivity.preferences.edit().putInt(StringConstants.RENAME_HINT_KEY, (cursor.getInt(22))).apply();
@@ -268,22 +262,6 @@ public class MainActivityPresenterImpl implements MainActivityPresenter {
             return twentyFourHours * multiplier;
         }
         return 0;
-    }
-
-    @Override
-    public void detectIfKilledEarly(Task taskAt) {
-//        Calendar stampCal = Calendar.getInstance();
-//        stampCal.setTimeInMillis(taskAt.getTimestamp());
-//        Calendar currentCal = Calendar.getInstance();
-//        if((taskAt.getTimestamp() - Calendar.getInstance().getTimeInMillis()) > (1000 * 60 * 60 * 24)){//TODO adjust for weekly and monthly
-//            taskAt.setKilledEarly(true);
-//        }
-    }
-
-    @Override
-    public void setManualKill(Task taskAt) {
-        taskAt.setManualKill(true);
-//        update(taskAt);
     }
 
     @Override

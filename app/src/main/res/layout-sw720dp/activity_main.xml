@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.violenthoboenterprises.blistful.MainActivity"
+    tools:context="com.violenthoboenterprises.blistful.activities.MainActivity"
     android:orientation="vertical"
     android:id="@+id/activityRoot"
     android:background="@color/turquoise">

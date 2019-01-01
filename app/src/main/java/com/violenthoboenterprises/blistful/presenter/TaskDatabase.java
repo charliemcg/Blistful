@@ -20,7 +20,7 @@ import java.util.GregorianCalendar;
 /*
  * This is where the database is built
  */
-@Database(entities = {Task.class, Subtask.class, Reminder.class}, version = 5)
+@Database(entities = {Task.class, Subtask.class, Reminder.class}, version = 6)
 public abstract class TaskDatabase extends RoomDatabase {
 
     private static String TAG = "TaskDatabase";
@@ -63,11 +63,11 @@ public abstract class TaskDatabase extends RoomDatabase {
         protected Void doInBackground(Void... voids){
             Calendar calendar = new GregorianCalendar().getInstance();
             taskDao.insert(new Task(null, 0, "This is a task",
-                    null, calendar.getTimeInMillis(), false, false, 0));
+                    null, calendar.getTimeInMillis(), 0));
             taskDao.insert(new Task(null, 0, "Swipe left or right to delete a task",
-                    null, calendar.getTimeInMillis(), false, false, 0));
+                    null, calendar.getTimeInMillis(), 0));
             taskDao.insert(new Task(null, 0, "Press '+' to add a new task",
-                    null, calendar.getTimeInMillis(), false, false, 0));
+                    null, calendar.getTimeInMillis(), 0));
             return null;
         }
 

@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:background="@color/turquoise"
     android:orientation="vertical"
-    tools:context="com.violenthoboenterprises.blistful.MainActivity">
+    tools:context="com.violenthoboenterprises.blistful.activities.MainActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/tb"

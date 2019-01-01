@@ -1,20 +1,13 @@
 package com.violenthoboenterprises.blistful.model;
 
-import android.content.Context;
-
 import com.violenthoboenterprises.blistful.presenter.NotePresenter;
-import com.violenthoboenterprises.blistful.view.NoteView;
 
 public class NotePresenterImpl implements NotePresenter {
 
     private TaskViewModel taskViewModel;
-    private NoteView noteView;
     private Task task;
-    private Context context;
 
-    public NotePresenterImpl(NoteView noteView, TaskViewModel taskViewModel, Task task, Context context){
-        this.noteView = noteView;
-        this.context = context;
+    public NotePresenterImpl(TaskViewModel taskViewModel, Task task){
         this.task = task;
         this.taskViewModel = taskViewModel;
     }

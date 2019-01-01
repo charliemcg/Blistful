@@ -1,4 +1,4 @@
-package com.violenthoboenterprises.blistful;
+package com.violenthoboenterprises.blistful.activities;
 
 import android.app.AlarmManager;
 import android.app.AlertDialog;
@@ -14,9 +14,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcelable;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,21 +22,20 @@ import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
+import com.violenthoboenterprises.blistful.utils.AlertReceiver;
+import com.violenthoboenterprises.blistful.R;
 import com.violenthoboenterprises.blistful.model.Reminder;
 import com.violenthoboenterprises.blistful.model.ReminderPresenterImpl;
 import com.violenthoboenterprises.blistful.model.ReminderViewModel;
 import com.violenthoboenterprises.blistful.model.Task;
 import com.violenthoboenterprises.blistful.model.TaskViewModel;
-import com.violenthoboenterprises.blistful.presenter.MainActivityPresenter;
 import com.violenthoboenterprises.blistful.presenter.ReminderPresenter;
 import com.violenthoboenterprises.blistful.view.ReminderView;
 
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class ReminderActivity extends MainActivity implements ReminderView {
 
@@ -52,11 +49,9 @@ public class ReminderActivity extends MainActivity implements ReminderView {
     private static int screenSize;
     private static ReminderPresenter reminderPresenter;
     private static Task task;
-    private static Reminder reminder;
     private String REPEAT_DAY = "day";
     private String REPEAT_WEEK = "week";
     private String REPEAT_MONTH = "month";
-    private SharedPreferences preferences;
     private static int tempMinute;
     private static int tempHour;
     private static int tempDay;
@@ -79,10 +74,9 @@ public class ReminderActivity extends MainActivity implements ReminderView {
         ReminderViewModel reminderViewModel =
                 ViewModelProviders.of(this).get(ReminderViewModel.class);
         //getting the instance of the reminder
-        reminder = reminderViewModel.getReminderByParent(task.getId());
+        Reminder reminder = reminderViewModel.getReminderByParent(task.getId());
         TaskViewModel taskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
-        reminderPresenter = new ReminderPresenterImpl(ReminderActivity.this,
-                taskViewModel, reminderViewModel, task, reminder, getApplicationContext());
+        reminderPresenter = new ReminderPresenterImpl(taskViewModel, reminderViewModel, task, reminder, getApplicationContext());
 
         imgTime = findViewById(R.id.imgTime);
         imgTimeFaded = findViewById(R.id.imgTimeFaded);
@@ -598,20 +592,6 @@ public class ReminderActivity extends MainActivity implements ReminderView {
     }
 
     @Override
-    protected void onPause() {
-
-        super.onPause();
-
-    }
-
-    @Override
-    protected void onResume() {
-
-        super.onResume();
-
-    }
-
-    @Override
     //Return to main screen when back pressed
     public void onBackPressed() {
 
@@ -676,8 +656,6 @@ public class ReminderActivity extends MainActivity implements ReminderView {
                 }
 
                 reminderPresenter.setOriginalDay(reminderPresenter.getDay());
-                reminderPresenter.setInitialDueTime(false);
-                reminderPresenter.setKilledEarly(false);
 
             //don't save. Due time set to in the past
             }else{
@@ -693,13 +671,9 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
     private void scheduleNotification() {
 
-        //TODO see if all these variables really need to be initialised in MainActivity
         MainActivity.alertIntent = new Intent(getApplicationContext(), AlertReceiver.class);
-        MainActivity.alertIntent.putExtra
-                ("snoozeStatus", false);
+        MainActivity.alertIntent.putExtra("snoozeStatus", false);
         MainActivity.alertIntent.putExtra("task", task);
-        List<Integer> timestamps = taskViewModel.getAllTimestamps();//TODO make sure to get data a due time and no sooner
-        MainActivity.alertIntent.putExtra("timestamps", (Serializable) timestamps);
 
         //Setting alarm
         MainActivity.pendingIntent = PendingIntent.getBroadcast(

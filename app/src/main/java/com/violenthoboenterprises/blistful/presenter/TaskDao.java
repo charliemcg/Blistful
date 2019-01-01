@@ -34,9 +34,6 @@ public interface TaskDao {
     @Query("SELECT timestamp FROM task_table")
     List<Integer> getAllTimestamps();
 
-    @Query("SELECT COUNT() FROM task_table")
-    int getTaskCount();
-
     @Query("SELECT id FROM task_table WHERE task= :taskName")
     int getTaskIdByName(String taskName);
 
@@ -45,4 +42,7 @@ public interface TaskDao {
 
     @Query("SELECT * FROM task_table WHERE id= :id")
     Task getTaskById(Integer id);
+
+    @Query("SELECT * FROM task_table")
+    List<Task> getAllTasksAsTasks();
 }

@@ -59,15 +59,8 @@ public interface ReminderPresenter {
 
     int getCurrentHour(long stamp);
 
-    int getCurrentMinute(long stamp);
-
     void setOriginalDay(int originalDay);
-
-    void setKilledEarly(boolean killed);
-
-    void setInitialDueTime(boolean bool);
 
     void setDisplayedTimestamp(long stamp);
 
-//    void setDue(boolean b);
 }

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
-    tools:context="com.violenthoboenterprises.blistful.MainActivity"
+    tools:context="com.violenthoboenterprises.blistful.activities.MainActivity"
     android:background="@color/turquoise">
 
     <LinearLayout

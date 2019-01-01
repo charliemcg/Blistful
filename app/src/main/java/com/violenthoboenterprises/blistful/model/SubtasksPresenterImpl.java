@@ -10,16 +10,11 @@ import java.util.List;
 public class SubtasksPresenterImpl implements SubtasksPresenter {
 
     private SubtaskViewModel subtaskViewModel;
-    private SubtasksView subtasksView;
     private Task task;
-    private Context context;
 
-    public SubtasksPresenterImpl(SubtasksView subtasksView, SubtaskViewModel subtaskViewModel,
-                                 Task task, Context context) {
+    public SubtasksPresenterImpl(SubtaskViewModel subtaskViewModel, Task task) {
         this.subtaskViewModel = subtaskViewModel;
-        this.subtasksView = subtasksView;
         this.task = task;
-        this.context = context;
     }
 
     @Override
@@ -27,11 +22,6 @@ public class SubtasksPresenterImpl implements SubtasksPresenter {
         Subtask subtask = new Subtask(parentId, subtaskName, timeCreated);
         subtaskViewModel.insert(subtask);
     }
-
-//    @Override
-//    public Subtask getSubtask(int parentId, int subtaskId) {
-//        return subtaskViewModel.getSubtask(parentId, subtaskId);
-//    }
 
     @Override
     public void update(Subtask subtask) {

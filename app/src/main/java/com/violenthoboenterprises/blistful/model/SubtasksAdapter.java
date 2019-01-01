@@ -40,12 +40,9 @@ public class SubtasksAdapter extends RecyclerView.Adapter<SubtasksAdapter.Subtas
         final Subtask currentSubtask = subtasks.get(position);
         holder.tvSubtask.setText(currentSubtask.getSubtask());
         //rename subtask on long click
-        holder.subtaskLayout.setOnLongClickListener(new View.OnLongClickListener(){
-            @Override
-            public boolean onLongClick(View view){
-                subtaskView.editSubtask(currentSubtask);
-                return true;
-            }
+        holder.subtaskLayout.setOnLongClickListener(view -> {
+            subtaskView.editSubtask(currentSubtask);
+            return true;
         });
     }
 
@@ -69,24 +66,18 @@ public class SubtasksAdapter extends RecyclerView.Adapter<SubtasksAdapter.Subtas
             super(itemView);
             tvSubtask = itemView.findViewById(R.id.tvSubtask);
             subtaskLayout = itemView.findViewById(R.id.subtask_layout);
-            itemView.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View view){
-                    int position = getAdapterPosition();
-                    if (listener != null && position != RecyclerView.NO_POSITION){
-                        listener.onItemClick(subtasks.get(position));
-                    }
+            itemView.setOnClickListener(view -> {
+                int position = getAdapterPosition();
+                if (listener != null && position != RecyclerView.NO_POSITION){
+                    listener.onItemClick(subtasks.get(position));
                 }
             });
-            itemView.setOnLongClickListener(new View.OnLongClickListener(){
-                @Override
-                public boolean onLongClick(View view){
-                    int position = getAdapterPosition();
-                    if (listener != null && position != RecyclerView.NO_POSITION){
-                        listener.onItemClick(subtasks.get(position));
-                    }
-                    return true;
+            itemView.setOnLongClickListener(view -> {
+                int position = getAdapterPosition();
+                if (listener != null && position != RecyclerView.NO_POSITION){
+                    listener.onItemClick(subtasks.get(position));
                 }
+                return true;
             });
         }
     }

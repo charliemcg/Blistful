@@ -4,22 +4,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.violenthoboenterprises.blistful.MainActivity;
-import com.violenthoboenterprises.blistful.ReminderActivity;
-import com.violenthoboenterprises.blistful.StringConstants;
-import com.violenthoboenterprises.blistful.SubtasksActivity;
-import com.violenthoboenterprises.blistful.NoteActivity;
+import com.violenthoboenterprises.blistful.activities.MainActivity;
+import com.violenthoboenterprises.blistful.activities.ReminderActivity;
+import com.violenthoboenterprises.blistful.utils.StringConstants;
+import com.violenthoboenterprises.blistful.activities.SubtasksActivity;
+import com.violenthoboenterprises.blistful.activities.NoteActivity;
 import com.violenthoboenterprises.blistful.R;
 import com.violenthoboenterprises.blistful.presenter.MainActivityPresenter;
 import com.violenthoboenterprises.blistful.presenter.SubtasksPresenter;
@@ -43,19 +41,16 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
     private SubtasksPresenter subtasksPresenter;
     private View activityRootView;
     private MainActivityView mainActivityView;
-    private TaskViewModel taskViewModel;
-    //    public String REFRESH_THIS_ITEM = "refresh_this_item";
     public SharedPreferences preferences;
 
     public TaskAdapter(Context context, MainActivityPresenter mainActivityPresenter,
                        SubtasksPresenter subtasksPresenter, View activityRootView,
-                       MainActivityView mainActivityView, TaskViewModel taskViewModel) {
+                       MainActivityView mainActivityView) {
         this.context = context;
         this.mainActivityPresenter = mainActivityPresenter;
         this.subtasksPresenter = subtasksPresenter;
         this.activityRootView = activityRootView;
         this.mainActivityView = mainActivityView;
-        this.taskViewModel = taskViewModel;
         preferences = context.getSharedPreferences("com.violenthoboenterprises.blistful",
                 Context.MODE_PRIVATE);
     }
@@ -94,7 +89,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
             //Switch to overdue icon when appropriate
             if ((repeatsAdjustedTimestamp < Calendar.getInstance().getTimeInMillis())) {
                 holder.dueIcon.setImageDrawable(context.getResources()
-                        .getDrawable(R.drawable.overdue_icon_light));//TODO check that this works on all versions
+                        .getDrawable(R.drawable.overdue_icon_light));
                 holder.tvDue.setTextColor(Color.RED);
             } else {
                 holder.dueIcon.setImageDrawable(context.getResources()
@@ -343,8 +338,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
 
         } else {
 
-            boolean tomorrow = false;
-
             //Checking if date due tomorrow
             if (currentCal.get(Calendar.YEAR) == cal.get(Calendar.YEAR)) {
                 if (((currentCal.get(Calendar.MONTH) == 0) || (currentCal.get(Calendar.MONTH) == 2)
@@ -352,33 +345,29 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
                         || (currentCal.get(Calendar.MONTH) == 7) || (currentCal.get(Calendar.MONTH) == 9))
                         && (currentCal.get(Calendar.DAY_OF_MONTH) == 31) && (cal.get(Calendar.DAY_OF_MONTH) == 1)
                         && (currentCal.get(Calendar.MONTH) == (cal.get(Calendar.MONTH) - 1))) {
-                    tomorrow = true;
+                    return context.getString(R.string.tomorrow);
                 } else if (((currentCal.get(Calendar.MONTH) == 1) || (currentCal.get(Calendar.MONTH) == 3)
                         || (currentCal.get(Calendar.MONTH) == 5) || (currentCal.get(Calendar.MONTH) == 8)
                         || (currentCal.get(Calendar.MONTH) == 10)) && (currentCal.get(Calendar.DAY_OF_MONTH) == 30)
                         && (cal.get(Calendar.DAY_OF_MONTH) == 1)
                         && (currentCal.get(Calendar.MONTH) == (cal.get(Calendar.MONTH) - 1))) {
-                    tomorrow = true;
+                    return context.getString(R.string.tomorrow);
                 } else if ((currentCal.get(Calendar.MONTH) == 11) && (currentCal.get(Calendar.DAY_OF_MONTH) == 31)
                         && (cal.get(Calendar.DAY_OF_MONTH) == 1)
                         && (currentCal.get(Calendar.MONTH) == (cal.get(Calendar.MONTH) - 1))) {
-                    tomorrow = true;
+                    return context.getString(R.string.tomorrow);
                 } else if ((currentCal.get(Calendar.MONTH) == 1) && (currentCal.get(Calendar.DAY_OF_MONTH) == 28)
                         && (currentCal.get(Calendar.YEAR) % 4 != 0) && (cal.get(Calendar.DAY_OF_MONTH) == 1)
                         && (currentCal.get(Calendar.MONTH) == (cal.get(Calendar.MONTH) - 1))) {
-                    tomorrow = true;
+                    return context.getString(R.string.tomorrow);
                 } else if ((currentCal.get(Calendar.MONTH) == 1) && (currentCal.get(Calendar.DAY_OF_MONTH) == 29)
                         && (currentCal.get(Calendar.YEAR) % 4 == 0) && (cal.get(Calendar.DAY_OF_MONTH) == 1)
                         && (currentCal.get(Calendar.MONTH) == (cal.get(Calendar.MONTH) - 1))) {
-                    tomorrow = true;
+                    return context.getString(R.string.tomorrow);
                 } else if (currentCal.get(Calendar.DAY_OF_MONTH) == (cal.get(Calendar.DAY_OF_MONTH) - 1) &&
                         currentCal.get(Calendar.MONTH) == cal.get(Calendar.MONTH)) {
-                    tomorrow = true;
+                    return context.getString(R.string.tomorrow);
                 }
-            }
-
-            if (tomorrow) {
-                return context.getString(R.string.tomorrow);
             }
 
             //getting string representation for month
@@ -450,7 +439,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         private ImageView repeatIcon;
         private ImageView dueIcon;
 
-        public TaskHolder(final View itemView) {
+        TaskHolder(final View itemView) {
             super(itemView);
             tvTask = itemView.findViewById(R.id.tvTask);
             tvDue = itemView.findViewById(R.id.tvDue);

@@ -1,14 +1,11 @@
 package com.violenthoboenterprises.blistful.model;
 
 import android.app.Application;
-import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
 
 import com.violenthoboenterprises.blistful.presenter.ReminderDao;
-import com.violenthoboenterprises.blistful.presenter.SubtaskDao;
 import com.violenthoboenterprises.blistful.presenter.TaskDatabase;
 
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class ReminderRepository {
@@ -20,22 +17,24 @@ public class ReminderRepository {
         reminderDao = taskDatabase.reminderDao();
     }
 
-    void insert(Reminder reminder){new ReminderRepository.InsertReminderAsyncTask(reminderDao).execute(reminder);}
+    void insert(Reminder reminder){new ReminderRepository
+            .InsertReminderAsyncTask(reminderDao).execute(reminder);}
 
-    void update(Reminder reminder){new ReminderRepository.UpdateReminderAsyncTask(reminderDao).execute(reminder);}
+    void update(Reminder reminder){new ReminderRepository
+            .UpdateReminderAsyncTask(reminderDao).execute(reminder);}
 
-    public void delete(Reminder reminder){new ReminderRepository.DeleteReminderAsyncTask(reminderDao).execute(reminder);}
+    public void delete(Reminder reminder){new ReminderRepository
+            .DeleteReminderAsyncTask(reminderDao).execute(reminder);}
 
     //getting all reminder which belongs to the parent task
-    public Reminder getReminderByParent(int parentId) {
-        AsyncTask<Integer, Void, Reminder> result = new ReminderRepository.GetReminderByParentAsyncTask(reminderDao).execute(parentId);
+    Reminder getReminderByParent(int parentId) {
+        AsyncTask<Integer, Void, Reminder> result = new ReminderRepository
+                .GetReminderByParentAsyncTask(reminderDao).execute(parentId);
         Reminder reminder;
         try {
             reminder = result.get();
             return reminder;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
         return null;
@@ -78,9 +77,9 @@ public class ReminderRepository {
         }
     }
 
-    private class GetReminderByParentAsyncTask extends AsyncTask<Integer, Void, Reminder>{
+    private static class GetReminderByParentAsyncTask extends AsyncTask<Integer, Void, Reminder>{
         private ReminderDao reminderDao;
-        public GetReminderByParentAsyncTask(ReminderDao reminderDao) {
+        GetReminderByParentAsyncTask(ReminderDao reminderDao) {
             this.reminderDao = reminderDao;
         }
 

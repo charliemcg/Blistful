@@ -8,7 +8,7 @@
     android:background="@color/turquoise"
     android:layout_margin="8dp"
     android:descendantFocusability="beforeDescendants"
-    tools:context="com.violenthoboenterprises.blistful.MainActivity"
+    tools:context="com.violenthoboenterprises.blistful.activities.MainActivity"
     android:id="@+id/taskLayout">
 
     <android.support.constraint.ConstraintLayout

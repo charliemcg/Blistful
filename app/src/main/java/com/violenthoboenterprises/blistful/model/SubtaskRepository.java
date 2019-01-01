@@ -20,51 +20,50 @@ public class SubtaskRepository {
         subtaskDao = taskDatabase.subtaskDao();
     }
 
-    void insert(Subtask subtask){new SubtaskRepository.InsertSubtaskAsyncTask(subtaskDao).execute(subtask);}
+    void insert(Subtask subtask){new SubtaskRepository
+            .InsertSubtaskAsyncTask(subtaskDao).execute(subtask);}
 
-    void update(Subtask subtask){new SubtaskRepository.UpdateSubtaskAsyncTask(subtaskDao).execute(subtask);}
+    void update(Subtask subtask){new SubtaskRepository
+            .UpdateSubtaskAsyncTask(subtaskDao).execute(subtask);}
 
-    public void delete(Subtask subtask){new SubtaskRepository.DeleteSubtaskAsyncTask(subtaskDao).execute(subtask);}
+    public void delete(Subtask subtask){new SubtaskRepository
+            .DeleteSubtaskAsyncTask(subtaskDao).execute(subtask);}
 
     //getting all subtasks which belong to the parent task
-    //TODO see if LiveData is needed
     LiveData<List<Subtask>> getAllSubtasks(int id){
-        AsyncTask<Integer, Void, LiveData<List<Subtask>>> result = new GetAllSubtasksAsyncTask(subtaskDao).execute(id);
+        AsyncTask<Integer, Void, LiveData<List<Subtask>>> result =
+                new GetAllSubtasksAsyncTask(subtaskDao).execute(id);
         LiveData<List<Subtask>> allSubtasks;
         try {
             allSubtasks = result.get();
             return allSubtasks;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
         return null;
     }
 
     public Subtask getSubtask(int parentId, int subtaskId) {
-        AsyncTask<Integer, Void, Subtask> result = new GetSubtaskAsyncTask(subtaskDao).execute(parentId, subtaskId);
+        AsyncTask<Integer, Void, Subtask> result =
+                new GetSubtaskAsyncTask(subtaskDao).execute(parentId, subtaskId);
         Subtask subtask;
         try {
             subtask = result.get();
             return subtask;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public List<Subtask> getSubtasksByParent(int parentId) {
-        AsyncTask<Integer, Void, List<Subtask>> result = new GetSubtasksByParentAsynTask(subtaskDao).execute(parentId);
+    List<Subtask> getSubtasksByParent(int parentId) {
+        AsyncTask<Integer, Void, List<Subtask>> result =
+                new GetSubtasksByParentAsynTask(subtaskDao).execute(parentId);
         List<Subtask> subtasks;
         try {
             subtasks = result.get();
             return subtasks;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
         return null;
@@ -118,9 +117,9 @@ public class SubtaskRepository {
         }
     }
 
-    private class GetSubtaskAsyncTask extends AsyncTask<Integer, Void, Subtask>{
+    private static class GetSubtaskAsyncTask extends AsyncTask<Integer, Void, Subtask>{
         private SubtaskDao subtaskDao;
-        public GetSubtaskAsyncTask(SubtaskDao subtaskDao) {
+        GetSubtaskAsyncTask(SubtaskDao subtaskDao) {
             this.subtaskDao = subtaskDao;
         }
 
@@ -130,9 +129,9 @@ public class SubtaskRepository {
         }
     }
 
-    private class GetSubtasksByParentAsynTask extends AsyncTask<Integer, Void, List<Subtask>>{
+    private static class GetSubtasksByParentAsynTask extends AsyncTask<Integer, Void, List<Subtask>>{
         private SubtaskDao subtaskDao;
-        public GetSubtasksByParentAsynTask(SubtaskDao subtaskDao) {
+        GetSubtasksByParentAsynTask(SubtaskDao subtaskDao) {
             this.subtaskDao = subtaskDao;
         }
 

@@ -28,7 +28,6 @@ public class TaskRepository {
     private static String TAG = "TaskRepository";
 
     private TaskDao taskDao;
-    //TODO see if LiveData is needed
     private LiveData<List<Task>> allTasks;
 
     TaskRepository(Application application) {
@@ -49,7 +48,6 @@ public class TaskRepository {
         new DeleteTaskAsyncTask(taskDao).execute(task);
     }
 
-    //TODO see if LiveData is needed
     LiveData<List<Task>> getAllTasks(){
         return allTasks;
     }
@@ -88,6 +86,16 @@ public class TaskRepository {
 
     public Task getTaskById(int id) {
         AsyncTask<Integer, Void, Task> result = new GetTaskByIdAsyncTask(taskDao).execute(id);
+        try{
+            return result.get();
+        }catch (InterruptedException | ExecutionException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<Task> getAllTasksAsTasks() {
+        AsyncTask<Void, Void, List<Task>> result = new GetAllTasksAsTasksAsyncTask(taskDao).execute();
         try{
             return result.get();
         }catch (InterruptedException | ExecutionException e){
@@ -139,10 +147,10 @@ public class TaskRepository {
         }
     }
 
-    private class GetAllTimestampsAsyncTask extends AsyncTask<Void, Void, List<Integer>> {
+    private static class GetAllTimestampsAsyncTask extends AsyncTask<Void, Void, List<Integer>> {
         private TaskDao taskDao;
 
-        public GetAllTimestampsAsyncTask(TaskDao taskDao) {
+        GetAllTimestampsAsyncTask(TaskDao taskDao) {
             this.taskDao = taskDao;
         }
 
@@ -152,9 +160,9 @@ public class TaskRepository {
         }
     }
 
-    private class GetTaskIdByNameAsyncTask extends AsyncTask<String, Void, Integer> {
+    private static class GetTaskIdByNameAsyncTask extends AsyncTask<String, Void, Integer> {
         private TaskDao taskDao;
-        public GetTaskIdByNameAsyncTask(TaskDao taskDao) {this.taskDao = taskDao;}
+        GetTaskIdByNameAsyncTask(TaskDao taskDao) {this.taskDao = taskDao;}
 
         @Override
         protected Integer doInBackground(String... strings) {
@@ -162,7 +170,7 @@ public class TaskRepository {
         }
     }
 
-    private class GetDuesSetAsyncTask extends AsyncTask<Void, Void, Integer> {
+    private static class GetDuesSetAsyncTask extends AsyncTask<Void, Void, Integer> {
         private TaskDao taskDao;
         GetDuesSetAsyncTask(TaskDao taskDao) {this.taskDao = taskDao;}
 
@@ -172,13 +180,23 @@ public class TaskRepository {
         }
     }
 
-    private class GetTaskByIdAsyncTask extends AsyncTask<Integer, Void, Task> {
+    private static class GetTaskByIdAsyncTask extends AsyncTask<Integer, Void, Task> {
         private TaskDao taskDao;
         GetTaskByIdAsyncTask(TaskDao taskDao) {this.taskDao = taskDao;}
 
         @Override
         protected Task doInBackground(Integer... integers) {
             return taskDao.getTaskById(integers[0]);
+        }
+    }
+
+    private static class GetAllTasksAsTasksAsyncTask extends AsyncTask<Void, Void, List<Task>>{
+        private TaskDao taskDao;
+        GetAllTasksAsTasksAsyncTask(TaskDao taskDao) {this.taskDao = taskDao;}
+
+        @Override
+        protected List<Task> doInBackground(Void... voids) {
+            return taskDao.getAllTasksAsTasks();
         }
     }
 }

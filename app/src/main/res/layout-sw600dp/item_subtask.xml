@@ -9,7 +9,7 @@
     android:background="@color/turquoise"
     android:descendantFocusability="blocksDescendants"
     android:orientation="horizontal"
-    tools:context="com.violenthoboenterprises.blistful.MainActivity">
+    tools:context="com.violenthoboenterprises.blistful.activities.MainActivity">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/viewSubtaskParent"

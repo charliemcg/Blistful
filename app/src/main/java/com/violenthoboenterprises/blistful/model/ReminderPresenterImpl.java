@@ -1,11 +1,9 @@
 package com.violenthoboenterprises.blistful.model;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.violenthoboenterprises.blistful.R;
 import com.violenthoboenterprises.blistful.presenter.ReminderPresenter;
-import com.violenthoboenterprises.blistful.view.ReminderView;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -15,17 +13,14 @@ public class ReminderPresenterImpl implements ReminderPresenter {
     private final static String TAG = "ReminderPresenterImpl";
     private ReminderViewModel reminderViewModel;
     private TaskViewModel taskViewModel;
-    private ReminderView reminderView;
     private Task task;
     private Reminder reminder;
     private Context context;
 
-    public ReminderPresenterImpl(ReminderView reminderView, TaskViewModel taskViewModel,
-                                 ReminderViewModel reminderViewModel, Task task, Reminder reminder,
-                                 Context context) {
+    public ReminderPresenterImpl(TaskViewModel taskViewModel, ReminderViewModel reminderViewModel,
+                                 Task task, Reminder reminder, Context context) {
         this.reminderViewModel = reminderViewModel;
         this.taskViewModel = taskViewModel;
-        this.reminderView = reminderView;
         this.task = task;
         this.reminder = reminder;
         this.context = context;
@@ -260,33 +255,9 @@ public class ReminderPresenterImpl implements ReminderPresenter {
     }
 
     @Override
-    public int getCurrentMinute(long stamp) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(stamp);
-        return cal.get(Calendar.MINUTE);
-    }
-
-    @Override
     public void setOriginalDay(int originalDay) {
         task.setOriginalDay(originalDay);
         taskViewModel.update(task);
     }
-
-    @Override
-    public void setKilledEarly(boolean killed) {
-        task.setKilledEarly(killed);
-        taskViewModel.update(task);
-    }
-
-    @Override
-    public void setInitialDueTime(boolean bool) {
-        task.setInitialDueElapsed(bool);
-        taskViewModel.update(task);
-    }
-
-//    @Override
-//    public void setDue(boolean b) {
-//        task.setDue(b);
-//    }
 
 }

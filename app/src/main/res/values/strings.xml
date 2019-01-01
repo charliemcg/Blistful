@@ -101,5 +101,6 @@
     <string name="circularArrowRepeatWeekly">Circular arrow that says weekly repeat.</string>
     <string name="redCircularArrowRepeatWeekly">Circular arrow that says weekly repeat.</string>
     <string name="sdljfhaslddfkhjaklsdf">Jan</string>
+    <string name="taskDeleted">Task deleted</string>
 
 </resources>

@@ -1,24 +1,22 @@
-package com.violenthoboenterprises.blistful;
+package com.violenthoboenterprises.blistful.activities;
 
 import android.app.job.JobScheduler;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.violenthoboenterprises.blistful.R;
+import com.violenthoboenterprises.blistful.utils.StringConstants;
 import com.violenthoboenterprises.blistful.model.Subtask;
 import com.violenthoboenterprises.blistful.model.SubtaskViewModel;
 import com.violenthoboenterprises.blistful.model.SubtasksAdapter;
@@ -34,11 +32,9 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
 
     private String TAG = this.getClass().getSimpleName();
     private static InputMethodManager keyboard;
-    private static EditText etSubtask;
+    private EditText etSubtask;
     //The subtask being renamed
     private Subtask subTaskBeingEdited;
-    //The parent task to which the subtasks belong
-    private Task task;
     private SubtaskViewModel subtaskViewModel;
     private SubtasksPresenter subtasksPresenter;
 
@@ -48,11 +44,11 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
         Toolbar subTasksToolbar = findViewById(R.id.tbSubtasks);
 
         //Getting the parent task to which the subtasks are related
-        task = (Task) getIntent().getSerializableExtra("task");
+        //The parent task to which the subtasks belong
+        Task task = (Task) getIntent().getSerializableExtra("task");
         subTasksToolbar.setSubtitle(task.getTask());
         subtaskViewModel = ViewModelProviders.of(this).get(SubtaskViewModel.class);
-        subtasksPresenter = new SubtasksPresenterImpl(SubtasksActivity.this,
-                subtaskViewModel, task, getApplicationContext());
+        subtasksPresenter = new SubtasksPresenterImpl(subtaskViewModel, task);
 
         keyboard = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         etSubtask = findViewById(R.id.etSubtask);
@@ -67,10 +63,10 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
         recyclerView.setAdapter(subtasksAdapter);
 
         //observing the recycler view items for changes
-        //TODO find out if observer is necessary
         subtaskViewModel = ViewModelProviders.of(this).get(SubtaskViewModel.class);
         //need to specifically get subtasks belonging to parent task
-        subtaskViewModel.getAllSubtasks(subtasksPresenter.getId()).observe(this, subtasks -> subtasksAdapter.setSubtasks(subtasks));
+        subtaskViewModel.getAllSubtasks(subtasksPresenter.getId())
+                .observe(this, subtasksAdapter::setSubtasks);
 
         //detect swipes
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
@@ -118,7 +114,8 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
                         mpBlip.start();
                     }
 
-                    subtasksPresenter.addSubtask(subtasksPresenter.getId(), subtaskName, Calendar.getInstance().getTimeInMillis());
+                    subtasksPresenter.addSubtask(subtasksPresenter.getId(), subtaskName,
+                            Calendar.getInstance().getTimeInMillis());
 
                 }
 
@@ -166,15 +163,10 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
     private void showSnackbar(String stringSnack, final Subtask subtaskToReinstate) {
         View view = findViewById(R.id.subtasksRoot);
         Snackbar.make(view, stringSnack, Snackbar.LENGTH_SHORT)
-                .setAction("UNDO", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Toast.makeText(SubtasksActivity.this, "Reinstate subtask",
-                                Toast.LENGTH_LONG).show();
-                        JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
-                        scheduler.cancel(StringConstants.DELETE_TASK_ID);
-                        subtasksPresenter.reinstateSubTask(subtaskToReinstate);
-                    }
+                .setAction("UNDO", view1 -> {
+                    JobScheduler scheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+                    scheduler.cancel(StringConstants.DELETE_TASK_ID);
+                    subtasksPresenter.reinstateSubTask(subtaskToReinstate);
                 })
                 .setActionTextColor(getResources().getColor(R.color.purple))
                 .show();
