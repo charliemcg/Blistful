@@ -33,7 +33,7 @@
     <EditText
         android:id="@+id/etNote"
         android:layout_width="730dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:padding="5dp"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="8dp"

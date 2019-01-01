@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     tools:context="com.violenthoboenterprises.blistful.MainActivity"
     android:background="@color/turquoise">
@@ -11,15 +11,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:baselineAligned="false"
         android:orientation="horizontal"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp">
+        android:baselineAligned="false">
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/btnAlarm"
             android:layout_width="0dp"
-            android:layout_height="60dp"
+            android:layout_height="50dp"
             android:layout_marginTop="5dp"
             android:layout_marginRight="5dp"
             android:layout_weight="1"
@@ -29,14 +27,14 @@
 
             <ImageView
                 android:id="@+id/imgAlarm"
-                android:layout_width="40dp"
+                android:layout_width="36dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="20dp"
                 android:src="@drawable/due_icon_light_solid"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/tvAlarm"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tvAlarm"/>
 
             <TextView
                 android:id="@+id/tvAlarm"
@@ -47,34 +45,34 @@
                 android:gravity="center"
                 android:lines="2"
                 android:text="@string/alarm"
-                android:textSize="15sp"
+                android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/imgAlarm"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
 
         </android.support.constraint.ConstraintLayout>
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/btnSubtasks"
             android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:layout_marginTop="5dp"
+            android:layout_height="50dp"
             android:layout_weight="1"
-            android:background="@drawable/item_background"
             android:gravity="center"
-            android:padding="5dp">
+            android:padding="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/item_background">
 
             <ImageView
                 android:id="@+id/imgSubtasks"
-                android:layout_width="40dp"
+                android:layout_width="36dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="20dp"
                 android:src="@drawable/subtasks_icon_light_solid"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/tvSubtasks"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tvSubtasks"/>
 
             <TextView
                 android:id="@+id/tvSubtasks"
@@ -85,35 +83,35 @@
                 android:gravity="center"
                 android:lines="2"
                 android:text="@string/subTasks"
-                android:textSize="15sp"
+                android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/imgSubtasks"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
 
         </android.support.constraint.ConstraintLayout>
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/btnNote"
             android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="5dp"
+            android:layout_height="50dp"
             android:layout_weight="1"
-            android:background="@drawable/item_background"
             android:gravity="center"
-            android:padding="5dp">
+            android:padding="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/item_background">
 
             <ImageView
                 android:id="@+id/imgNote"
-                android:layout_width="40dp"
+                android:layout_width="36dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="20dp"
                 android:src="@drawable/note_icon_light_solid"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/tvNote"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tvNote"/>
 
             <TextView
                 android:id="@+id/tvNote"
@@ -124,11 +122,11 @@
                 android:gravity="center"
                 android:lines="2"
                 android:text="@string/note"
-                android:textSize="15sp"
+                android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/imgNote"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
 
         </android.support.constraint.ConstraintLayout>
 

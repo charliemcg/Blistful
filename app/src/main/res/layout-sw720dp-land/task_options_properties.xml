@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     tools:context="com.violenthoboenterprises.blistful.MainActivity"
     android:background="@color/turquoise">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:baselineAligned="false"
-        android:orientation="horizontal"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp">
+        android:orientation="horizontal">
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/btnAlarm"
@@ -29,14 +27,14 @@
 
             <ImageView
                 android:id="@+id/imgAlarm"
-                android:layout_width="40dp"
+                android:layout_width="75dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="32dp"
                 android:src="@drawable/due_icon_light_solid"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/tvAlarm"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tvAlarm"/>
 
             <TextView
                 android:id="@+id/tvAlarm"
@@ -67,14 +65,14 @@
 
             <ImageView
                 android:id="@+id/imgSubtasks"
-                android:layout_width="40dp"
+                android:layout_width="75dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="36dp"
                 android:src="@drawable/subtasks_icon_light_solid"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/tvSubtasks"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tvSubtasks"/>
 
             <TextView
                 android:id="@+id/tvSubtasks"
@@ -106,14 +104,14 @@
 
             <ImageView
                 android:id="@+id/imgNote"
-                android:layout_width="40dp"
+                android:layout_width="75dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="40dp"
                 android:src="@drawable/note_icon_light_solid"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/tvNote"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tvNote"/>
 
             <TextView
                 android:id="@+id/tvNote"

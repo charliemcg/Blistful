@@ -93,13 +93,13 @@ public class NoteActivity extends MainActivity implements NoteView {
 
             //new note being added
             String newNote = etNote.getText().toString();
-            notePresenter.update(newNote);
+            if (!newNote.equals("")) {
+                notePresenter.update(newNote);
 
-            //display new note in the view
-            tvNote.setText(newNote);
+                //display new note in the view
+                tvNote.setText(newNote);
 
-            //clear the edit text
-            etNote.setText("");
+            }
 
         });
 
@@ -178,16 +178,24 @@ public class NoteActivity extends MainActivity implements NoteView {
 
                             btnSubmitNoteThree.setVisibility(View.GONE);
 
-                            //Hide text box
-                            etNote.setVisibility(View.GONE);
+                            if (!etNote.getText().toString().equals("")) {
+                                //Hide text box
+                                etNote.setVisibility(View.GONE);
 
-                            btnSubmitNote.setVisibility(View.GONE);
+                                btnSubmitNote.setVisibility(View.GONE);
 
-                            trashNote.setVisible(true);
+                                trashNote.setVisible(true);
 
-                            //Hide keyboard
-                            keyboard.toggleSoftInput(InputMethodManager
-                                    .HIDE_IMPLICIT_ONLY, 0);
+                                //Hide keyboard
+                                keyboard.toggleSoftInput(InputMethodManager
+                                        .HIDE_IMPLICIT_ONLY, 0);
+
+                                //clear the edit text
+                                etNote.setText("");
+
+                            } else {
+                                btnSubmitNote.setVisibility(View.VISIBLE);
+                            }
 
                         };
                         handler5.postDelayed(runnable5, 50);
