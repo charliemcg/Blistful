@@ -88,6 +88,8 @@ public class MainActivity extends AppCompatActivity implements
     private boolean boolShowMotivation;
     //used to determine if user needs to be notified that they set a task to be due in the past
     public static boolean boolDueInPast;
+    //used to indicate that task properties are showing when deciding on what action back button should task
+    public static boolean boolPropertiesShowing;
 
     //indicates how many due dates are set because free users have a limitation
 //    private int intDuesSet;
@@ -364,7 +366,6 @@ public class MainActivity extends AppCompatActivity implements
                         interval = mainActivityPresenter.getInterval(StringConstants.MONTH,
                                 adapter.getTaskAt(viewHolder.getAdapterPosition()).getTimestamp(),
                                 adapter.getTaskAt(viewHolder.getAdapterPosition()).getOriginalDay());
-                        Log.d(TAG, "interval: " + interval);
                     }
                     long newTimestamp = adapter.getTaskAt(viewHolder.getAdapterPosition()).getTimestamp()/*adapter.getTaskAt(viewHolder.getAdapterPosition())
                             .getTimestamp() + interval*/;
@@ -396,8 +397,7 @@ public class MainActivity extends AppCompatActivity implements
 
                         //creating new reminder
                         MainActivity.alertIntent = new Intent(getApplicationContext(), AlertReceiver.class);
-                        MainActivity.alertIntent.putExtra
-                                ("snoozeStatus", false);
+                        MainActivity.alertIntent.putExtra("snoozeStatus", false);
                         MainActivity.alertIntent.putExtra("task", adapter.getTaskAt(viewHolder.getAdapterPosition()));
                         List<Integer> timestamps = taskViewModel.getAllTimestamps();//TODO make sure to get data at due time and no sooner
                         MainActivity.alertIntent.putExtra("timestamps", (Serializable) timestamps);
@@ -413,8 +413,6 @@ public class MainActivity extends AppCompatActivity implements
                                 newTimestamp,
                                 MainActivity.pendingIntent);
                     }
-//                    mainActivityPresenter.detectIfKilledEarly(adapter.getTaskAt(viewHolder.getAdapterPosition()));
-//                    mainActivityPresenter.setManualKill(adapter.getTaskAt(viewHolder.getAdapterPosition()));
                     adapter.getTaskAt(viewHolder.getAdapterPosition()).setDisplayedTimestamp(newTimestamp);
                     mainActivityPresenter.update(adapter.getTaskAt(viewHolder.getAdapterPosition()));
                     //display toast
@@ -422,13 +420,11 @@ public class MainActivity extends AppCompatActivity implements
                         if ((preferences.getInt(StringConstants.REPEAT_HINT_KEY, 0) == 1)
                                 || (preferences.getInt(StringConstants.REPEAT_HINT_KEY, 0) == 10)) {
                             showRepeatHintToast();
+                        }else if(boolShowMotivation) {
+                            //showing motivational toast
+                            showKilledAffirmationToast();
                         }
-                    } else if (boolShowMotivation) {
-                        //showing motivational toast
-                        showKilledAffirmationToast();
                     }
-//                    int remindersSoFar = preferences.getInt(StringConstants.REPEAT_HINT_KEY, 0);
-//                    preferences.edit().putInt(StringConstants.REPEAT_HINT_KEY, ++remindersSoFar).apply();
                     adapter.notifyDataSetChanged();
                 }
 
@@ -729,24 +725,22 @@ public class MainActivity extends AppCompatActivity implements
         Button negative = dialog.findViewById(R.id.btnNegative);
 
         //Buy button actions
-        positive.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        positive.setOnClickListener(v -> {
 
-                dialog.dismiss();
-                if (!boolRemindersAvailable && !boolAdsRemoved) {
+            dialog.dismiss();
+            if (!boolRemindersAvailable && !boolAdsRemoved) {
 
-                    vibrate.vibrate(50);
+                vibrate.vibrate(50);
 
-                    if (!boolMute) {
-                        mpChime.start();
-                    }
-
-                    billingProcessor.purchase(MainActivity.this, StringConstants.TEST_PURCHASE);
-
+                if (!boolMute) {
+                    mpChime.start();
                 }
 
+                billingProcessor.purchase(MainActivity.this,
+                        /*StringConstants.TEST_PURCHASE*/StringConstants.UNLOCK_ALL);
+
             }
+
         });
 
         //Cancel button options
@@ -962,12 +956,10 @@ public class MainActivity extends AppCompatActivity implements
                         (MainActivity.this, R.anim.enter_from_right_fast));
                 toastView.setVisibility(View.VISIBLE);
                 final Handler handler2 = new Handler();
-                final Runnable runnable2 = new Runnable() {
-                    public void run() {
-                        toastView.startAnimation(AnimationUtils.loadAnimation
-                                (MainActivity.this, android.R.anim.fade_out));
-                        toastView.setVisibility(View.GONE);
-                    }
+                final Runnable runnable2 = () -> {
+                    toastView.startAnimation(AnimationUtils.loadAnimation
+                            (MainActivity.this, android.R.anim.fade_out));
+                    toastView.setVisibility(View.GONE);
                 };
                 handler2.postDelayed(runnable2, 2000);
             };
@@ -1043,8 +1035,16 @@ public class MainActivity extends AppCompatActivity implements
             boolDueInPast = false;
         }
 
-//        Toast.makeText(this, "Dues Set: " + mainActivityPresenter.getDuesSet(), Toast.LENGTH_LONG).show();
+    }
 
+    @Override
+    public void onBackPressed() {
+        if(boolPropertiesShowing){
+            adapter.notifyItemChanged(preferences.getInt(StringConstants.REFRESH_THIS_ITEM, 0));
+            boolPropertiesShowing = false;
+        }else {
+            super.onBackPressed();
+        }
     }
 
 }

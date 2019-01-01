@@ -27,11 +27,9 @@ public interface TaskDao {
     @Delete
     void delete(Task task);
 
-    @Query("SELECT * FROM task_table WHERE timestamp=0 UNION SELECT * FROM task_table WHERE timestamp>0 ORDER BY timestamp ASC, timeCreated DESC")
+//    @Query("SELECT * FROM task_table WHERE timestamp=0 UNION SELECT * FROM task_table WHERE timestamp>0 ORDER BY timestamp ASC, timeCreated DESC")
+    @Query("SELECT * FROM task_table WHERE displayedTimestamp=0 UNION SELECT * FROM task_table WHERE displayedTimestamp>0 ORDER BY displayedTimestamp ASC, timeCreated DESC")
     LiveData<List<Task>> getAllTasks();
-
-//    @Query("SELECT * FROM task_table WHERE timestamp>0 ORDER BY timestamp ASC")
-//    LiveData<List<Task>> getAllTasksByStamp();
 
     @Query("SELECT timestamp FROM task_table")
     List<Integer> getAllTimestamps();

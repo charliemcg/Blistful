@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.violenthoboenterprises.blistful.MainActivity;
 import com.violenthoboenterprises.blistful.ReminderActivity;
 import com.violenthoboenterprises.blistful.StringConstants;
 import com.violenthoboenterprises.blistful.SubtasksActivity;
@@ -78,6 +79,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         holder.dueIcon.setVisibility(View.GONE);
         holder.tvDue.setVisibility(View.GONE);
         holder.taskProperties.setVisibility(View.GONE);
+//        MainActivity.boolPropertiesShowing = false;
         holder.tvDue.setTextColor(Color.BLACK);
 
         //checking if needed to display due icon
@@ -129,11 +131,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
             //tracking this item as requiring updating upon return from a child activity
             preferences.edit().putInt(StringConstants.REFRESH_THIS_ITEM, position).apply();
             if (holder.taskProperties.getVisibility() == View.VISIBLE) {
+                MainActivity.boolPropertiesShowing = false;
                 holder.taskProperties.setVisibility(View.GONE);
                 mainActivityPresenter.toggleFab(true);
                 //redrawing the UI to remove properties from view
                 activityRootView.postInvalidate();
             } else {
+                MainActivity.boolPropertiesShowing = true;
                 holder.taskProperties.setVisibility(View.VISIBLE);
                 mainActivityPresenter.toggleFab(false);
             }
@@ -148,6 +152,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         //show reminder activity
         holder.btnAlarm.setOnClickListener(view -> {
             holder.taskProperties.setVisibility(View.GONE);
+            MainActivity.boolPropertiesShowing = false;
             if (mainActivityPresenter.getDuesSet() < 5 || currentTask.getTimestamp() != 0
                             || preferences.getBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, false)) {
                 Intent intent = new Intent(context, ReminderActivity.class);
@@ -161,6 +166,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         //show subtasks activity
         holder.btnSubtasks.setOnClickListener(view -> {
             holder.taskProperties.setVisibility(View.GONE);
+            MainActivity.boolPropertiesShowing = false;
             Intent intent = new Intent(context, SubtasksActivity.class);
             intent.putExtra("task", currentTask);
             context.startActivity(intent);
@@ -169,6 +175,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         //show note activity
         holder.btnNote.setOnClickListener(view -> {
             holder.taskProperties.setVisibility(View.GONE);
+            MainActivity.boolPropertiesShowing = false;
             Intent intent = new Intent(context, NoteActivity.class);
             intent.putExtra("task", currentTask);
             context.startActivity(intent);

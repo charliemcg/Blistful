@@ -638,7 +638,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
                 if(reminderPresenter.getYear() == currentYear
                         && reminderPresenter.getMonth() == currentMonth
                         && reminderPresenter.getDay() == currentDay
-                        && currentHour < 10){
+                        && currentHour < 9){
                     reminderPresenter.setHour(10);
                     reminderPresenter.setMinute(0);
                 }else if(reminderPresenter.getYear() == currentYear
