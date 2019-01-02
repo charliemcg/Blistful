@@ -608,13 +608,13 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
             Calendar calendar = Calendar.getInstance();
             //set current date if date wasn't picked
-            if (reminderPresenter.getYear() == 0) {
+            if (/*reminderPresenter.getYear() == 0*/!dateSet) {
                 reminderPresenter.setYear(calendar.get(Calendar.YEAR));
                 reminderPresenter.setMonth(calendar.get(Calendar.MONTH));
                 reminderPresenter.setDay(calendar.get(Calendar.DAY_OF_MONTH));
             }
             //set current time if time wasn't picked
-            if (reminderPresenter.getMinute() == 0) {
+            if (/*reminderPresenter.getMinute() == 0*/!timeSet) {
                 //set unspecified time to be set one hour into the future
                 if(reminderPresenter.getYear() == currentYear
                         && reminderPresenter.getMonth() == currentMonth
