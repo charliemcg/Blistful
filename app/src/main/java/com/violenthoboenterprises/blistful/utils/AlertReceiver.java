@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 public class AlertReceiver extends BroadcastReceiver {
 
@@ -56,13 +57,14 @@ public class AlertReceiver extends BroadcastReceiver {
 
         //Setting values to custom notification view
 //        remoteViews = new RemoteViews(context.getPackageName(), R.layout.notification);//TODO consider reinstating remote views
-//        remoteViews.setTextViewText(R.id.notif_title, task.getTask());
-        //TODO reinstate randomiser
+//        remoteViews.setTextViewText(R.id.tvTaskText, task.getTask());
         //randomly generating motivational toast
-//        int j = MainActivity.random.nextInt(7);
-//        while (MainActivity.motivation[j].equals(MainActivity.lastToast)) {
-//            j = MainActivity.random.nextInt(7);
-//        }
+        Random random = new Random();
+        String[] strMotivation = new String[]{context.getResources().getString(R.string.getItDone),
+                context.getResources().getString(R.string.smashThatTask), context.getResources().getString(R.string.beAWinner),
+                context.getResources().getString(R.string.onlyWimpsGiveUp), context.getResources().getString(R.string.dontBeAFailure),
+                context.getResources().getString(R.string.beVictorious), context.getResources().getString(R.string.killThisTask)};
+        int j = random.nextInt(7);
 
         //Setting up notification channel for Oreo
         final String notificChannelId = "notification_channel";
@@ -82,15 +84,15 @@ public class AlertReceiver extends BroadcastReceiver {
         builder = new NotificationCompat.Builder(context, notificChannelId)
                 .setSmallIcon(R.drawable.small_notific_icon)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_launcher_og))
-//                .setContentTitle(MainActivity.motivation[j])//TODO get randomised string
+                .setContentTitle(strMotivation[j])
                 .setTicker(msgAlert)
                 .setWhen(0)
                 .setContentText(task.getTask())
                 .setStyle(new NotificationCompat.BigTextStyle())
                 .setColorized(true)
-//                .setColor(Color.parseColor(highlight))TODO get colour
+                .setColor(context.getResources().getColor(R.color.purple))
 //                .setCustomContentView(remoteViews)//TODO reinstate remote views
-//                .setLights(66666666, 500, 500)
+                .setLights(66666666, 500, 2000)
                 .setDefaults(NotificationCompat.DEFAULT_SOUND)
                 .setContentIntent(notificIntent)
                 .setAutoCancel(true);
@@ -101,7 +103,7 @@ public class AlertReceiver extends BroadcastReceiver {
 
             notificationManager.notify(1, builder.build());
 
-            //need to set up next notification for repeating task
+        //need to set up next notification for repeating task
         } else {
 
             //updating the task in case any of the values have changed

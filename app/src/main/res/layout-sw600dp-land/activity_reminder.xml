@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/pickerRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -21,8 +20,8 @@
 
     <ImageView
         android:id="@+id/imgCalendarFaded"
-        android:layout_width="125dp"
-        android:layout_height="123dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:contentDescription="@string/accessGrayedOutCalendar"
         android:elevation="100dp"
         android:src="@drawable/calendar_faded_light"
@@ -35,8 +34,8 @@
 
     <ImageView
         android:id="@+id/imgCalendar"
-        android:layout_width="125dp"
-        android:layout_height="123dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:contentDescription="@string/accessCalendar"
         android:elevation="100dp"
         android:src="@drawable/calendar"
@@ -46,7 +45,7 @@
         app:layout_constraintHorizontal_bias="0.152"
         app:layout_constraintStart_toStartOf="@+id/btnDate"
         app:layout_constraintTop_toTopOf="@+id/btnDate"
-        app:layout_constraintVertical_bias="0.47" />
+        app:layout_constraintVertical_bias="0.47"/>
 
     <TextView
         android:id="@+id/tvDate"
@@ -60,7 +59,7 @@
         app:layout_constraintHorizontal_bias="0.705"
         app:layout_constraintStart_toStartOf="@+id/btnDate"
         app:layout_constraintTop_toTopOf="@+id/btnDate"
-        app:layout_constraintVertical_bias="0.521" />
+        app:layout_constraintVertical_bias="0.521"/>
 
     <View
         android:id="@+id/btnDate"
@@ -77,8 +76,8 @@
 
     <ImageView
         android:id="@+id/imgTimeFaded"
-        android:layout_width="125dp"
-        android:layout_height="123dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:contentDescription="@string/accessGrayedOutClock"
         android:elevation="100dp"
         android:src="@drawable/time_faded_light"
@@ -86,12 +85,12 @@
         app:layout_constraintHorizontal_bias="0.152"
         app:layout_constraintEnd_toEndOf="@+id/imgCalendar"
         app:layout_constraintStart_toStartOf="@+id/imgCalendar"
-        app:layout_constraintTop_toTopOf="@+id/btnTime" />
+        app:layout_constraintTop_toTopOf="@+id/btnTime"/>
 
     <ImageView
         android:id="@+id/imgTime"
-        android:layout_width="125dp"
-        android:layout_height="123dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:contentDescription="@string/accessClock"
         android:elevation="100dp"
         android:src="@drawable/time"
@@ -124,7 +123,7 @@
         app:layout_constraintTop_toBottomOf="@+id/btnDate"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/viewRepeatLayout"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <ImageView
         android:id="@+id/imgCancelRepeatFaded"
@@ -174,7 +173,7 @@
         app:layout_constraintLeft_toLeftOf="@+id/viewRepeatLayout"
         app:layout_constraintRight_toRightOf="@+id/viewRepeatLayout"
         app:layout_constraintTop_toBottomOf="@+id/imgCancelRepeatFaded"
-        app:layout_constraintBottom_toTopOf="@+id/imgWeeklyRepeatFaded" />
+        app:layout_constraintBottom_toTopOf="@+id/imgWeeklyRepeatFaded"/>
 
     <ImageView
         android:id="@+id/imgWeeklyRepeatFaded"
@@ -186,7 +185,7 @@
         app:layout_constraintLeft_toLeftOf="@+id/viewRepeatLayout"
         app:layout_constraintRight_toRightOf="@+id/viewRepeatLayout"
         app:layout_constraintTop_toBottomOf="@+id/imgDailyRepeatFaded"
-        app:layout_constraintBottom_toTopOf="@+id/imgMonthlyRepeatFaded" />
+        app:layout_constraintBottom_toTopOf="@+id/imgMonthlyRepeatFaded"/>
 
     <ImageView
         android:id="@+id/imgWeeklyRepeat"
@@ -199,7 +198,7 @@
         app:layout_constraintLeft_toLeftOf="@+id/viewRepeatLayout"
         app:layout_constraintRight_toRightOf="@+id/viewRepeatLayout"
         app:layout_constraintTop_toBottomOf="@+id/imgDailyRepeatFaded"
-        app:layout_constraintBottom_toTopOf="@+id/imgMonthlyRepeatFaded"  />
+        app:layout_constraintBottom_toTopOf="@+id/imgMonthlyRepeatFaded"/>
 
     <ImageView
         android:id="@+id/imgMonthlyRepeatFaded"
@@ -211,7 +210,7 @@
         app:layout_constraintLeft_toLeftOf="@+id/viewRepeatLayout"
         app:layout_constraintRight_toRightOf="@id/viewRepeatLayout"
         app:layout_constraintTop_toBottomOf="@+id/imgWeeklyRepeatFaded"
-        app:layout_constraintBottom_toBottomOf="@+id/viewRepeatLayout" />
+        app:layout_constraintBottom_toBottomOf="@+id/viewRepeatLayout"/>
 
     <ImageView
         android:id="@+id/imgMonthlyRepeat"
@@ -224,11 +223,11 @@
         app:layout_constraintLeft_toLeftOf="@+id/viewRepeatLayout"
         app:layout_constraintRight_toRightOf="@id/viewRepeatLayout"
         app:layout_constraintTop_toBottomOf="@+id/imgWeeklyRepeatFaded"
-        app:layout_constraintBottom_toBottomOf="@+id/viewRepeatLayout" />
+        app:layout_constraintBottom_toBottomOf="@+id/viewRepeatLayout"/>
 
     <View
         android:id="@+id/viewRepeatLayout"
-        android:layout_width="158dp"
+        android:layout_width="100dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"

@@ -12,7 +12,7 @@
     android:id="@+id/taskLayout">
 
     <android.support.constraint.ConstraintLayout
-        android:id="@+id/viewTaskparent"
+        android:id="@+id/viewTaskParent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/item_background"
@@ -44,9 +44,11 @@
             android:textAlignment="center"
             android:visibility="gone"
             ads:layout_constraintBottom_toBottomOf="@+id/viewTaskParent"
-            ads:layout_constraintEnd_toStartOf="@+id/imgSubtasks"
+            ads:layout_constraintEnd_toEndOf="parent"
+            ads:layout_constraintHorizontal_bias="0.302"
             ads:layout_constraintStart_toStartOf="@+id/viewTaskParent"
-            ads:layout_constraintTop_toBottomOf="@+id/tvTask" />
+            ads:layout_constraintTop_toBottomOf="@+id/tvTask"
+            ads:layout_constraintVertical_bias="1.0" />
 
         <ImageView
             android:id="@+id/imgSubtasks"

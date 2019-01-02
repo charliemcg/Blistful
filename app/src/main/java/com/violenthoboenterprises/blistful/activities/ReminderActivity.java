@@ -375,6 +375,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
     private void deleteData() {
         reminderPresenter.setRepeatInterval(null);
         reminderPresenter.setTimestamp(0);
+        reminderPresenter.setDisplayedTimestamp(0);
 
         try {
             PendingIntent.getBroadcast(getApplicationContext(), task.getId(),
