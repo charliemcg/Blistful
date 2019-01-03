@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/noteRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -83,7 +84,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/etNote"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/etNote"
-            app:layout_constraintTop_toTopOf="@+id/etNote" />
+            app:layout_constraintTop_toTopOf="@+id/etNote"
+            tools:ignore="ContentDescription" />
 
         <ImageView
             android:id="@+id/btnSubmitNoteTwo"
@@ -96,7 +98,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/etNote"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/etNote"
-            app:layout_constraintTop_toTopOf="@+id/etNote" />
+            app:layout_constraintTop_toTopOf="@+id/etNote"
+            tools:ignore="ContentDescription"/>
 
         <ImageView
             android:id="@+id/btnSubmitNoteThree"
@@ -109,7 +112,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/etNote"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/etNote"
-            app:layout_constraintTop_toTopOf="@+id/etNote" />
+            app:layout_constraintTop_toTopOf="@+id/etNote"
+            tools:ignore="ContentDescription"/>
 
         <ImageView
             android:id="@+id/btnSubmitNoteFour"
@@ -122,7 +126,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/etNote"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/etNote"
-            app:layout_constraintTop_toTopOf="@+id/etNote" />
+            app:layout_constraintTop_toTopOf="@+id/etNote"
+            tools:ignore="ContentDescription"/>
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

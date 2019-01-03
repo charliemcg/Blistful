@@ -97,7 +97,7 @@
         android:inputType="textCapSentences"
         android:maxLength="50"
         android:maxLines="1"
-        android:paddingLeft="5dp"
+        android:padding="5dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -73,7 +73,7 @@
     <string name="accessGenericLookingAd">Generic looking ad that has been crossed out.</string>
     <string name="accessEmptyCheckbox">Empty checkbox</string>
     <string name="accessCheckboxTick">Checkbox with a tick in it.</string>
-    <string name="accessGrayedOutCalendar">Grayed out calenedar to indicate that no date is set.</string>
+    <string name="accessGrayedOutCalendar">Grayed out calendar to indicate that no date is set.</string>
     <string name="accessCalendar">White and red calendar.</string>
     <string name="accessGrayedOutClock">Grayed out alarm clock indicating that time has not been set.</string>
     <string name="accessClock">Red and gray alarm clock.</string>
@@ -100,7 +100,12 @@
     <string name="thank_you_for_purchase">Thank you for your purchase.</string>
     <string name="circularArrowRepeatWeekly">Circular arrow that says weekly repeat.</string>
     <string name="redCircularArrowRepeatWeekly">Circular arrow that says weekly repeat.</string>
-    <string name="sdljfhaslddfkhjaklsdf">Jan</string>
     <string name="taskDeleted">Task deleted</string>
+    <string name="buy_now">Buy now!</string>
+    <string name="upgrade_to_pro">Upgrade to pro!</string>
+    <string name="remove_all_ads_and_more">Remove all ads. Set unlimited reminders. Get notifications on your device.</string>
+    <string name="accessRedAndWhiteClock">Red and white alarm clock.</string>
+    <string name="accessClipBoardCheckList">Clip board with checklist.</string>
+    <string name="accessYellowPostItNote">Yellow post-it note.</string>
 
 </resources>

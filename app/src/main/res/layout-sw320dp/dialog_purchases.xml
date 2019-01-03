@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="320dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="300dp"
     android:layout_height="395dp"
     android:background="@color/lightTurquoise"
     android:gravity="center"
@@ -15,19 +16,22 @@
         app:layout_constraintBottom_toTopOf="@+id/imgPurchase"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:layout_width="223dp"
         android:layout_height="35dp"
         android:gravity="center_vertical"
-        android:text="Upgrade to pro!"
+        android:text="@string/upgrade_to_pro"
         android:textColor="@color/black"
         android:textSize="25sp"
         app:layout_constraintBottom_toTopOf="@+id/imgPurchase"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/imgIcon"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.38" />
 
     <ImageView
         android:id="@+id/imgPurchase"
@@ -38,6 +42,7 @@
         android:src="@drawable/purchase_graphic"
         app:layout_constraintBottom_toTopOf="@+id/tvPurchase"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
@@ -45,34 +50,38 @@
         android:layout_width="match_parent"
         android:layout_height="85dp"
         android:background="@color/lightTurquoise"
-        android:text=" Remove all ads. Set unlimited reminders. Get notifications on your device."
+        android:text="@string/remove_all_ads_and_more"
         android:textAlignment="center"
         android:textColor="@color/black"
-        android:textSize="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/btnPositive"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/btnNegative"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btnNegative"
-        android:layout_width="160dp"
+        android:layout_width="150dp"
         android:layout_height="50dp"
         android:background="@drawable/layout_border"
         android:clickable="true"
+        android:focusable="true"
         android:text="@string/later"
         android:textColor="@color/black"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_weight="1"
         app:layout_constraintRight_toLeftOf="@+id/btnPositive"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btnPositive"
-        android:layout_width="160dp"
+        android:layout_width="150dp"
         android:layout_height="50dp"
         android:background="@drawable/layout_border"
         android:clickable="true"
-        android:text="Buy now!"
+        android:focusable="true"
+        android:text="@string/buy_now"
         android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"

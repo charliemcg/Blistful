@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="395dp"
-    android:layout_height="295dp"
+    android:layout_height="225dp"
     android:background="@color/lightTurquoise"
     android:gravity="center"
     android:orientation="vertical">
@@ -12,49 +13,47 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:src="@drawable/ic_launcher_og"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tvPurchaseTitle"
-        app:layout_constraintBottom_toTopOf="@id/imgPurchase"/>
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tvPurchaseTitle"
         android:layout_width="223dp"
         android:layout_height="35dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:gravity="center_vertical"
-        android:text="Upgrade to pro!"
+        android:text="@string/upgrade_to_pro"
         android:textColor="@color/black"
         android:textSize="25sp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/tvPurchase"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/imgPurchase"/>
+        app:layout_constraintStart_toEndOf="@+id/imgIcon"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/imgPurchase"
-        android:layout_width="match_parent"
+        android:layout_width="197.5dp"
         android:layout_height="117dp"
+        android:padding="10dp"
         android:background="@color/lightTurquoise"
         android:contentDescription="@string/accessYellowShoppingCart"
         android:src="@drawable/purchase_graphic"
-        app:layout_constraintTop_toBottomOf="@id/imgIcon"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/tvPurchase"/>
+        app:layout_constraintBottom_toTopOf="@+id/btnNegative"/>
 
     <TextView
         android:id="@+id/tvPurchase"
-        android:layout_width="match_parent"
-        android:layout_height="62dp"
+        android:layout_width="197.5dp"
+        android:layout_height="117dp"
+        android:layout_marginEnd="20dp"
         android:background="@color/lightTurquoise"
-        android:text=" Remove all ads. Set unlimited reminders. Get notifications on your device."
+        android:text="@string/remove_all_ads_and_more"
         android:textAlignment="center"
         android:textColor="@color/black"
-        android:textSize="20dp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imgPurchase"
-        app:layout_constraintBottom_toTopOf="@id/btnNegative"/>
+        app:layout_constraintBottom_toTopOf="@+id/btnNegative"/>
 
     <Button
         android:id="@+id/btnNegative"
@@ -62,13 +61,12 @@
         android:layout_height="50dp"
         android:background="@drawable/layout_border"
         android:clickable="true"
+        android:focusable="true"
         android:text="@string/later"
         android:textColor="@color/black"
         android:textSize="15sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/btnPositive"
-        app:layout_constraintTop_toBottomOf="@id/tvPurchase"/>
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <Button
         android:id="@+id/btnPositive"
@@ -76,12 +74,11 @@
         android:layout_height="50dp"
         android:background="@drawable/layout_border"
         android:clickable="true"
-        android:text="Buy now!"
+        android:focusable="true"
+        android:text="@string/buy_now"
         android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/btnNegative"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvPurchase"/>
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </android.support.constraint.ConstraintLayout>

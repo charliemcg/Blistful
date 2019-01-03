@@ -14,7 +14,8 @@
         android:layout_height="60dp"
         android:src="@drawable/ic_launcher_og"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tvReviewTitle"
@@ -49,7 +50,7 @@
         android:text="@string/looksLikeYouveBeen"
         android:textAlignment="center"
         android:textColor="@color/black"
-        android:textSize="25dp"
+        android:textSize="25sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/tvReview"/>
@@ -75,7 +76,7 @@
         android:text="@string/whyNoteLeaveAReview"
         android:textAlignment="center"
         android:textColor="@color/black"
-        android:textSize="25dp"
+        android:textSize="25sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/btnNegative"/>
@@ -87,6 +88,7 @@
         android:layout_weight="1"
         android:background="@drawable/layout_border"
         android:clickable="true"
+        android:focusable="true"
         android:text="@string/later"
         android:textColor="@color/black"
         android:textSize="15sp"
@@ -101,6 +103,7 @@
         android:layout_weight="1"
         android:background="@drawable/layout_border"
         android:clickable="true"
+        android:focusable="true"
         android:text="@string/oKExclamation"
         android:textColor="@color/black"
         android:textSize="20sp"

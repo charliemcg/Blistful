@@ -19,7 +19,7 @@
             android:layout_width="0dp"
             android:layout_height="60dp"
             android:layout_marginTop="5dp"
-            android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"
             android:layout_weight="1"
             android:background="@drawable/item_background"
             android:gravity="center"
@@ -34,7 +34,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toEndOf="@id/tvAlarm"/>
+                app:layout_constraintStart_toEndOf="@id/tvAlarm"
+                android:contentDescription="@string/accessRedAndWhiteClock"/>
 
             <TextView
                 android:id="@+id/tvAlarm"
@@ -72,7 +73,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toEndOf="@id/tvSubtasks"/>
+                app:layout_constraintStart_toEndOf="@id/tvSubtasks"
+                android:contentDescription="@string/accessClipBoardCheckList"/>
 
             <TextView
                 android:id="@+id/tvSubtasks"
@@ -99,7 +101,7 @@
             android:gravity="center"
             android:padding="5dp"
             android:layout_marginTop="5dp"
-            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:background="@drawable/item_background">
 
             <ImageView
@@ -111,7 +113,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toEndOf="@id/tvNote"/>
+                app:layout_constraintStart_toEndOf="@id/tvNote"
+                android:contentDescription="@string/accessYellowPostItNote"/>
 
             <TextView
                 android:id="@+id/tvNote"

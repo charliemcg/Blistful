@@ -65,10 +65,8 @@ import com.violenthoboenterprises.blistful.presenter.MainActivityPresenter;
 import com.violenthoboenterprises.blistful.presenter.SubtasksPresenter;
 import com.violenthoboenterprises.blistful.view.MainActivityView;
 
-import java.io.Serializable;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements
@@ -88,6 +86,8 @@ public class MainActivity extends AppCompatActivity implements
     public static boolean boolDueInPast;
     //used to indicate that task properties are showing when deciding on what action back button should task
     public static boolean boolPropertiesShowing;
+    //used to determine if the keyboard is showing
+    public static boolean boolKeyboardShowing;
 
     //indicates if the rename hint should be shown
     private int intRenameHint;
@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements
     private View activityRootView;
 
     //The keyboard
-    private InputMethodManager keyboard;
+    public static InputMethodManager keyboard;
 
     //Allow phone to vibrate
     public static Vibrator vibrate;
@@ -179,8 +179,6 @@ public class MainActivity extends AppCompatActivity implements
 
     //preferences used for persisting app-wide data
     public static SharedPreferences preferences;
-
-    public static Database db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -267,6 +265,7 @@ public class MainActivity extends AppCompatActivity implements
         imgNoTasks = findViewById(R.id.imgNoTasks);
         imgBanner = findViewById(R.id.imgBanner);
         adView = findViewById(R.id.adView);
+        boolKeyboardShowing = false;
 
         fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> addTask(null));
@@ -428,7 +427,7 @@ public class MainActivity extends AppCompatActivity implements
 
                 if (!taskName.equals("")) {
 
-                    Calendar calendar = new GregorianCalendar().getInstance();
+                    Calendar calendar = Calendar.getInstance();
                     mainActivityPresenter.addTask(null, 0, taskName, null,
                             calendar.getTimeInMillis(), false, false, 0);
 
@@ -666,8 +665,10 @@ public class MainActivity extends AppCompatActivity implements
             etTask.setText("");
         }
 
-        //Show keyboard
-        keyboard.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+        if(!boolKeyboardShowing) {
+            //Show keyboard
+            keyboard.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+        }
 
         //Actions to occur when keyboard is showing
         checkKeyboardShowing();
@@ -823,7 +824,6 @@ public class MainActivity extends AppCompatActivity implements
 
                     if (screen.bottom != deviceheight) {
 
-
                         etTask.setFocusable(true);
 
                         etTask.requestFocus();
@@ -839,6 +839,8 @@ public class MainActivity extends AppCompatActivity implements
                         //remove fab when keyboard is up
                         fab.setVisibility(View.GONE);
 
+                        boolKeyboardShowing = true;
+
                     } else {
 
                         //Textbox is gone and 'add' button is visible whenever
@@ -847,6 +849,8 @@ public class MainActivity extends AppCompatActivity implements
 
                         //fab must be visible when keyboard is down
                         fab.setVisibility(View.VISIBLE);
+
+                        boolKeyboardShowing = false;
 
                     }
 

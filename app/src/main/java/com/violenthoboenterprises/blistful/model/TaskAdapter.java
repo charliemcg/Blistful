@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -74,7 +75,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         holder.dueIcon.setVisibility(View.GONE);
         holder.tvDue.setVisibility(View.GONE);
         holder.taskProperties.setVisibility(View.GONE);
-//        MainActivity.boolPropertiesShowing = false;
         holder.tvDue.setTextColor(Color.BLACK);
 
         //checking if needed to display due icon
@@ -135,6 +135,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
                 MainActivity.boolPropertiesShowing = true;
                 holder.taskProperties.setVisibility(View.VISIBLE);
                 mainActivityPresenter.toggleFab(false);
+                //hide keyboard if it is showing
+                if(MainActivity.boolKeyboardShowing){
+                    MainActivity.keyboard.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                }
             }
         });
 
