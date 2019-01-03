@@ -1,14 +1,18 @@
 package com.violenthoboenterprises.blistful.activities;
 
+import android.annotation.SuppressLint;
 import android.app.job.JobScheduler;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -37,7 +41,10 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
     private Subtask subTaskBeingEdited;
     private SubtaskViewModel subtaskViewModel;
     private SubtasksPresenter subtasksPresenter;
+    public static boolean boolSubtasksKeyboardShowing;
+    private View subtasksRootView;
 
+    @SuppressLint("ClickableViewAccessibility")
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_subtasks);
@@ -52,6 +59,10 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
 
         keyboard = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         etSubtask = findViewById(R.id.etSubtask);
+
+        boolSubtasksKeyboardShowing = false;
+        subtasksRootView = findViewById(R.id.subtasksRoot);
+        checkKeyboardShowing();
 
         //Setting up the recycler view
         RecyclerView recyclerView = findViewById(R.id.subTasksRecyclerView);
@@ -84,6 +95,7 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
                 subtaskViewModel.delete(subtasksAdapter.getSubtaskAt(viewHolder.getAdapterPosition()));
                 String stringSnack = "Subtask deleted";
                 showSnackbar(stringSnack, subtaskToReinstate);
+                etSubtask.setText("");
             }
         }).attachToRecyclerView(recyclerView);
 
@@ -127,7 +139,10 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
                 vibrate.vibrate(50);
 
                 //Hide keyboard
-                keyboard.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                if(boolSubtasksKeyboardShowing) {
+                    keyboard.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                    boolSubtasksKeyboardShowing = false;
+                }
 
                 //Getting user data
                 String subtaskName = etSubtask.getText().toString();
@@ -157,7 +172,9 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
         int subtasksSize = subtasks.size();
         if(subtasksSize == 0) {
             etSubtask.requestFocus();
+            boolSubtasksKeyboardShowing = true;
         }
+
     }
 
     private void showSnackbar(String stringSnack, final Subtask subtaskToReinstate) {
@@ -175,7 +192,11 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
     @Override
     public void editSubtask(Subtask currentSubtask) {
 
-        keyboard.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+        Log.d(TAG, "keyboard showing: " + boolSubtasksKeyboardShowing);
+        if(!boolSubtasksKeyboardShowing) {
+            keyboard.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+            boolSubtasksKeyboardShowing = true;
+        }
 
         //Indicates that a task is being edited
         subTaskBeingEdited = currentSubtask;
@@ -185,6 +206,40 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
 
         //keeping a reference to the subtask which is being edited
         subTaskBeingEdited = currentSubtask;
+
+        etSubtask.setSelection(etSubtask.getText().length());
+
+    }
+
+    //Actions to occur when keyboard is showing
+    void checkKeyboardShowing() {
+
+        subtasksRootView.getViewTreeObserver().addOnGlobalLayoutListener
+                (() -> {
+
+                    Rect screen = new Rect();
+
+                    subtasksRootView.getWindowVisibleDisplayFrame(screen);
+
+                    if (screen.bottom != deviceheight) {
+
+                        boolSubtasksKeyboardShowing = true;
+
+                    } else {
+
+                        boolSubtasksKeyboardShowing = false;
+
+                    }
+
+                });
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        etSubtask.setText("");
 
     }
 

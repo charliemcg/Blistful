@@ -145,6 +145,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         //rename task on long click
         holder.taskLayout.setOnLongClickListener(view -> {
             mainActivityView.addTask(currentTask);
+            mainActivityPresenter.toggleFab(false);
             return true;
         });
 

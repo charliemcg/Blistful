@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements
     //indicates if the review prompt should be shown
     private int intShowReviewPrompt;
     //height of device minus keyboard
-    private int deviceheight;
+    public int deviceheight;
     //dimensions of the fab
     int fabHeight;
     int fabWidth;
@@ -396,13 +396,20 @@ public class MainActivity extends AppCompatActivity implements
                 final Handler handler = new Handler();
                 final Runnable runnable = () -> adapter.notifyDataSetChanged();
                 handler.postDelayed(runnable, 500);
-                fab.setVisibility(View.VISIBLE);
+                toggleFab(true);
+                etTask.setText("");
+                //hide keyboard
+                if(boolKeyboardShowing){
+                    keyboard.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                }
 
             }
         }).attachToRecyclerView(recyclerView);
 
         //Actions to occur when user submits new task
         etTask.setOnEditorActionListener((v, actionId, event) -> {
+
+            toggleFab(true);
 
             //Actions to take when creating new task
             if (actionId == EditorInfo.IME_ACTION_DONE && taskBeingEdited == null) {
@@ -835,9 +842,8 @@ public class MainActivity extends AppCompatActivity implements
                         //Keyboard is inactive without this line
                         etTask.setImeOptions(EditorInfo.IME_FLAG_NO_EXTRACT_UI);
 
-
                         //remove fab when keyboard is up
-                        fab.setVisibility(View.GONE);
+                        toggleFab(false);
 
                         boolKeyboardShowing = true;
 
@@ -848,7 +854,7 @@ public class MainActivity extends AppCompatActivity implements
                         etTask.setVisibility(View.GONE);
 
                         //fab must be visible when keyboard is down
-                        fab.setVisibility(View.VISIBLE);
+                        toggleFab(true);
 
                         boolKeyboardShowing = false;
 
