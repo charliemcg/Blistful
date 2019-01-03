@@ -344,10 +344,12 @@ public class MainActivity extends AppCompatActivity implements
                     //actions to occur if user kills a task early
                     if (diff < 0) {
                         //cancel reminder
-                        PendingIntent.getBroadcast(getApplicationContext(),
-                                adapter.getTaskAt(viewHolder.getAdapterPosition()).getId(),
-                                MainActivity.alertIntent,
-                                PendingIntent.FLAG_UPDATE_CURRENT).cancel();
+                        if(preferences.getBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, false)) {
+                            PendingIntent.getBroadcast(getApplicationContext(),
+                                    adapter.getTaskAt(viewHolder.getAdapterPosition()).getId(),
+                                    MainActivity.alertIntent,
+                                    PendingIntent.FLAG_UPDATE_CURRENT).cancel();
+                        }
                         if(adapter.getTaskAt(viewHolder.getAdapterPosition()).getRepeatInterval().equals("day")) {
                             //Add another day to the timestamp
                             newTimestamp += AlarmManager.INTERVAL_DAY;

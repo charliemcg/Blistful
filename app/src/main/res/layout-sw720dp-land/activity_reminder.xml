@@ -259,8 +259,8 @@
 
     <ImageView
         android:id="@+id/imgCalendarFaded"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:contentDescription="@string/accessGrayedOutCalendar"
         android:elevation="100dp"
         android:src="@drawable/calendar_faded_light"
@@ -273,8 +273,8 @@
 
     <ImageView
         android:id="@+id/imgCalendar"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:contentDescription="@string/accessCalendar"
         android:elevation="100dp"
         android:src="@drawable/calendar"
@@ -315,8 +315,8 @@
 
     <ImageView
         android:id="@+id/imgTimeFaded"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:contentDescription="@string/accessGrayedOutClock"
         android:elevation="100dp"
         android:src="@drawable/time_faded_light"
@@ -328,8 +328,8 @@
 
     <ImageView
         android:id="@+id/imgTime"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:contentDescription="@string/accessClock"
         android:elevation="100dp"
         android:src="@drawable/time"
@@ -366,7 +366,7 @@
 
     <ImageView
         android:id="@+id/imgCancelRepeatFaded"
-        android:layout_width="75dp"
+        android:layout_width="95dp"
         android:layout_height="0dp"
         android:contentDescription="@string/accessNoRepeat"
         android:elevation="100dp"
@@ -378,7 +378,7 @@
 
     <ImageView
         android:id="@+id/imgCancelRepeat"
-        android:layout_width="75dp"
+        android:layout_width="95dp"
         android:layout_height="0dp"
         android:contentDescription="@string/accessNoRepeat"
         android:elevation="100dp"
@@ -391,7 +391,7 @@
 
     <ImageView
         android:id="@+id/imgDailyRepeatFaded"
-        android:layout_width="75dp"
+        android:layout_width="95dp"
         android:layout_height="0dp"
         android:contentDescription="@string/accessDailyRepeat"
         android:elevation="100dp"
@@ -403,7 +403,7 @@
 
     <ImageView
         android:id="@+id/imgDailyRepeat"
-        android:layout_width="75dp"
+        android:layout_width="95dp"
         android:layout_height="0dp"
         android:contentDescription="@string/accessDailyRepeat"
         android:elevation="100dp"
@@ -416,7 +416,7 @@
 
     <ImageView
         android:id="@+id/imgWeeklyRepeatFaded"
-        android:layout_width="75dp"
+        android:layout_width="95dp"
         android:layout_height="0dp"
         android:contentDescription="@string/accessNoRepeat"
         android:elevation="100dp"
@@ -428,7 +428,7 @@
 
     <ImageView
         android:id="@+id/imgWeeklyRepeat"
-        android:layout_width="75dp"
+        android:layout_width="95dp"
         android:layout_height="0dp"
         android:contentDescription="@string/accessNoRepeat"
         android:elevation="100dp"
@@ -441,7 +441,7 @@
 
     <ImageView
         android:id="@+id/imgMonthlyRepeatFaded"
-        android:layout_width="75dp"
+        android:layout_width="95dp"
         android:layout_height="0dp"
         android:contentDescription="@string/accessMonthlyRepeat"
         android:elevation="100dp"
@@ -453,7 +453,7 @@
 
     <ImageView
         android:id="@+id/imgMonthlyRepeat"
-        android:layout_width="75dp"
+        android:layout_width="95dp"
         android:layout_height="0dp"
         android:contentDescription="@string/accessMonthlyRepeat"
         android:elevation="100dp"
@@ -466,7 +466,7 @@
 
     <View
         android:id="@+id/viewRepeatLayout"
-        android:layout_width="100dp"
+        android:layout_width="200dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"

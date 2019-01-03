@@ -76,7 +76,8 @@ public class ReminderActivity extends MainActivity implements ReminderView {
         //getting the instance of the reminder
         Reminder reminder = reminderViewModel.getReminderByParent(task.getId());
         TaskViewModel taskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
-        reminderPresenter = new ReminderPresenterImpl(taskViewModel, reminderViewModel, task, reminder, getApplicationContext());
+        reminderPresenter = new ReminderPresenterImpl(taskViewModel, reminderViewModel,
+                task, reminder, getApplicationContext());
 
         imgTime = findViewById(R.id.imgTime);
         imgTimeFaded = findViewById(R.id.imgTimeFaded);
@@ -512,7 +513,8 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
     }
 
-    public static class TimePickerDialogFrag extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
+    public static class TimePickerDialogFrag extends DialogFragment
+            implements TimePickerDialog.OnTimeSetListener {
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -608,13 +610,13 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
             Calendar calendar = Calendar.getInstance();
             //set current date if date wasn't picked
-            if (/*reminderPresenter.getYear() == 0*/!dateSet) {
+            if (!dateSet) {
                 reminderPresenter.setYear(calendar.get(Calendar.YEAR));
                 reminderPresenter.setMonth(calendar.get(Calendar.MONTH));
                 reminderPresenter.setDay(calendar.get(Calendar.DAY_OF_MONTH));
             }
             //set current time if time wasn't picked
-            if (/*reminderPresenter.getMinute() == 0*/!timeSet) {
+            if (!timeSet) {
                 //set unspecified time to be set one hour into the future
                 if(reminderPresenter.getYear() == currentYear
                         && reminderPresenter.getMonth() == currentMonth
