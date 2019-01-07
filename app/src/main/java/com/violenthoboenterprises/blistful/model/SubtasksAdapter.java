@@ -87,4 +87,5 @@ public class SubtasksAdapter extends RecyclerView.Adapter<SubtasksAdapter.Subtas
     }
 
     public void setOnItemClickListener(SubtasksAdapter.OnItemClickListener listener){this.listener = listener;}
+
 }

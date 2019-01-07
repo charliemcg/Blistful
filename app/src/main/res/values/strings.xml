@@ -86,7 +86,7 @@
     <string name="accessPlusSign">Plus sign for adding tasks.</string>
     <string name="appNameFull">Blistful: Todo List, Simple</string>
     <string name="buy">Buy</string>
-    <string name="alarm">Alarm</string>
+    <string name="alarm">Reminder</string>
     <string name="accessAppNamePurple">Name of app in purple color.</string>
     <string name="accessInformUserNoTasks">Purple text informing user that there are no tasks.</string>
     <string name="accessSubtasksIcon">Subtasks icon.</string>

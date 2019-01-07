@@ -643,16 +643,24 @@ public class ReminderActivity extends MainActivity implements ReminderView {
             reminderCal.set(Calendar.HOUR_OF_DAY, reminderPresenter.getHour());
             reminderCal.set(Calendar.MINUTE, reminderPresenter.getMinute());
 
-            if(reminderCal.getTimeInMillis() >= calendar.getTimeInMillis()){
+            if(reminderCal.getTimeInMillis() < calendar.getTimeInMillis()){
+                long dueInMillis = reminderCal.getTimeInMillis();
+                dueInMillis += 86400000;
+                reminderCal.setTimeInMillis(dueInMillis);
+                int newDay = reminderCal.get(Calendar.DAY_OF_MONTH);
+                reminderPresenter.setDay(newDay);
+            }
                 //Setting timestamp of the reminder
-                calendar.set(Calendar.YEAR, reminderPresenter.getYear());
-                calendar.set(Calendar.MONTH, reminderPresenter.getMonth());
-                calendar.set(Calendar.DAY_OF_MONTH, reminderPresenter.getDay());
-                calendar.set(Calendar.HOUR_OF_DAY, reminderPresenter.getHour());
-                calendar.set(Calendar.MINUTE, reminderPresenter.getMinute());
+//                calendar.set(Calendar.YEAR, reminderPresenter.getYear());
+//                calendar.set(Calendar.MONTH, reminderPresenter.getMonth());
+//                calendar.set(Calendar.DAY_OF_MONTH, reminderPresenter.getDay());
+//                calendar.set(Calendar.HOUR_OF_DAY, reminderPresenter.getHour());
+//                calendar.set(Calendar.MINUTE, reminderPresenter.getMinute());
                 //Updating the task
-                reminderPresenter.setTimestamp(calendar.getTimeInMillis());
-                reminderPresenter.setDisplayedTimestamp(calendar.getTimeInMillis());
+//                reminderPresenter.setTimestamp(calendar.getTimeInMillis());
+//                reminderPresenter.setDisplayedTimestamp(calendar.getTimeInMillis());
+                reminderPresenter.setTimestamp(reminderCal.getTimeInMillis());
+                reminderPresenter.setDisplayedTimestamp(reminderCal.getTimeInMillis());
 
                 if (boolRemindersAvailable) {
                     scheduleNotification();
@@ -661,10 +669,10 @@ public class ReminderActivity extends MainActivity implements ReminderView {
                 reminderPresenter.setOriginalDay(reminderPresenter.getDay());
 
             //don't save. Due time set to in the past
-            }else{
-                deleteData();
-                MainActivity.boolDueInPast = true;
-            }
+//            }else{
+//                deleteData();
+//                MainActivity.boolDueInPast = true;
+//            }
 
         }
 

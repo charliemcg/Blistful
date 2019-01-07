@@ -37,7 +37,7 @@
     <LinearLayout
         android:id="@+id/noteEtLayout"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -47,20 +47,18 @@
         <EditText
             android:id="@+id/etNote"
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginTop="8dp"
+            android:padding="10dp"
             android:background="@color/purple"
             android:hint="@string/addYourNote"
             android:imeOptions="actionDone"
             android:inputType="textCapSentences|textMultiLine"
             android:maxLength="3000"
             android:maxLines="3"
-            android:padding="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tbNote"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <ImageView
             android:id="@+id/btnSubmitNote"

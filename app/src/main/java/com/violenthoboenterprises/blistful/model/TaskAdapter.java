@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -98,11 +99,21 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
             holder.tvDue.setVisibility(View.VISIBLE);
             String formattedDate = getFormattedDate(currentTask);
             holder.tvDue.setText(formattedDate);
+            holder.alarmClock.setImageDrawable(context.getResources()
+                    .getDrawable(R.drawable.due_icon_solid_dot));
+        }else{
+            holder.alarmClock.setImageDrawable(context.getResources()
+                    .getDrawable(R.drawable.due_icon_light_solid));
         }
 
         //checking if needed to display note icon
         if (currentTask.getNote() != null) {
             holder.noteIcon.setVisibility(View.VISIBLE);
+            holder.postItNote.setImageDrawable(context.getResources()
+                    .getDrawable(R.drawable.note_icon_solid_dot));
+        }else{
+            holder.postItNote.setImageDrawable(context.getResources()
+                    .getDrawable(R.drawable.note_icon_light_solid));
         }
 
         //checking if needed to display subtasks icon
@@ -110,6 +121,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         int subtasksSize = subtasks.size();
         if (subtasksSize > 0) {
             holder.subtasksIcon.setVisibility(View.VISIBLE);
+            holder.clipBoard.setImageDrawable(context.getResources()
+                    .getDrawable(R.drawable.subtasks_icon_solid_dot));
+        }else{
+            holder.clipBoard.setImageDrawable(context.getResources()
+                    .getDrawable(R.drawable.subtasks_icon_light_solid));
         }
 
         //checking if needed to display repeat icon
@@ -189,6 +205,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         displayedCal.setTimeInMillis(task.getDisplayedTimestamp());
         long diff = (currentCal.getTimeInMillis() / 1000) - (displayedCal.getTimeInMillis() / 1000);
         if(task.getRepeatInterval().equals("day")) {
+            Calendar blah = Calendar.getInstance();
+            blah.setTimeInMillis(task.getTimestamp());
             //Can't have daily repeating task overdue for more than 24 hours
             if (diff > 86400) {
                 task.setDisplayedTimestamp(task.getTimestamp() - (1000 * 60 * 60 * 24));
@@ -443,6 +461,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         private ImageView subtasksIcon;
         private ImageView repeatIcon;
         private ImageView dueIcon;
+        private ImageView alarmClock;
+        private ImageView clipBoard;
+        private ImageView postItNote;
 
         TaskHolder(final View itemView) {
             super(itemView);
@@ -457,6 +478,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
             subtasksIcon = itemView.findViewById(R.id.imgSubtasks);
             repeatIcon = itemView.findViewById(R.id.imgRepeat);
             dueIcon = itemView.findViewById(R.id.imgDue);
+            alarmClock = itemView.findViewById(R.id.imgAlarmSolid);
+            clipBoard = itemView.findViewById(R.id.imgSubtasksSolid);
+            postItNote = itemView.findViewById(R.id.imgNoteSolid);
             itemView.setOnClickListener(view -> {
                 int position = getAdapterPosition();
                 if (listener != null && position != RecyclerView.NO_POSITION) {

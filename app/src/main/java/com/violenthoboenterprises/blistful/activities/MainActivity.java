@@ -83,8 +83,8 @@ public class MainActivity extends AppCompatActivity implements
     //used to determine whether or not to show motivational toasts
     private boolean boolShowMotivation;
     //used to determine if user needs to be notified that they set a task to be due in the past
-    public static boolean boolDueInPast;
-    //used to indicate that task properties are showing when deciding on what action back button should task
+//    public static boolean boolDueInPast;
+    //used to indicate that task properties are showing when deciding on what action back button should take
     public static boolean boolPropertiesShowing;
     //used to determine if the keyboard is showing
     public static boolean boolKeyboardShowing;
@@ -220,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements
             mainActivityPresenter.migrateDatabase();
         }
 
-        if(preferences.getBoolean(StringConstants.REINSTATE_REMINDERS_AFTER_REBOOT, false)){
+        if (preferences.getBoolean(StringConstants.REINSTATE_REMINDERS_AFTER_REBOOT, false)) {
             BootReceiver bootReceiver = new BootReceiver();
             bootReceiver.reinstateReminders(this);
             preferences.edit().putBoolean(StringConstants.REINSTATE_REMINDERS_AFTER_REBOOT, false).apply();
@@ -323,12 +323,12 @@ public class MainActivity extends AppCompatActivity implements
                         //showing motivational toast
                         showKilledAffirmationToast();
                     }
-                //Actions to occur when deleting repeating task
+                    //Actions to occur when deleting repeating task
                 } else {
 
                     long interval = 0;
-                    if(adapter.getTaskAt(viewHolder.getAdapterPosition())
-                            .getRepeatInterval().equals(StringConstants.MONTH)){
+                    if (adapter.getTaskAt(viewHolder.getAdapterPosition())
+                            .getRepeatInterval().equals(StringConstants.MONTH)) {
                         interval = mainActivityPresenter.getInterval(StringConstants.MONTH,
                                 adapter.getTaskAt(viewHolder.getAdapterPosition()).getTimestamp(),
                                 adapter.getTaskAt(viewHolder.getAdapterPosition()).getOriginalDay());
@@ -343,19 +343,19 @@ public class MainActivity extends AppCompatActivity implements
                     //actions to occur if user kills a task early
                     if (diff < 0) {
                         //cancel reminder
-                        if(preferences.getBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, false)) {
+                        if (preferences.getBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, false)) {
                             PendingIntent.getBroadcast(getApplicationContext(),
                                     adapter.getTaskAt(viewHolder.getAdapterPosition()).getId(),
                                     MainActivity.alertIntent,
                                     PendingIntent.FLAG_UPDATE_CURRENT).cancel();
                         }
-                        if(adapter.getTaskAt(viewHolder.getAdapterPosition()).getRepeatInterval().equals("day")) {
+                        if (adapter.getTaskAt(viewHolder.getAdapterPosition()).getRepeatInterval().equals("day")) {
                             //Add another day to the timestamp
                             newTimestamp += AlarmManager.INTERVAL_DAY;
-                        }else if(adapter.getTaskAt(viewHolder.getAdapterPosition()).getRepeatInterval().equals("week")){
+                        } else if (adapter.getTaskAt(viewHolder.getAdapterPosition()).getRepeatInterval().equals("week")) {
                             //Add another week to the timestamp
                             newTimestamp += (AlarmManager.INTERVAL_DAY * 7);
-                        }else if(adapter.getTaskAt(viewHolder.getAdapterPosition()).getRepeatInterval().equals("month")){
+                        } else if (adapter.getTaskAt(viewHolder.getAdapterPosition()).getRepeatInterval().equals("month")) {
                             //Add another month to the timestamp
                             newTimestamp += interval;
                         }
@@ -381,14 +381,18 @@ public class MainActivity extends AppCompatActivity implements
                     adapter.getTaskAt(viewHolder.getAdapterPosition()).setDisplayedTimestamp(newTimestamp);
                     mainActivityPresenter.update(adapter.getTaskAt(viewHolder.getAdapterPosition()));
                     //display toast
-                    if (preferences.getInt(StringConstants.REPEAT_HINT_KEY, 0) <= 10) {
-                        if ((preferences.getInt(StringConstants.REPEAT_HINT_KEY, 0) == 1)
-                                || (preferences.getInt(StringConstants.REPEAT_HINT_KEY, 0) == 10)) {
+                    int timesShown = preferences.getInt(StringConstants.REPEAT_HINT_KEY, 0);
+                    if (timesShown <= 10) {
+                        if (timesShown == 1 || timesShown == 10) {
                             showRepeatHintToast();
-                        }else if(boolShowMotivation) {
+                        } else if (boolShowMotivation) {
                             //showing motivational toast
                             showKilledAffirmationToast();
                         }
+                        preferences.edit().putInt(StringConstants.REPEAT_HINT_KEY, ++timesShown).apply();
+                    }else{
+                        //showing motivational toast
+                        showKilledAffirmationToast();
                     }
                     adapter.notifyDataSetChanged();
                 }
@@ -399,7 +403,7 @@ public class MainActivity extends AppCompatActivity implements
                 toggleFab(true);
                 etTask.setText("");
                 //hide keyboard
-                if(boolKeyboardShowing){
+                if (boolKeyboardShowing) {
                     keyboard.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
                 }
 
@@ -453,7 +457,7 @@ public class MainActivity extends AppCompatActivity implements
 
                 return true;
 
-            //Actions to take when editing existing task
+                //Actions to take when editing existing task
             } else if (actionId == EditorInfo.IME_ACTION_DONE) {
 
                 if (!boolMute) {
@@ -599,30 +603,30 @@ public class MainActivity extends AppCompatActivity implements
         handler.postDelayed(runnable, 500);
     }
 
-    public void showDueInPastToast() {
-        toast.setText(R.string.cannotSetTask);
-        final Handler handler = new Handler();
-
-        final Runnable runnable = () -> {
-            if (!boolMute) {
-                mpSweep.start();
-            }
-            toastView.startAnimation(AnimationUtils.loadAnimation
-                    (getApplicationContext(), R.anim.enter_from_right_fast));
-            toastView.setVisibility(View.VISIBLE);
-            final Handler handler2 = new Handler();
-            final Runnable runnable2 = () -> {
-                toastView.startAnimation(
-                        AnimationUtils.loadAnimation
-                                (MainActivity.this,
-                                        android.R.anim.fade_out));
-                toastView.setVisibility(View.GONE);
-            };
-            handler2.postDelayed(runnable2, 1500);
-        };
-
-        handler.postDelayed(runnable, 500);
-    }
+//    public void showDueInPastToast() {
+//        toast.setText(R.string.cannotSetTask);
+//        final Handler handler = new Handler();
+//
+//        final Runnable runnable = () -> {
+//            if (!boolMute) {
+//                mpSweep.start();
+//            }
+//            toastView.startAnimation(AnimationUtils.loadAnimation
+//                    (getApplicationContext(), R.anim.enter_from_right_fast));
+//            toastView.setVisibility(View.VISIBLE);
+//            final Handler handler2 = new Handler();
+//            final Runnable runnable2 = () -> {
+//                toastView.startAnimation(
+//                        AnimationUtils.loadAnimation
+//                                (MainActivity.this,
+//                                        android.R.anim.fade_out));
+//                toastView.setVisibility(View.GONE);
+//            };
+//            handler2.postDelayed(runnable2, 1500);
+//        };
+//
+//        handler.postDelayed(runnable, 500);
+//    }
 
     private void showBannerAd() {
         boolean networkAvailable = false;
@@ -672,7 +676,7 @@ public class MainActivity extends AppCompatActivity implements
             etTask.setText("");
         }
 
-        if(!boolKeyboardShowing) {
+        if (!boolKeyboardShowing) {
             //Show keyboard
             keyboard.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
         }
@@ -990,20 +994,20 @@ public class MainActivity extends AppCompatActivity implements
         adapter.notifyItemChanged(preferences.getInt(StringConstants.REFRESH_THIS_ITEM, 0));
         toggleFab(true);
 
-        if (boolDueInPast) {
-            showDueInPastToast();
-            boolDueInPast = false;
-        }
+//        if (boolDueInPast) {
+//            showDueInPastToast();
+//            boolDueInPast = false;
+//        }
 
     }
 
     @Override
     public void onBackPressed() {
         //If task properties are showing then the back button should close them
-        if(boolPropertiesShowing){
+        if (boolPropertiesShowing) {
             adapter.notifyItemChanged(preferences.getInt(StringConstants.REFRESH_THIS_ITEM, 0));
             boolPropertiesShowing = false;
-        }else {
+        } else {
             super.onBackPressed();
         }
     }

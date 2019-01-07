@@ -115,7 +115,7 @@ public class AlertReceiver extends BroadcastReceiver {
             if (task.getRepeatInterval().equals("day") && !snoozeStatus) {
 
                 //App crashes if exact duplicate of timestamp is saved in database. Attempting to
-                // detect duplicates and then adjusting the timestamp on the millisecond level//TODO reinstate duplicate detection. Use the list of timestamps
+                // detect duplicates and then adjusting the timestamp on the millisecond level
                 long futureStamp = task.getTimestamp() + AlarmManager.INTERVAL_DAY;
                 futureStamp = getFutureStamp(futureStamp);
                 task.setTimestamp(futureStamp);
@@ -125,8 +125,6 @@ public class AlertReceiver extends BroadcastReceiver {
                 alertIntent.putExtra
                         ("snoozeStatus", false);
                 alertIntent.putExtra("task", task);
-                List<Integer> timestamps = MainActivity.taskViewModel.getAllTimestamps();//TODO check that it gets data at due time and no sooner
-                alertIntent.putExtra("timestamps", (Serializable) timestamps);
 
                 //Setting alarm
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(
@@ -157,7 +155,7 @@ public class AlertReceiver extends BroadcastReceiver {
                 int alarmDay = dayCal.get(Calendar.DAY_OF_MONTH);
 
                 //alarm data is already updated if user marked task as done
-                if (/*!task.isManualKill() && */(alarmDay != currentCal.get(Calendar.DAY_OF_MONTH))) {//TODO found out if this conditional is still needed
+                if ((alarmDay != currentCal.get(Calendar.DAY_OF_MONTH))) {//TODO found out if this conditional is still needed
                     diff = futureStamp - AlarmManager.INTERVAL_DAY - currentCal.getTimeInMillis();
 
                     if (diff > 0) {
@@ -309,9 +307,6 @@ public class AlertReceiver extends BroadcastReceiver {
                 long futureStamp = task.getTimestamp() + (AlarmManager.INTERVAL_DAY * multiplier);
                 futureStamp = getFutureStamp(futureStamp);
                 task.setTimestamp(futureStamp);
-                Calendar blah = Calendar.getInstance();
-                blah.setTimeInMillis(futureStamp);
-                Log.d(TAG, "Due: hour." + blah.get(Calendar.HOUR_OF_DAY) + " day." + blah.get(Calendar.DAY_OF_MONTH) + " month." + blah.get(Calendar.MONTH));
                 MainActivity.taskViewModel.update(task);
 
                 Intent alertIntent = new Intent(context, AlertReceiver.class);

@@ -530,7 +530,7 @@ public class Database extends SQLiteOpenHelper {
     public void updateTimeCreated(String time){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues content = new ContentValues();
-        content.put(UCOL24, time);
+        content.put(UCOL25, time);
         db.update(UTABLE, content, "ID = ?", new String[] {"0"});
     }
 
