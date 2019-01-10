@@ -730,7 +730,7 @@ public class MainActivity extends AppCompatActivity implements
 
         if (!boolKeyboardShowing) {
             //Show keyboard
-            keyboard.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, 0);
+            keyboard.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
         }
 
         //Actions to occur when keyboard is showing
