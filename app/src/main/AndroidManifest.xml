@@ -19,8 +19,8 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".activities.MainActivity"
-            android:windowSoftInputMode="adjustPan"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+            <!--android:windowSoftInputMode="adjustPan"-->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

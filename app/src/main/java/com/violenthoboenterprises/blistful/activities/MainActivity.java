@@ -716,7 +716,7 @@ public class MainActivity extends AppCompatActivity implements
         vibrate.vibrate(50);
 
         //Set return button to 'Done'
-        etTask.setImeOptions(EditorInfo.IME_ACTION_DONE);
+//        etTask.setImeOptions(EditorInfo.IME_ACTION_DONE);
 
         //Check if editing existing task or adding new one
         if (taskBeingEdited != null) {

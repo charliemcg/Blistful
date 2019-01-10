@@ -135,33 +135,39 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
 
         //show properties on click
         holder.taskLayout.setOnClickListener(view -> {
-            //removing any other visible properties
-            if (preferences.getInt(StringConstants.REFRESH_THIS_ITEM, 0) != position) {
-                notifyItemChanged(preferences.getInt(StringConstants.REFRESH_THIS_ITEM, 0));
-            }
-            //tracking this item as requiring updating upon return from a child activity
-            preferences.edit().putInt(StringConstants.REFRESH_THIS_ITEM, position).apply();
-            if (holder.taskProperties.getVisibility() == View.VISIBLE) {
-                MainActivity.boolPropertiesShowing = false;
-                holder.taskProperties.setVisibility(View.GONE);
-                mainActivityPresenter.toggleFab(true);
-                //redrawing the UI to remove properties from view
-                activityRootView.postInvalidate();
-            } else {
-                MainActivity.boolPropertiesShowing = true;
-                holder.taskProperties.setVisibility(View.VISIBLE);
-                mainActivityPresenter.toggleFab(false);
-                //hide keyboard if it is showing
-                if(MainActivity.boolKeyboardShowing){
-                    MainActivity.keyboard.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+            //for better user experience tasks should not be clickable while keyboard is up
+            if(!MainActivity.boolKeyboardShowing) {
+                //removing any other visible properties
+                if (preferences.getInt(StringConstants.REFRESH_THIS_ITEM, 0) != position) {
+                    notifyItemChanged(preferences.getInt(StringConstants.REFRESH_THIS_ITEM, 0));
+                }
+                //tracking this item as requiring updating upon return from a child activity
+                preferences.edit().putInt(StringConstants.REFRESH_THIS_ITEM, position).apply();
+                if (holder.taskProperties.getVisibility() == View.VISIBLE) {
+                    MainActivity.boolPropertiesShowing = false;
+                    holder.taskProperties.setVisibility(View.GONE);
+                    mainActivityPresenter.toggleFab(true);
+                    //redrawing the UI to remove properties from view
+                    activityRootView.postInvalidate();
+                } else {
+                    MainActivity.boolPropertiesShowing = true;
+                    holder.taskProperties.setVisibility(View.VISIBLE);
+                    mainActivityPresenter.toggleFab(false);
+                    //hide keyboard if it is showing
+                    if (MainActivity.boolKeyboardShowing) {
+                        MainActivity.keyboard.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                    }
                 }
             }
         });
 
         //rename task on long click
         holder.taskLayout.setOnLongClickListener(view -> {
-            mainActivityView.addTask(currentTask);
-            mainActivityPresenter.toggleFab(false);
+            //for better user experience tasks should not be clickable while keyboard is up
+            if(!MainActivity.boolKeyboardShowing) {
+                mainActivityView.addTask(currentTask);
+                mainActivityPresenter.toggleFab(false);
+            }
             return true;
         });
 
