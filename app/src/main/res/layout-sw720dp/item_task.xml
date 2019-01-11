@@ -135,7 +135,7 @@
         <include
             android:id="@+id/viewProperties"
             layout="@layout/task_options_properties"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
     </android.support.constraint.ConstraintLayout>
 

@@ -2,6 +2,8 @@ package com.violenthoboenterprises.blistful.activities;
 
 import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.app.PendingIntent;
 import android.app.job.JobScheduler;
 import android.arch.lifecycle.ViewModelProviders;
@@ -21,7 +23,13 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -30,9 +38,11 @@ import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
@@ -174,11 +184,19 @@ public class MainActivity extends AppCompatActivity implements
     public static Intent alertIntent;
     public static AlarmManager alarmManager;
 
+    //Layout wrapper that holds the ad and ad placeholder
+    RelativeLayout adHolder;
+
     //layout parameters of the fab
     ConstraintLayout.LayoutParams params;
 
     //preferences used for persisting app-wide data
     public static SharedPreferences preferences;
+
+    //Adapter and pager for the tab layout
+//    DemoCollectionPagerAdapter demoCollectionPagerAdapter;
+    private ViewPager viewPager;
+    private SectionsPagerAdapter sectionsPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -188,6 +206,24 @@ public class MainActivity extends AppCompatActivity implements
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+//        demoCollectionPagerAdapter =
+//                new DemoCollectionPagerAdapter(
+//                        getSupportFragmentManager());
+//        viewPager = findViewById(R.id.viewPager);
+//        viewPager.setAdapter(demoCollectionPagerAdapter);
+
+        //the adapter which will return the fragments to be displayed
+        sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+
+        viewPager = findViewById(R.id.viewPager);
+        viewPager.setAdapter(sectionsPagerAdapter);
+
+        TabLayout tabLayout = findViewById(R.id.tabs);
+
+        //listening for tab swipes and clicks
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
 
         String ADKEY = "ca-app-pub-2378583121223638~3855319141";
         //App ID for AdMob
@@ -266,6 +302,7 @@ public class MainActivity extends AppCompatActivity implements
         imgBanner = findViewById(R.id.imgBanner);
         adView = findViewById(R.id.adView);
         boolKeyboardShowing = false;
+        adHolder = findViewById(R.id.adHolder);
 
         fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> addTask(null));
@@ -293,7 +330,8 @@ public class MainActivity extends AppCompatActivity implements
                 if (adapter.getItemCount() > 4 && !boolAdsRemoved) {
                     showBannerAd();
                 } else {
-                    imgBanner.setVisibility(View.GONE);
+                    adHolder.setVisibility(View.GONE);
+//                    imgBanner.setVisibility(View.GONE);
                 }
             } else {
                 imgNoTasks.setVisibility(View.VISIBLE);
@@ -542,6 +580,102 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+    public static class PlaceholderFragment extends android.support.v4.app.Fragment {
+
+        private static final String ARG_SECTION_NUMBER = "section_number";
+
+        public PlaceholderFragment() {
+        }
+
+        public static PlaceholderFragment newInstance(int sectionNumber) {
+            PlaceholderFragment fragment = new PlaceholderFragment();
+            Bundle args = new Bundle();
+            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = null;
+            if(getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
+                rootView = inflater.inflate(R.layout.activity_reminder, container, false);
+            }else if(getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
+                rootView = inflater.inflate(R.layout.activity_subtasks, container, false);
+            }else if(getArguments().getInt(ARG_SECTION_NUMBER) == 3) {
+                rootView = inflater.inflate(R.layout.activity_note, container, false);
+            }
+            return rootView;
+        }
+    }
+
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+
+        public SectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public android.support.v4.app.Fragment getItem(int position) {
+            // getItem is called to instantiate the fragment for the given page.
+            // Return a PlaceholderFragment (defined as a static inner class below).
+            return PlaceholderFragment.newInstance(position + 1);
+        }
+
+        @Override
+        public int getCount() {
+            // Show 3 total pages.
+            return 3;
+        }
+    }
+
+    //The following tab layout code was taken from developer.android.com
+    //The adapter for setting contents of the tab layout
+//    public class DemoCollectionPagerAdapter extends FragmentStatePagerAdapter {
+//        public DemoCollectionPagerAdapter(FragmentManager fm) {
+//            super(fm);
+//        }
+//
+//        @Override
+//        public android.support.v4.app.Fragment getItem(int position) {
+//            android.support.v4.app.Fragment fragment = new DemoObjectFragment();
+//            Bundle args = new Bundle();
+//            args.putInt(DemoObjectFragment.ARG_OBJECT, position + 1);
+//            fragment.setArguments(args);
+//            return fragment;
+//        }
+//
+//        @Override
+//        public int getCount() {
+//            return 100;
+//        }
+//
+//        @Override
+//        public CharSequence getPageTitle(int position) {
+//            return "OBJECT " + (position + 1);
+//        }
+//    }
+
+    //inflating the single objects to be viewed within the tab layout
+//    public static class DemoObjectFragment extends android.support.v4.app.Fragment {
+//        public static final String ARG_OBJECT = "object";
+//
+//        @Override
+//        public View onCreateView(LayoutInflater inflater,
+//                                 ViewGroup container, Bundle savedInstanceState) {
+//            // The last two arguments ensure LayoutParams are inflated
+//            // properly.
+//            View rootView = inflater.inflate(
+//                    R.layout.activity_note, container, false);
+//            Bundle args = getArguments();
+////            ((TextView) rootView.findViewById(android.R.id.text1)).setText(
+////                    Integer.toString(args.getInt(ARG_OBJECT)));
+//            ((TextView) rootView.findViewById(R.id.tvNote)).setText("note goes here");
+//            return rootView;
+//        }
+//    }
+
     private void showMotivationalToast() {
         if(boolShowMotivation) {
             //showing motivational toast
@@ -688,6 +822,8 @@ public class MainActivity extends AppCompatActivity implements
         if (activeNetworkInfo != null && activeNetworkInfo.isConnected()) {
             networkAvailable = true;
         }
+
+        adHolder.setVisibility(View.VISIBLE);
 
         if (networkAvailable) {
             adView.setVisibility(View.VISIBLE);

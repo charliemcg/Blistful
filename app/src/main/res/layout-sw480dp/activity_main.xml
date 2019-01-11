@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activityRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.violenthoboenterprises.blistful.activities.MainActivity"
-    android:orientation="vertical"
-    android:id="@+id/activityRoot"
-    android:background="@color/turquoise">
+    android:background="@color/turquoise"
+    tools:context="com.violenthoboenterprises.blistful.activities.MainActivity">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/tb"
@@ -38,32 +37,36 @@
 
     </android.support.v7.widget.Toolbar>
 
-    <com.google.android.gms.ads.AdView
-        android:id="@+id/adView"
+    <RelativeLayout
+        android:id="@+id/adHolder"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="100dp"
-        android:visibility="gone"
-        ads:adSize="SMART_BANNER"
-        ads:adUnitId="ca-app-pub-2378583121223638/3959260925"
+        android:layout_height="60dp"
+        android:gravity="center"
         app:layout_constraintBottom_toTopOf="@id/recyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tb"  />
+        app:layout_constraintTop_toBottomOf="@id/tb">
 
-    <ImageView
-        android:id="@+id/imgBanner"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:contentDescription="@string/accessBannerPromptingUser"
-        android:elevation="100dp"
-        android:onClick="showPro"
-        android:src="@drawable/banner"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tb"  />
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="100dp"
+            android:visibility="gone"
+            ads:adSize="SMART_BANNER"
+            ads:adUnitId="ca-app-pub-2378583121223638/3959260925"/>
+
+        <ImageView
+            android:id="@+id/imgBanner"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:contentDescription="@string/accessBannerPromptingUser"
+            android:elevation="100dp"
+            android:onClick="showPro"
+            android:src="@drawable/banner"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -72,7 +75,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imgBanner"
+        app:layout_constraintTop_toBottomOf="@id/tb"
         tools:listitem="@layout/item_task" />
 
     <ImageView
@@ -81,10 +84,10 @@
         android:layout_height="match_parent"
         android:contentDescription="@string/accessInformUserNoTasks"
         android:src="@drawable/no_tasks_light"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/etTaskName"
@@ -138,11 +141,11 @@
             android:id="@+id/tvToast"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:textColor="@color/dark_gray"
+            android:layout_margin="1dp"
             android:gravity="center_vertical"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:layout_margin="1dp"/>
+            android:textColor="@color/dark_gray" />
 
     </RelativeLayout>
 
