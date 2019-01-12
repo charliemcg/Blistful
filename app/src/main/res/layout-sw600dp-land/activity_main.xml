@@ -102,27 +102,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <EditText
-                android:id="@+id/etTaskName"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_alignParentBottom="true"
-                android:background="@color/purple"
-                android:hint="@string/taskTitle"
-                android:imeOptions="actionDone"
-                android:inputType="textCapSentences"
-                android:maxLength="50"
-                android:maxLines="1"
-                android:padding="5dp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="1.0"
-                tools:ignore="Autofill" />
-
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/fab"
                 android:layout_width="84dp"
@@ -230,5 +209,26 @@
         </RelativeLayout>
 
     </LinearLayout>
+
+    <EditText
+        android:id="@+id/etTaskName"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/purple"
+        android:hint="@string/taskTitle"
+        android:imeOptions="actionDone"
+        android:inputType="textCapSentences"
+        android:maxLength="50"
+        android:maxLines="1"
+        android:padding="5dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        tools:ignore="Autofill" />
 
 </android.support.constraint.ConstraintLayout>

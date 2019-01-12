@@ -1,8 +1,10 @@
 package com.violenthoboenterprises.blistful.model;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -44,6 +46,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
     private View activityRootView;
     private MainActivityView mainActivityView;
     public SharedPreferences preferences;
+    private int screenSize;
+    private int orientation;
+    private boolean boolTabletLandscape;
 
     public TaskAdapter(Context context, MainActivityPresenter mainActivityPresenter,
                        SubtasksPresenter subtasksPresenter, View activityRootView,
@@ -55,6 +60,12 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         this.mainActivityView = mainActivityView;
         preferences = context.getSharedPreferences("com.violenthoboenterprises.blistful",
                 Context.MODE_PRIVATE);
+        screenSize = context.getResources().getConfiguration().screenLayout &
+                Configuration.SCREENLAYOUT_SIZE_MASK;
+        orientation = context.getResources().getConfiguration().orientation;
+        if(((screenSize == 3 || screenSize == 4) && orientation == Configuration.ORIENTATION_LANDSCAPE)) {
+            boolTabletLandscape = true;
+        }
     }
 
     @NonNull
@@ -77,6 +88,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         holder.tvDue.setVisibility(View.GONE);
         holder.taskProperties.setVisibility(View.GONE);
         holder.tvDue.setTextColor(Color.BLACK);
+
+        //highlight the selected task when in tablet landscape mode
+        if(boolTabletLandscape){
+            holder.tvTask.setTextColor(Color.BLACK);
+        }
 
         //checking if needed to display due icon
         if (currentTask.getTimestamp() != 0) {
@@ -135,30 +151,49 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
 
         //show properties on click
         holder.taskLayout.setOnClickListener(view -> {
-            //for better user experience tasks should not be clickable while keyboard is up
-            if(!MainActivity.boolKeyboardShowing) {
-                //removing any other visible properties
-                if (preferences.getInt(StringConstants.REFRESH_THIS_ITEM, 0) != position) {
-                    notifyItemChanged(preferences.getInt(StringConstants.REFRESH_THIS_ITEM, 0));
-                }
-                //tracking this item as requiring updating upon return from a child activity
-                preferences.edit().putInt(StringConstants.REFRESH_THIS_ITEM, position).apply();
-                if (holder.taskProperties.getVisibility() == View.VISIBLE) {
-                    MainActivity.boolPropertiesShowing = false;
-                    holder.taskProperties.setVisibility(View.GONE);
-                    mainActivityPresenter.toggleFab(true);
-                    //redrawing the UI to remove properties from view
-                    activityRootView.postInvalidate();
-                } else {
-                    MainActivity.boolPropertiesShowing = true;
-                    holder.taskProperties.setVisibility(View.VISIBLE);
-                    mainActivityPresenter.toggleFab(false);
-                    //hide keyboard if it is showing
-                    if (MainActivity.boolKeyboardShowing) {
-                        MainActivity.keyboard.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+//            only show properties if there is no tab layout
+//            if(!boolTabletLandscape) {
+                //for better user experience tasks should not be clickable while keyboard is up
+                if (!MainActivity.boolKeyboardShowing) {
+                    //only show properties if there is no tab layout
+                    if(!boolTabletLandscape) {
+                        //removing any other visible properties
+                        if (preferences.getInt(StringConstants.REFRESH_THIS_ITEM, 0) != position) {
+                            notifyItemChanged(preferences.getInt(StringConstants.REFRESH_THIS_ITEM, 0));
+                        }
+                        //tracking this item as requiring updating upon return from a child activity
+                        preferences.edit().putInt(StringConstants.REFRESH_THIS_ITEM, position).apply();
+                        if (holder.taskProperties.getVisibility() == View.VISIBLE) {
+                            MainActivity.boolPropertiesShowing = false;
+                            holder.taskProperties.setVisibility(View.GONE);
+                            mainActivityPresenter.toggleFab(true);
+                            //redrawing the UI to remove properties from view
+                            activityRootView.postInvalidate();
+                        } else {
+                            MainActivity.boolPropertiesShowing = true;
+                            holder.taskProperties.setVisibility(View.VISIBLE);
+                            mainActivityPresenter.toggleFab(false);
+                            //hide keyboard if it is showing
+                            if (MainActivity.boolKeyboardShowing) {
+                                MainActivity.keyboard.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                            }
+                        }
+                    }else{
+                        //setting all text views to black text
+                        if (preferences.getInt(StringConstants.REFRESH_THIS_ITEM, 0) != position) {
+                            notifyItemChanged(preferences.getInt(StringConstants.REFRESH_THIS_ITEM, 0));
+                        }
+                        preferences.edit().putInt(StringConstants.REFRESH_THIS_ITEM, position).apply();
+                        MainActivity.selectedTask = currentTask;
+                        holder.tvTask.setTextColor(Color.RED);
                     }
+                    //tracking this item as requiring updating upon return from a child activity
+//                    preferences.edit().putInt(StringConstants.REFRESH_THIS_ITEM, position).apply();
                 }
-            }
+//            }else{
+//                MainActivity.selectedTask = currentTask;
+//                holder.tvTask.setTextColor(Color.RED);
+//            }
         });
 
         //rename task on long click

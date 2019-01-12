@@ -3,7 +3,6 @@ package com.violenthoboenterprises.blistful.activities;
 import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.app.PendingIntent;
 import android.app.job.JobScheduler;
 import android.arch.lifecycle.ViewModelProviders;
@@ -26,10 +25,8 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -61,7 +58,6 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.violenthoboenterprises.blistful.utils.AlertReceiver;
-import com.violenthoboenterprises.blistful.Database;
 import com.violenthoboenterprises.blistful.R;
 import com.violenthoboenterprises.blistful.utils.BootReceiver;
 import com.violenthoboenterprises.blistful.utils.StringConstants;
@@ -75,14 +71,16 @@ import com.violenthoboenterprises.blistful.presenter.MainActivityPresenter;
 import com.violenthoboenterprises.blistful.presenter.SubtasksPresenter;
 import com.violenthoboenterprises.blistful.view.MainActivityView;
 
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Random;
+import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity implements
         BillingProcessor.IBillingHandler, MainActivityView {
 
-    private final String TAG = this.getClass().getSimpleName();
+    private static final String TAG = "MainActivity";
 
     //Used to determine if sound effects should play or not
     public static boolean boolMute;
@@ -111,6 +109,8 @@ public class MainActivity extends AppCompatActivity implements
     //dimensions of the fab
     int fabHeight;
     int fabWidth;
+    //indicates which tab is viewable when in landscape tablet mode
+    static int intViewableTab;
 
     //Toasts which show up when adding new task
     private String[] strMotivation;
@@ -194,9 +194,13 @@ public class MainActivity extends AppCompatActivity implements
     public static SharedPreferences preferences;
 
     //Adapter and pager for the tab layout
-//    DemoCollectionPagerAdapter demoCollectionPagerAdapter;
-    private ViewPager viewPager;
+    private static ViewPager viewPager;
+    private static TabLayout tabLayout;
     private SectionsPagerAdapter sectionsPagerAdapter;
+//    private ViewPager.OnPageChangeListener pageListener;
+
+    //The selected task as used when in landscape tablet mode
+    public static Task selectedTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -207,22 +211,18 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        demoCollectionPagerAdapter =
-//                new DemoCollectionPagerAdapter(
-//                        getSupportFragmentManager());
-//        viewPager = findViewById(R.id.viewPager);
-//        viewPager.setAdapter(demoCollectionPagerAdapter);
-
         //the adapter which will return the fragments to be displayed
         sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         viewPager = findViewById(R.id.viewPager);
         viewPager.setAdapter(sectionsPagerAdapter);
 
-        TabLayout tabLayout = findViewById(R.id.tabs);
+        tabLayout = findViewById(R.id.tabs);
 
         //listening for tab swipes and clicks
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+//        pageListener = new PageListener();
+//        viewPager.setOnPageChangeListener(pageListener);
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
 
         String ADKEY = "ca-app-pub-2378583121223638~3855319141";
@@ -336,6 +336,7 @@ public class MainActivity extends AppCompatActivity implements
             } else {
                 imgNoTasks.setVisibility(View.VISIBLE);
             }
+            selectedTask = adapter.getTaskAt(0);
         });
 
         //detect swipes
@@ -580,6 +581,15 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+//    private static class PageListener extends ViewPager.SimpleOnPageChangeListener {
+//        public void onPageSelected(int position) {
+//            Log.i(TAG, "in onPageSelected " + position);
+////            currentPage = position;
+//            intViewableTab = position;
+//            PlaceholderFragment.newInstance(intViewableTab);
+//        }
+//    }
+
     public static class PlaceholderFragment extends android.support.v4.app.Fragment {
 
         private static final String ARG_SECTION_NUMBER = "section_number";
@@ -599,12 +609,43 @@ public class MainActivity extends AppCompatActivity implements
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = null;
+            Button btnOpenRelevantActivity;
             if(getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
-                rootView = inflater.inflate(R.layout.activity_reminder, container, false);
+                rootView = inflater.inflate(R.layout.tab_reminder, container, false);
+                btnOpenRelevantActivity = rootView.findViewById(R.id.btnTabReminder);
+                btnOpenRelevantActivity.setOnClickListener(view -> {
+                    Intent intent = new Intent(getContext(), ReminderActivity.class);
+                    Calendar calendar = Calendar.getInstance();
+                    Task currentTask = new Task(null, 0, "Press '+' to add a new task",
+                            null, calendar.getTimeInMillis(), 0);
+                    intent.putExtra("task", currentTask);
+                    startActivity(intent);
+                });
             }else if(getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
-                rootView = inflater.inflate(R.layout.activity_subtasks, container, false);
+                rootView = inflater.inflate(R.layout.tab_subtasks, container, false);
+                btnOpenRelevantActivity = rootView.findViewById(R.id.btnTabSubtasks);
+                btnOpenRelevantActivity.setOnClickListener(view -> {
+                    Intent intent = new Intent(getContext(), SubtasksActivity.class);
+                    Calendar calendar = Calendar.getInstance();
+                    Task currentTask = new Task(null, 0, "Press '+' to add a new task",
+                            null, calendar.getTimeInMillis(), 0);
+                    intent.putExtra("task", currentTask);
+                    startActivity(intent);
+                });
             }else if(getArguments().getInt(ARG_SECTION_NUMBER) == 3) {
-                rootView = inflater.inflate(R.layout.activity_note, container, false);
+                rootView = inflater.inflate(R.layout.tab_note, container, false);
+                btnOpenRelevantActivity = rootView.findViewById(R.id.btnTabNote);
+                TextView tvNoNote = rootView.findViewById(R.id.tvTabNote);
+                if(selectedTask.getNote() == null) {
+                    tvNoNote.setText("There is no note for this task.");
+                }else{
+                    tvNoNote.setText(selectedTask.getNote());
+                }
+                btnOpenRelevantActivity.setOnClickListener(view -> {
+                    Intent intent = new Intent(getContext(), NoteActivity.class);
+                    intent.putExtra("task", selectedTask);
+                    startActivity(intent);
+                });
             }
             return rootView;
         }
@@ -629,52 +670,6 @@ public class MainActivity extends AppCompatActivity implements
             return 3;
         }
     }
-
-    //The following tab layout code was taken from developer.android.com
-    //The adapter for setting contents of the tab layout
-//    public class DemoCollectionPagerAdapter extends FragmentStatePagerAdapter {
-//        public DemoCollectionPagerAdapter(FragmentManager fm) {
-//            super(fm);
-//        }
-//
-//        @Override
-//        public android.support.v4.app.Fragment getItem(int position) {
-//            android.support.v4.app.Fragment fragment = new DemoObjectFragment();
-//            Bundle args = new Bundle();
-//            args.putInt(DemoObjectFragment.ARG_OBJECT, position + 1);
-//            fragment.setArguments(args);
-//            return fragment;
-//        }
-//
-//        @Override
-//        public int getCount() {
-//            return 100;
-//        }
-//
-//        @Override
-//        public CharSequence getPageTitle(int position) {
-//            return "OBJECT " + (position + 1);
-//        }
-//    }
-
-    //inflating the single objects to be viewed within the tab layout
-//    public static class DemoObjectFragment extends android.support.v4.app.Fragment {
-//        public static final String ARG_OBJECT = "object";
-//
-//        @Override
-//        public View onCreateView(LayoutInflater inflater,
-//                                 ViewGroup container, Bundle savedInstanceState) {
-//            // The last two arguments ensure LayoutParams are inflated
-//            // properly.
-//            View rootView = inflater.inflate(
-//                    R.layout.activity_note, container, false);
-//            Bundle args = getArguments();
-////            ((TextView) rootView.findViewById(android.R.id.text1)).setText(
-////                    Integer.toString(args.getInt(ARG_OBJECT)));
-//            ((TextView) rootView.findViewById(R.id.tvNote)).setText("note goes here");
-//            return rootView;
-//        }
-//    }
 
     private void showMotivationalToast() {
         if(boolShowMotivation) {

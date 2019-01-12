@@ -2,6 +2,7 @@ package com.violenthoboenterprises.blistful.activities;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.Toolbar;
@@ -29,6 +30,7 @@ public class NoteActivity extends MainActivity implements NoteView {
     private TextView tvNote;
     private EditText etNote;
     private InputMethodManager keyboard;
+    private static int screenSize;
     private ImageView btnSubmitNote, btnSubmitNoteOne, btnSubmitNoteTwo, btnSubmitNoteThree, btnSubmitNoteFour;
     private Toolbar noteToolbar;
     private MenuItem trashNote, trashNoteOpen;
@@ -56,6 +58,9 @@ public class NoteActivity extends MainActivity implements NoteView {
         btnSubmitNoteFour = findViewById(R.id.btnSubmitNoteTwo);
         btnSubmitNoteTwo = findViewById(R.id.btnSubmitNoteThree);
         btnSubmitNoteThree = findViewById(R.id.btnSubmitNoteFour);
+
+        screenSize = getResources().getConfiguration().screenLayout &
+                Configuration.SCREENLAYOUT_SIZE_MASK;
 
         getSupportActionBar().setTitle(R.string.note);
         noteToolbar.setSubtitle(notePresenter.getTaskName());
