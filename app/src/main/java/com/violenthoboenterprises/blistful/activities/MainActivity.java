@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements
     int fabHeight;
     int fabWidth;
     //indicates which tab is viewable when in landscape tablet mode
-    static int intViewableTab;
+    public static int intViewableTab;
 
     //Toasts which show up when adding new task
     private String[] strMotivation;
@@ -197,10 +197,10 @@ public class MainActivity extends AppCompatActivity implements
     public static SharedPreferences preferences;
 
     //Adapter and pager for the tab layout
-    private static ViewPager viewPager;
+    public static ViewPager viewPager;
     private static TabLayout tabLayout;
-    private SectionsPagerAdapter sectionsPagerAdapter;
-//    private ViewPager.OnPageChangeListener pageListener;
+    public static SectionsPagerAdapter sectionsPagerAdapter;
+    private ViewPager.OnPageChangeListener pageListener;
 
     //The selected task as used when in landscape tablet mode
     public static Task selectedTask;
@@ -224,8 +224,8 @@ public class MainActivity extends AppCompatActivity implements
 
         //listening for tab swipes and clicks
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-//        pageListener = new PageListener();
-//        viewPager.setOnPageChangeListener(pageListener);
+        pageListener = new PageListener();
+        viewPager.setOnPageChangeListener(pageListener);
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
 
         String ADKEY = "ca-app-pub-2378583121223638~3855319141";
@@ -306,6 +306,7 @@ public class MainActivity extends AppCompatActivity implements
         adView = findViewById(R.id.adView);
         boolKeyboardShowing = false;
         adHolder = findViewById(R.id.adHolder);
+        intViewableTab = 0;
 
         fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> addTask(null));
@@ -339,7 +340,8 @@ public class MainActivity extends AppCompatActivity implements
             } else {
                 imgNoTasks.setVisibility(View.VISIBLE);
             }
-            selectedTask = adapter.getTaskAt(0);
+//            selectedTask = adapter.getTaskAt(0);
+//            adapter.notifyItemChanged(0);
         });
 
         //detect swipes
@@ -584,14 +586,11 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-//    private static class PageListener extends ViewPager.SimpleOnPageChangeListener {
-//        public void onPageSelected(int position) {
-//            Log.i(TAG, "in onPageSelected " + position);
-////            currentPage = position;
-//            intViewableTab = position;
-//            PlaceholderFragment.newInstance(intViewableTab);
-//        }
-//    }
+    private static class PageListener extends ViewPager.SimpleOnPageChangeListener {
+        public void onPageSelected(int position) {
+            intViewableTab = position;
+        }
+    }
 
     public static class PlaceholderFragment extends android.support.v4.app.Fragment implements SubtasksView{
 
@@ -619,7 +618,7 @@ public class MainActivity extends AppCompatActivity implements
                         null, calendar.getTimeInMillis(), 0);
             }
             //Setting up the reminder tab view
-            if(getArguments().getInt(ARG_SECTION_NUMBER) == 10) {
+            if(getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                 rootView = inflater.inflate(R.layout.tab_reminder, container, false);
                 btnOpenRelevantActivity = rootView.findViewById(R.id.btnTabReminder);
                 TextView tvTabDate = rootView.findViewById(R.id.tvTabDate);
@@ -650,7 +649,7 @@ public class MainActivity extends AppCompatActivity implements
                     startActivity(intent);
                 });
             //setting up the subtasks tab view
-            }else if(getArguments().getInt(ARG_SECTION_NUMBER) == 2 || getArguments().getInt(ARG_SECTION_NUMBER) == 1 || getArguments().getInt(ARG_SECTION_NUMBER) == 3) {
+            }else if(getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
                 rootView = inflater.inflate(R.layout.tab_subtasks, container, false);
                 btnOpenRelevantActivity = rootView.findViewById(R.id.btnTabSubtasks);
                 SubtaskViewModel subtaskViewModel = ViewModelProviders.of(this).get(SubtaskViewModel.class);
@@ -682,7 +681,7 @@ public class MainActivity extends AppCompatActivity implements
                     startActivity(intent);
                 });
             //setting up the note tab view
-            }else if(getArguments().getInt(ARG_SECTION_NUMBER) == 30) {
+            }else if(getArguments().getInt(ARG_SECTION_NUMBER) == 3) {
                 rootView = inflater.inflate(R.layout.tab_note, container, false);
                 btnOpenRelevantActivity = rootView.findViewById(R.id.btnTabNote);
                 TextView tvNoNote = rootView.findViewById(R.id.tvTabNote);
@@ -1231,6 +1230,7 @@ public class MainActivity extends AppCompatActivity implements
 
         adapter.notifyItemChanged(preferences.getInt(StringConstants.REFRESH_THIS_ITEM, 0));
         toggleFab(true);
+//        viewPager.setAdapter(sectionsPagerAdapter);
 
     }
 

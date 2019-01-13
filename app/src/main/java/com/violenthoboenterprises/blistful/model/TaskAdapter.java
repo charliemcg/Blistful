@@ -186,6 +186,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
                         preferences.edit().putInt(StringConstants.REFRESH_THIS_ITEM, position).apply();
                         MainActivity.selectedTask = currentTask;
                         holder.tvTask.setTextColor(Color.RED);
+                        MainActivity.viewPager.setAdapter(MainActivity.sectionsPagerAdapter);
+                        MainActivity.viewPager.setCurrentItem(MainActivity.intViewableTab);
+                        activityRootView.postInvalidate();
                     }
                     //tracking this item as requiring updating upon return from a child activity
 //                    preferences.edit().putInt(StringConstants.REFRESH_THIS_ITEM, position).apply();
