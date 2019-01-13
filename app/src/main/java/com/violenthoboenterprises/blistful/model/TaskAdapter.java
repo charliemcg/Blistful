@@ -194,10 +194,10 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
                     preferences.edit().putInt(StringConstants.REFRESH_THIS_ITEM, position).apply();
                     MainActivity.selectedTask = currentTask;
                     holder.taskLayout.setBackground(context.getDrawable(R.drawable.item_background_faded));
-                    MainActivity.viewPager.setAdapter(MainActivity.sectionsPagerAdapter);
+//                    MainActivity.viewPager.setAdapter(MainActivity.sectionsPagerAdapter);
                     MainActivity.viewPager.setCurrentItem(MainActivity.intViewableTab);
                     MainActivity.sectionsPagerAdapter.notifyDataSetChanged();
-                    activityRootView.postInvalidate();
+//                    activityRootView.postInvalidate();
                 }
             }
         });

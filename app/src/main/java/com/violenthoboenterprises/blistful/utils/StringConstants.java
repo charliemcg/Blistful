@@ -19,5 +19,6 @@ public class StringConstants {
     public static String WEEK = "week";
     public static String MONTH = "month";
     public static String REINSTATE_REMINDERS_AFTER_REBOOT = "reinstate_reminders_after_reboot";
+    public static String VIEWABLE_TAB_KEY = "viewable_tab_key";
 
 }

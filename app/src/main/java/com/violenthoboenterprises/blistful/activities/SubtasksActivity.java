@@ -243,4 +243,14 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
 
     }
 
+    @Override
+    //Return to main screen when back pressed
+    public void onBackPressed() {
+
+        boolResetAdapter = true;
+
+        super.onBackPressed();
+
+    }
+
 }

@@ -282,4 +282,14 @@ public class NoteActivity extends MainActivity implements NoteView {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    //Return to main screen when back pressed
+    public void onBackPressed() {
+
+        boolResetAdapter = true;
+
+        super.onBackPressed();
+
+    }
+
 }

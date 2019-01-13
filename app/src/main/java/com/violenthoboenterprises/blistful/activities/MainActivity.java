@@ -310,7 +310,7 @@ public class MainActivity extends AppCompatActivity implements
         adView = findViewById(R.id.adView);
         boolKeyboardShowing = false;
         adHolder = findViewById(R.id.adHolder);
-        intViewableTab = 0;
+        intViewableTab = preferences.getInt(StringConstants.VIEWABLE_TAB_KEY, 0);
         boolResetAdapter = false;
 
         fab = findViewById(R.id.fab);
@@ -595,6 +595,7 @@ public class MainActivity extends AppCompatActivity implements
     private static class PageListener extends ViewPager.SimpleOnPageChangeListener {
         public void onPageSelected(int position) {
             intViewableTab = position;
+            preferences.edit().putInt(StringConstants.VIEWABLE_TAB_KEY, position).apply();
         }
     }
 
@@ -1270,211 +1271,7 @@ public class MainActivity extends AppCompatActivity implements
 
             viewPager = findViewById(R.id.viewPager);
             viewPager.setAdapter(sectionsPagerAdapter);
-
-            tabLayout = findViewById(R.id.tabs);
-
-            //listening for tab swipes and clicks
-            viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-            pageListener = new PageListener();
-            viewPager.setOnPageChangeListener(pageListener);
-            tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
-
-            taskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
-            SubtaskViewModel subtaskViewModel =
-                    ViewModelProviders.of(this).get(SubtaskViewModel.class);
-            SubtasksPresenter subtasksPresenter = new SubtasksPresenterImpl
-                    (subtaskViewModel, null);
-            mainActivityPresenter = new MainActivityPresenterImpl
-                    (MainActivity.this, taskViewModel, getApplicationContext(), subtasksPresenter);
-
-
-            //Setting up the recycler view
-            RecyclerView recyclerView = findViewById(R.id.recyclerView);
-            recyclerView.setLayoutManager(new LinearLayoutManager(this));
-            recyclerView.setHasFixedSize(true);
-
-            //setting up the adapter
-            adapter = new TaskAdapter(this, mainActivityPresenter,
-                    subtasksPresenter, activityRootView, this);
-            recyclerView.setAdapter(adapter);
-
-            //observing the recycler view items for changes
-            taskViewModel = ViewModelProviders.of(this).get(TaskViewModel.class);
-            taskViewModel.getAllTasks().observe(this, tasks -> {
-                adapter.setTasks(tasks);
-                if (adapter.getItemCount() > 0) {
-                    imgNoTasks.setVisibility(View.GONE);
-                    if (adapter.getItemCount() > 4 && !boolAdsRemoved) {
-                        showBannerAd();
-                    } else {
-                        adHolder.setVisibility(View.GONE);
-//                    imgBanner.setVisibility(View.GONE);
-                    }
-                } else {
-                    imgNoTasks.setVisibility(View.VISIBLE);
-                }
-//            selectedTask = adapter.getTaskAt(0);
-//            adapter.notifyItemChanged(0);
-//            viewPager.setAdapter(sectionsPagerAdapter);
-            });
-
-            //detect swipes
-            new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
-                    ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-
-                @Override
-                public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
-                                      RecyclerView.ViewHolder target) {
-                    return false;
-                }
-
-                @Override
-                public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-
-                    //Actions to occur when deleting non repeating task
-                    if (adapter.getTaskAt(viewHolder.getAdapterPosition()).getRepeatInterval() == null) {
-                        //Saving a temporary instance of the deleted task should it need to be reinstated
-                        Task taskToReinstate = adapter.getTaskAt(viewHolder.getAdapterPosition());
-                        taskViewModel.delete(adapter.getTaskAt(viewHolder.getAdapterPosition()));
-                        showSnackbar(taskToReinstate);
-                        //showing motivational toast
-                        showKilledAffirmationToast();
-                        //Actions to occur when deleting repeating task
-                    } else {
-
-                        long interval = 0;
-                        if (adapter.getTaskAt(viewHolder.getAdapterPosition())
-                                .getRepeatInterval().equals(StringConstants.MONTH)) {
-                            interval = mainActivityPresenter.getInterval(StringConstants.MONTH,
-                                    adapter.getTaskAt(viewHolder.getAdapterPosition()).getTimestamp(),
-                                    adapter.getTaskAt(viewHolder.getAdapterPosition()).getOriginalDay());
-                        }
-                        long newTimestamp = adapter.getTaskAt(viewHolder.getAdapterPosition()).getTimestamp();
-                        Calendar cal = Calendar.getInstance();
-                        cal.setTimeInMillis(newTimestamp);
-                        Calendar currentCal = Calendar.getInstance();
-                        Calendar displayedCal = Calendar.getInstance();
-                        displayedCal.setTimeInMillis(adapter.getTaskAt(viewHolder.getAdapterPosition()).getDisplayedTimestamp());
-                        long diff = currentCal.getTimeInMillis() - displayedCal.getTimeInMillis();
-                        //actions to occur if user kills a task early
-                        if (diff < 0) {
-                            //cancel reminder
-                            if (preferences.getBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, false)) {
-                                PendingIntent.getBroadcast(getApplicationContext(),
-                                        adapter.getTaskAt(viewHolder.getAdapterPosition()).getId(),
-                                        MainActivity.alertIntent,
-                                        PendingIntent.FLAG_UPDATE_CURRENT).cancel();
-                            }
-                            switch (adapter.getTaskAt(viewHolder.getAdapterPosition()).getRepeatInterval()) {
-                                case "day":
-                                    //Add another day to the timestamp
-                                    newTimestamp += AlarmManager.INTERVAL_DAY;
-                                    break;
-                                case "week":
-                                    //Add another week to the timestamp
-                                    newTimestamp += (AlarmManager.INTERVAL_DAY * 7);
-                                    break;
-                                case "month":
-                                    //Add another month to the timestamp
-                                    newTimestamp += interval;
-                                    break;
-                            }
-                            adapter.getTaskAt(viewHolder.getAdapterPosition()).setTimestamp(newTimestamp);
-                            adapter.getTaskAt(viewHolder.getAdapterPosition()).setDisplayedTimestamp(newTimestamp);
-
-                            //creating new reminder
-                            MainActivity.alertIntent = new Intent(getApplicationContext(), AlertReceiver.class);
-                            MainActivity.alertIntent.putExtra("snoozeStatus", false);
-                            MainActivity.alertIntent.putExtra("task", adapter.getTaskAt(viewHolder.getAdapterPosition()));
-
-                            //Setting alarm
-                            MainActivity.pendingIntent = PendingIntent.getBroadcast(
-                                    getApplicationContext(), adapter.getTaskAt(viewHolder.getAdapterPosition()).getId(), MainActivity.alertIntent,
-                                    PendingIntent.FLAG_UPDATE_CURRENT);
-
-                            MainActivity.alarmManager.cancel(MainActivity.pendingIntent);
-
-                            MainActivity.alarmManager.set(AlarmManager.RTC,
-                                    newTimestamp,
-                                    MainActivity.pendingIntent);
-                        }
-                        adapter.getTaskAt(viewHolder.getAdapterPosition()).setDisplayedTimestamp(newTimestamp);
-                        mainActivityPresenter.update(adapter.getTaskAt(viewHolder.getAdapterPosition()));
-                        //display toast
-                        int timesShown = preferences.getInt(StringConstants.REPEAT_HINT_KEY, 0);
-                        if (timesShown <= 10) {
-                            if (timesShown == 1 || timesShown == 10) {
-                                showRepeatHintToast();
-                            } else {
-                                //showing motivational toast
-                                showKilledAffirmationToast();
-                            }
-                            preferences.edit().putInt(StringConstants.REPEAT_HINT_KEY, ++timesShown).apply();
-                        }else{
-                            //showing motivational toast
-                            showKilledAffirmationToast();
-                        }
-                        //If alert receiver is not functioning then need to update everything here
-                        Calendar incorrectCal = Calendar.getInstance();
-                        incorrectCal.setTimeInMillis(adapter.getTaskAt(viewHolder.getAdapterPosition()).getTimestamp());
-                        long incorrectCalMillis = incorrectCal.getTimeInMillis() / 1000 / 60 / 60 / 24;
-                        Calendar now = Calendar.getInstance();
-                        long nowMillis = now.getTimeInMillis() / 1000 / 60 / 60 / 24;
-                        if(incorrectCalMillis <= nowMillis){
-                            long errorCorrectedStamp = adapter.getTaskAt(viewHolder.getAdapterPosition()).getTimestamp();
-                            switch (adapter.getTaskAt(viewHolder.getAdapterPosition()).getRepeatInterval()) {
-                                case "day":
-                                    //Add another day to the timestamp
-                                    errorCorrectedStamp += AlarmManager.INTERVAL_DAY;
-                                    adapter.getTaskAt(viewHolder.getAdapterPosition()).setDisplayedTimestamp(errorCorrectedStamp);
-                                    adapter.getTaskAt(viewHolder.getAdapterPosition()).setTimestamp(errorCorrectedStamp);
-                                    mainActivityPresenter.update(adapter.getTaskAt(viewHolder.getAdapterPosition()));
-                                    break;
-                                case "week":
-                                    //Add another week to the timestamp
-                                    errorCorrectedStamp += (AlarmManager.INTERVAL_DAY * 7);
-                                    adapter.getTaskAt(viewHolder.getAdapterPosition()).setDisplayedTimestamp(errorCorrectedStamp);
-                                    adapter.getTaskAt(viewHolder.getAdapterPosition()).setTimestamp(errorCorrectedStamp);
-                                    mainActivityPresenter.update(adapter.getTaskAt(viewHolder.getAdapterPosition()));
-                                    break;
-                                case "month":
-                                    //Add another month to the timestamp
-                                    errorCorrectedStamp += interval;
-                                    adapter.getTaskAt(viewHolder.getAdapterPosition()).setDisplayedTimestamp(errorCorrectedStamp);
-                                    adapter.getTaskAt(viewHolder.getAdapterPosition()).setTimestamp(errorCorrectedStamp);
-                                    mainActivityPresenter.update(adapter.getTaskAt(viewHolder.getAdapterPosition()));
-                                    break;
-                            }
-                            MainActivity.alertIntent = new Intent(getApplicationContext(), AlertReceiver.class);
-                            MainActivity.alertIntent.putExtra("snoozeStatus", false);
-                            MainActivity.alertIntent.putExtra("task", adapter.getTaskAt(viewHolder.getAdapterPosition()));
-
-                            //Setting alarm
-                            MainActivity.pendingIntent = PendingIntent.getBroadcast(
-                                    getApplicationContext(), adapter.getTaskAt(viewHolder.getAdapterPosition()).getId(), MainActivity.alertIntent,
-                                    PendingIntent.FLAG_UPDATE_CURRENT);
-
-                            MainActivity.alarmManager.cancel(MainActivity.pendingIntent);
-
-                            MainActivity.alarmManager.set(AlarmManager.RTC,
-                                    adapter.getTaskAt(viewHolder.getAdapterPosition()).getTimestamp(),
-                                    MainActivity.pendingIntent);
-                        }
-                        adapter.notifyDataSetChanged();
-                    }
-
-                    final Handler handler = new Handler();
-                    final Runnable runnable = () -> adapter.notifyDataSetChanged();
-                    handler.postDelayed(runnable, 500);
-                    toggleFab(true);
-                    etTask.setText("");
-                    //hide keyboard
-                    if (boolKeyboardShowing) {
-                        keyboard.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-                    }
-
-                }
-            }).attachToRecyclerView(recyclerView);
+            viewPager.setCurrentItem(MainActivity.intViewableTab);
 
             boolResetAdapter = false;
 
