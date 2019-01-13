@@ -15,6 +15,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -597,6 +598,8 @@ public class ReminderActivity extends MainActivity implements ReminderView {
     @Override
     //Return to main screen when back pressed
     public void onBackPressed() {
+
+        boolResetAdapter = true;
 
         //Timestamp needs to be saved if user has set a reminder
         if (dateSet || timeSet || repeatSet) {
