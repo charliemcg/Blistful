@@ -47,9 +47,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
     private View activityRootView;
     private MainActivityView mainActivityView;
     public SharedPreferences preferences;
-    private int screenSize;
-    private int orientation;
-    private boolean boolTabletLandscape;
 
     public TaskAdapter(Context context, MainActivityPresenter mainActivityPresenter,
                        SubtasksPresenter subtasksPresenter, View activityRootView,
@@ -61,12 +58,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         this.mainActivityView = mainActivityView;
         preferences = context.getSharedPreferences("com.violenthoboenterprises.blistful",
                 Context.MODE_PRIVATE);
-        screenSize = context.getResources().getConfiguration().screenLayout &
-                Configuration.SCREENLAYOUT_SIZE_MASK;
-        orientation = context.getResources().getConfiguration().orientation;
-        if (((screenSize == 3 || screenSize == 4) && orientation == Configuration.ORIENTATION_LANDSCAPE)) {
-            boolTabletLandscape = true;
-        }
     }
 
     @NonNull
@@ -90,9 +81,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         holder.taskProperties.setVisibility(View.GONE);
         holder.tvDue.setTextColor(Color.BLACK);
 
+        holder.taskLayout.setBackground(context.getDrawable(R.drawable.item_background));
+
         //highlight the selected task when in tablet landscape mode
-        if (boolTabletLandscape) {
-            holder.taskLayout.setBackground(context.getDrawable(R.drawable.item_background));
+        if (MainActivity.boolTabletLandscape) {
+//            holder.taskLayout.setBackground(context.getDrawable(R.drawable.item_background));
             if (MainActivity.selectedTask == null) {
                 preferences.edit().putInt(StringConstants.REFRESH_THIS_ITEM, position).apply();
                 MainActivity.selectedTask = currentTask;
@@ -164,7 +157,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
             //for better user experience tasks should not be clickable while keyboard is up
             if (!MainActivity.boolKeyboardShowing) {
                 //only show properties if there is no tab layout
-                if (!boolTabletLandscape) {
+                if (!MainActivity.boolTabletLandscape) {
                     //removing any other visible properties
                     if (preferences.getInt(StringConstants.REFRESH_THIS_ITEM, 0) != position) {
                         notifyItemChanged(preferences.getInt(StringConstants.REFRESH_THIS_ITEM, 0));

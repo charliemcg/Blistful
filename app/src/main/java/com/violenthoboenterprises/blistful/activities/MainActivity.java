@@ -9,6 +9,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
@@ -101,8 +102,10 @@ public class MainActivity extends AppCompatActivity implements
     public static boolean boolPropertiesShowing;
     //used to determine if the keyboard is showing
     public static boolean boolKeyboardShowing;
-
+    //used to indicate that a different activity has been visited and therefore the viewpager needs to be reset
     public static boolean boolResetAdapter;
+    //used to indicate that the device is a tablet in landscape orientation
+    public static boolean boolTabletLandscape;
 
     //indicates if the rename hint should be shown
     private int intRenameHint;
@@ -209,6 +212,9 @@ public class MainActivity extends AppCompatActivity implements
     //The selected task as used when in landscape tablet mode
     public static Task selectedTask;
 
+    private int screenSize;
+    private int orientation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -218,19 +224,33 @@ public class MainActivity extends AppCompatActivity implements
         }
         setContentView(R.layout.activity_main);
 
+        screenSize = getResources().getConfiguration().screenLayout &
+                Configuration.SCREENLAYOUT_SIZE_MASK;
+        orientation = getResources().getConfiguration().orientation;
+
+        if (((screenSize == 3 || screenSize == 4) && orientation == Configuration.ORIENTATION_LANDSCAPE)) {
+            boolTabletLandscape = true;
+        }else{
+            boolTabletLandscape = false;
+        }
+
         //the adapter which will return the fragments to be displayed
         sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         viewPager = findViewById(R.id.viewPager);
-        viewPager.setAdapter(sectionsPagerAdapter);
+        if(boolTabletLandscape) {
+            viewPager.setAdapter(sectionsPagerAdapter);
+        }
 
         tabLayout = findViewById(R.id.tabs);
 
-        //listening for tab swipes and clicks
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        pageListener = new PageListener();
-        viewPager.setOnPageChangeListener(pageListener);
-        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
+        if(boolTabletLandscape) {
+            //listening for tab swipes and clicks
+            viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+            pageListener = new PageListener();
+            viewPager.setOnPageChangeListener(pageListener);
+            tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
+        }
 
         String ADKEY = "ca-app-pub-2378583121223638~3855319141";
         //App ID for AdMob
@@ -730,7 +750,6 @@ public class MainActivity extends AppCompatActivity implements
 
         @Override
         public int getItemPosition(Object object) {
-            Log.d(TAG, "I'm in here");
             return POSITION_NONE;
         }
 
@@ -1264,7 +1283,7 @@ public class MainActivity extends AppCompatActivity implements
         adapter.notifyItemChanged(preferences.getInt(StringConstants.REFRESH_THIS_ITEM, 0));
         toggleFab(true);
 
-        if(boolResetAdapter){
+        if(boolResetAdapter && boolTabletLandscape){
 
             //the adapter which will return the fragments to be displayed
             sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
