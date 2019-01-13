@@ -91,7 +91,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
 
         //highlight the selected task when in tablet landscape mode
         if(boolTabletLandscape){
-            holder.tvTask.setTextColor(Color.BLACK);
+            holder.taskLayout.setBackground(context.getDrawable(R.drawable.item_background));
+            if(MainActivity.selectedTask == null){
+                preferences.edit().putInt(StringConstants.REFRESH_THIS_ITEM, position).apply();
+                MainActivity.selectedTask = currentTask;
+                MainActivity.viewPager.setAdapter(MainActivity.sectionsPagerAdapter);
+                holder.taskLayout.setBackground(context.getDrawable(R.drawable.item_background_faded));
+            }
         }
 
         //checking if needed to display due icon
@@ -185,7 +191,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
                         }
                         preferences.edit().putInt(StringConstants.REFRESH_THIS_ITEM, position).apply();
                         MainActivity.selectedTask = currentTask;
-                        holder.tvTask.setTextColor(Color.RED);
+                        holder.taskLayout.setBackground(context.getDrawable(R.drawable.item_background_faded));
                         MainActivity.viewPager.setAdapter(MainActivity.sectionsPagerAdapter);
                         MainActivity.viewPager.setCurrentItem(MainActivity.intViewableTab);
                         activityRootView.postInvalidate();

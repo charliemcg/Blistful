@@ -342,6 +342,7 @@ public class MainActivity extends AppCompatActivity implements
             }
 //            selectedTask = adapter.getTaskAt(0);
 //            adapter.notifyItemChanged(0);
+//            viewPager.setAdapter(sectionsPagerAdapter);
         });
 
         //detect swipes
@@ -612,89 +613,91 @@ public class MainActivity extends AppCompatActivity implements
                                  Bundle savedInstanceState) {
             View rootView = null;
             Button btnOpenRelevantActivity;
-            if(selectedTask == null){//TODO don't make a dummy task
-                Calendar calendar = Calendar.getInstance();
-                selectedTask = new Task(null, 0, "Dummy task",
-                        null, calendar.getTimeInMillis(), 0);
-            }
-            //Setting up the reminder tab view
-            if(getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
-                rootView = inflater.inflate(R.layout.tab_reminder, container, false);
-                btnOpenRelevantActivity = rootView.findViewById(R.id.btnTabReminder);
-                TextView tvTabDate = rootView.findViewById(R.id.tvTabDate);
-                TextView tvTabTime = rootView.findViewById(R.id.tvTabTime);
-                TextView tvTabRepeat = rootView.findViewById(R.id.tvTabRepeat);
+            if(selectedTask != null) {//TODO don't make a dummy task
+//                Calendar calendar = Calendar.getInstance();
+//                selectedTask = new Task(null, 0, "Dummy task",
+//                        null, calendar.getTimeInMillis(), 0);
+//
+//            }
+                //Setting up the reminder tab view
+                if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
+                    rootView = inflater.inflate(R.layout.tab_reminder, container, false);
+                    btnOpenRelevantActivity = rootView.findViewById(R.id.btnTabReminder);
+                    TextView tvTabDate = rootView.findViewById(R.id.tvTabDate);
+                    TextView tvTabTime = rootView.findViewById(R.id.tvTabTime);
+                    TextView tvTabRepeat = rootView.findViewById(R.id.tvTabRepeat);
 
-                if(selectedTask.getTimestamp() == 0){
-                    tvTabDate.setText("There is no reminder set.");
-                }else{
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTimeInMillis(selectedTask.getTimestamp());
-                    int day = calendar.get(Calendar.DAY_OF_MONTH);
-                    int month = calendar.get(Calendar.MONTH);
-                    int year = calendar.get(Calendar.YEAR);
-                    int hour = calendar.get(Calendar.HOUR_OF_DAY);
-                    int minute = calendar.get(Calendar.MINUTE);
-                    tvTabDate.setText("Day: " + day + "/" + month + "/" + year);
-                    tvTabTime.setText("Time: " + hour + ":" + minute );
-                    if(selectedTask.getRepeatInterval() == null){
-                        tvTabRepeat.setText("No repeat set");
+                    if (selectedTask.getTimestamp() == 0) {
+                        tvTabDate.setText("There is no reminder set.");
                     } else {
-                        tvTabRepeat.setText(selectedTask.getRepeatInterval());
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTimeInMillis(selectedTask.getTimestamp());
+                        int day = calendar.get(Calendar.DAY_OF_MONTH);
+                        int month = calendar.get(Calendar.MONTH);
+                        int year = calendar.get(Calendar.YEAR);
+                        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                        int minute = calendar.get(Calendar.MINUTE);
+                        tvTabDate.setText("Day: " + day + "/" + month + "/" + year);
+                        tvTabTime.setText("Time: " + hour + ":" + minute);
+                        if (selectedTask.getRepeatInterval() == null) {
+                            tvTabRepeat.setText("No repeat set");
+                        } else {
+                            tvTabRepeat.setText(selectedTask.getRepeatInterval());
+                        }
                     }
-                }
-                btnOpenRelevantActivity.setOnClickListener(view -> {
-                    Intent intent = new Intent(getContext(), ReminderActivity.class);
-                    intent.putExtra("task", selectedTask);
-                    startActivity(intent);
-                });
-            //setting up the subtasks tab view
-            }else if(getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
-                rootView = inflater.inflate(R.layout.tab_subtasks, container, false);
-                btnOpenRelevantActivity = rootView.findViewById(R.id.btnTabSubtasks);
-                SubtaskViewModel subtaskViewModel = ViewModelProviders.of(this).get(SubtaskViewModel.class);
-                SubtasksPresenter subtasksPresenter = new SubtasksPresenterImpl(subtaskViewModel, selectedTask);
-                //checking if needed to display subtasks icon
-                List<Subtask> subtasks = subtasksPresenter.getSubtasksByParent(selectedTask.getId());
-                int subtasksSize = subtasks.size();
-                if(subtasksSize == 0){
-                    btnOpenRelevantActivity.setText("There are no subtasks");
-                }else{
-                    //Setting up the recycler view
-                    RecyclerView recyclerView = rootView.findViewById(R.id.subTasksTabRecyclerView);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                    recyclerView.setHasFixedSize(true);
+                    btnOpenRelevantActivity.setOnClickListener(view -> {
+                        Intent intent = new Intent(getContext(), ReminderActivity.class);
+                        intent.putExtra("task", selectedTask);
+                        startActivity(intent);
+                    });
+                    //setting up the subtasks tab view
+                } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
+                    rootView = inflater.inflate(R.layout.tab_subtasks, container, false);
+                    btnOpenRelevantActivity = rootView.findViewById(R.id.btnTabSubtasks);
+                    SubtaskViewModel subtaskViewModel = ViewModelProviders.of(this).get(SubtaskViewModel.class);
+                    SubtasksPresenter subtasksPresenter = new SubtasksPresenterImpl(subtaskViewModel, selectedTask);
+                    //checking if needed to display subtasks icon
+                    List<Subtask> subtasks = subtasksPresenter.getSubtasksByParent(selectedTask.getId());
+                    int subtasksSize = subtasks.size();
+                    if (subtasksSize == 0) {
+                        btnOpenRelevantActivity.setText("There are no subtasks");
+                    } else {
+                        //Setting up the recycler view
+                        RecyclerView recyclerView = rootView.findViewById(R.id.subTasksTabRecyclerView);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                        recyclerView.setHasFixedSize(true);
 
-                    //setting up the adapter
-                    final SubtasksAdapter subtasksAdapter = new SubtasksAdapter(this);
-                    recyclerView.setAdapter(subtasksAdapter);
+                        //setting up the adapter
+                        final SubtasksAdapter subtasksAdapter = new SubtasksAdapter(this);
+                        recyclerView.setAdapter(subtasksAdapter);
 
-                    //observing the recycler view items for changes
-                    subtaskViewModel = ViewModelProviders.of(this).get(SubtaskViewModel.class);
-                    //need to specifically get subtasks belonging to parent task
-                    subtaskViewModel.getAllSubtasks(subtasksPresenter.getId())
-                            .observe(this, subtasksAdapter::setSubtasks);
+                        //observing the recycler view items for changes
+                        subtaskViewModel = ViewModelProviders.of(this).get(SubtaskViewModel.class);
+                        //need to specifically get subtasks belonging to parent task
+                        subtaskViewModel.getAllSubtasks(subtasksPresenter.getId())
+                                .observe(this, subtasksAdapter::setSubtasks);
+                    }
+                    btnOpenRelevantActivity.setOnClickListener(view -> {
+                        Intent intent = new Intent(getContext(), SubtasksActivity.class);
+                        intent.putExtra("task", selectedTask);
+                        startActivity(intent);
+                    });
+                    //setting up the note tab view
+                } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 3) {
+                    rootView = inflater.inflate(R.layout.tab_note, container, false);
+                    btnOpenRelevantActivity = rootView.findViewById(R.id.btnTabNote);
+                    TextView tvNoNote = rootView.findViewById(R.id.tvTabNote);
+                    if (selectedTask.getNote() == null) {
+                        tvNoNote.setText("There is no note for this task.");
+                    } else {
+                        tvNoNote.setText(selectedTask.getNote());
+                    }
+                    btnOpenRelevantActivity.setOnClickListener(view -> {
+                        Intent intent = new Intent(getContext(), NoteActivity.class);
+                        intent.putExtra("task", selectedTask);
+                        startActivity(intent);
+                    });
                 }
-                btnOpenRelevantActivity.setOnClickListener(view -> {
-                    Intent intent = new Intent(getContext(), SubtasksActivity.class);
-                    intent.putExtra("task", selectedTask);
-                    startActivity(intent);
-                });
-            //setting up the note tab view
-            }else if(getArguments().getInt(ARG_SECTION_NUMBER) == 3) {
-                rootView = inflater.inflate(R.layout.tab_note, container, false);
-                btnOpenRelevantActivity = rootView.findViewById(R.id.btnTabNote);
-                TextView tvNoNote = rootView.findViewById(R.id.tvTabNote);
-                if(selectedTask.getNote() == null) {
-                    tvNoNote.setText("There is no note for this task.");
-                }else{
-                    tvNoNote.setText(selectedTask.getNote());
-                }
-                btnOpenRelevantActivity.setOnClickListener(view -> {
-                    Intent intent = new Intent(getContext(), NoteActivity.class);
-                    intent.putExtra("task", selectedTask);
-                    startActivity(intent);
-                });
             }
             return rootView;
         }
