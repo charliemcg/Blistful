@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.violenthoboenterprises.blistful.Database;
+import com.violenthoboenterprises.blistful.R;
 import com.violenthoboenterprises.blistful.activities.MainActivity;
 import com.violenthoboenterprises.blistful.utils.StringConstants;
 import com.violenthoboenterprises.blistful.presenter.MainActivityPresenter;
@@ -13,6 +14,7 @@ import com.violenthoboenterprises.blistful.view.MainActivityView;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 public class MainActivityPresenterImpl implements MainActivityPresenter {
 
@@ -262,6 +264,86 @@ public class MainActivityPresenterImpl implements MainActivityPresenter {
             return twentyFourHours * multiplier;
         }
         return 0;
+    }
+
+    @Override
+    public String getFormattedDate(long timestamp) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(timestamp);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int month = calendar.get(Calendar.MONTH);
+        String formattedMonth = "";
+        int intMonth = month + 1;
+        //getting string representation for month
+        if (intMonth == 1) {
+            formattedMonth = context.getString(R.string.jan);
+        } else if (intMonth == 2) {
+            formattedMonth = context.getString(R.string.feb);
+        } else if (intMonth == 3) {
+            formattedMonth = context.getString(R.string.mar);
+        } else if (intMonth == 4) {
+            formattedMonth = context.getString(R.string.apr);
+        } else if (intMonth == 5) {
+            formattedMonth = context.getString(R.string.may);
+        } else if (intMonth == 6) {
+            formattedMonth = context.getString(R.string.jun);
+        } else if (intMonth == 7) {
+            formattedMonth = context.getString(R.string.jul);
+        } else if (intMonth == 8) {
+            formattedMonth = context.getString(R.string.aug);
+        } else if (intMonth == 9) {
+            formattedMonth = context.getString(R.string.sep);
+        } else if (intMonth == 10) {
+            formattedMonth = context.getString(R.string.oct);
+        } else if (intMonth == 11) {
+            formattedMonth = context.getString(R.string.nov);
+        } else if (intMonth == 12) {
+            formattedMonth = context.getString(R.string.dec);
+        }
+
+        //setting date format based of locale
+        String lang = String.valueOf(Locale.getDefault());
+        if (lang.equals("en_AS") || lang.equals("en_BM")
+                || lang.equals("en_GU") || lang.equals("en_PH")
+                || lang.equals("en_PR") || lang.equals("en_UM")
+                || lang.equals("en_US") || lang.equals("en_VI")) {
+            return formattedMonth + " " + day;
+        } else {
+            return day + " " + formattedMonth;
+        }
+    }
+
+    @Override
+    public String getFormattedTime(long timestamp) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(timestamp);
+        String adjustedAmPm;
+        int adjustedHour = calendar.get(Calendar.HOUR_OF_DAY);
+        int adjustedMinute = calendar.get(Calendar.MINUTE);
+        String adjustedMinuteString;
+
+        //find if am or pm
+        if (adjustedHour < 12) {
+            adjustedAmPm = "am";
+        } else {
+            adjustedAmPm = "pm";
+        }
+
+        //convert 24 hour time to 12 hour time
+        if (adjustedHour == 0) {
+            adjustedHour = 12;
+        } else if (adjustedHour > 12) {
+            adjustedHour -= 12;
+        }
+
+        //add '0' to front of single digit minutes
+        if (adjustedMinute < 10) {
+            adjustedMinuteString = "0" + adjustedMinute;
+        } else {
+            adjustedMinuteString = String.valueOf(adjustedMinute);
+        }
+
+        return adjustedHour + ":" + adjustedMinuteString + adjustedAmPm;
     }
 
     @Override

@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.violenthoboenterprises.blistful.R;
+import com.violenthoboenterprises.blistful.activities.MainActivity;
 import com.violenthoboenterprises.blistful.view.SubtasksView;
 
 import java.util.ArrayList;
@@ -29,8 +30,14 @@ public class SubtasksAdapter extends RecyclerView.Adapter<SubtasksAdapter.Subtas
 
     @Override
     public SubtasksAdapter.SubtaskHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_subtask, parent, false);
+        View itemView;
+        if(MainActivity.boolTabletLandscape) {
+            itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_tab_subtask, parent, false);
+        }else{
+            itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_subtask, parent, false);
+        }
         return new SubtasksAdapter.SubtaskHolder(itemView);
     }
 

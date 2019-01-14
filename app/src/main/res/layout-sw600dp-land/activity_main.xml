@@ -38,8 +38,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        ads:layout_constraintTop_toBottomOf="@id/tb"
-        ads:layout_constraintBottom_toBottomOf="parent">
+        ads:layout_constraintBottom_toBottomOf="parent"
+        ads:layout_constraintTop_toBottomOf="@id/tb">
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/mainContents"
@@ -104,18 +104,18 @@
 
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/fab"
-                android:layout_width="84dp"
-                android:layout_height="124dp"
+                android:layout_width="78dp"
+                android:layout_height="67dp"
                 android:layout_gravity="bottom|end"
                 android:layout_margin="32dp"
                 android:src="@drawable/ic_add"
+                ads:layout_constraintHorizontal_bias="1.0"
+                ads:layout_constraintVertical_bias="1.0"
                 app:backgroundTint="@color/purple"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.942"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.974" />
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <RelativeLayout
                 android:id="@+id/toastView"
@@ -152,6 +152,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
+            android:background="@color/lightTurquoise"
             ads:layout_constraintBottom_toBottomOf="parent"
             ads:layout_constraintEnd_toEndOf="parent"
             ads:layout_constraintStart_toEndOf="@id/mainContents"
@@ -163,7 +164,7 @@
                 android:layout_height="wrap_content"
                 android:background="@color/lightTurquoise">
 
-            <!--<android.support.v7.widget.Toolbar-->
+                <!--<android.support.v7.widget.Toolbar-->
                 <!--android:id="@+id/toolbar"-->
                 <!--android:layout_width="match_parent"-->
                 <!--android:layout_height="?attr/actionBarSize"-->
@@ -172,39 +173,46 @@
                 <!--app:layout_scrollFlags="scroll|enterAlways"-->
                 <!--app:title="@string/app_name">-->
 
-            <!--</android.support.v7.widget.Toolbar>-->
+                <!--</android.support.v7.widget.Toolbar>-->
 
-            <android.support.design.widget.TabLayout
-                android:id="@+id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/tabs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <android.support.design.widget.TabItem
-                    android:id="@+id/tabItem"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Reminder" />
+                    <android.support.design.widget.TabItem
+                        android:id="@+id/tabItem"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Reminder" />
 
-                <android.support.design.widget.TabItem
-                    android:id="@+id/tabItem2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Subtasks" />
+                    <android.support.design.widget.TabItem
+                        android:id="@+id/tabItem2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Subtasks" />
 
-                <android.support.design.widget.TabItem
-                    android:id="@+id/tabItem3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Note" />
+                    <android.support.design.widget.TabItem
+                        android:id="@+id/tabItem3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Note" />
 
-            </android.support.design.widget.TabLayout>
+                </android.support.design.widget.TabLayout>
             </android.support.design.widget.AppBarLayout>
+
+            <View
+                android:id="@+id/divPageLayout"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/dark_gray"
+                android:layout_below="@+id/appBar"/>
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/viewPager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@id/appBar"/>
+                android:layout_below="@id/divPageLayout" />
 
         </RelativeLayout>
 

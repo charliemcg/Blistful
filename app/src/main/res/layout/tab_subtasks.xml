@@ -6,28 +6,43 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:gravity="center">
 
+    <TextView
+        android:id="@+id/tvTabNoSubtasks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No subtasks..."
+        android:textSize="20sp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/subTasksTabRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/btnTabSubtasks"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/item_task" />
+        tools:listitem="@layout/item_tab_subtask" />
 
-    <Button
+    <ImageButton
         android:id="@+id/btnTabSubtasks"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:text="Edit"
+        android:background="@color/purple"
+        android:src="@drawable/ic_edit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.971"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/subTasksTabRecyclerView" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.961"/>
 
 </android.support.constraint.ConstraintLayout>

@@ -27,4 +27,7 @@ public interface MainActivityPresenter {
 
     long getInterval(String repeatInterval, long stamp, int originalDay);
 
+    String getFormattedDate(long timestamp);
+
+    String getFormattedTime(long timestamp);
 }

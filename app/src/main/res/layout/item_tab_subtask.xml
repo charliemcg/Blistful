@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/subtask_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    android:descendantFocusability="blocksDescendants"
+    android:orientation="horizontal"
+    android:background="@color/lightTurquoise"
+    tools:context="com.violenthoboenterprises.blistful.activities.MainActivity">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/viewSubtaskParent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="50dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/tvSubtask"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:gravity="center_vertical"
+            android:focusable="false"
+            android:textSize="20sp"
+            android:focusableInTouchMode="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>

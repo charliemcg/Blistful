@@ -85,6 +85,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
 
         //highlight the selected task when in tablet landscape mode
         if (MainActivity.boolTabletLandscape) {
+            if(MainActivity.selectedTask != null) {
+                Log.d(TAG, "selectedTask: " + MainActivity.selectedTask.getId() + " currentTask: " + currentTask.getId());
+            }
 //            holder.taskLayout.setBackground(context.getDrawable(R.drawable.item_background));
             if (MainActivity.selectedTask == null) {
                 preferences.edit().putInt(StringConstants.REFRESH_THIS_ITEM, position).apply();

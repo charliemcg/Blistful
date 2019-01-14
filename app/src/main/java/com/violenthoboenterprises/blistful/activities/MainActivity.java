@@ -35,6 +35,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.method.ScrollingMovementMethod;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -48,6 +49,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -184,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private FloatingActionButton fab;
 
-    private MainActivityPresenter mainActivityPresenter;
+    private static MainActivityPresenter mainActivityPresenter;
 
     public TaskAdapter adapter;
 
@@ -212,6 +214,8 @@ public class MainActivity extends AppCompatActivity implements
     //The selected task as used when in landscape tablet mode
     public static Task selectedTask;
 
+    RecyclerView recyclerView;
+
     private int screenSize;
     private int orientation;
 
@@ -230,7 +234,7 @@ public class MainActivity extends AppCompatActivity implements
 
         if (((screenSize == 3 || screenSize == 4) && orientation == Configuration.ORIENTATION_LANDSCAPE)) {
             boolTabletLandscape = true;
-        }else{
+        } else {
             boolTabletLandscape = false;
         }
 
@@ -238,13 +242,13 @@ public class MainActivity extends AppCompatActivity implements
         sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         viewPager = findViewById(R.id.viewPager);
-        if(boolTabletLandscape) {
+        if (boolTabletLandscape) {
             viewPager.setAdapter(sectionsPagerAdapter);
         }
 
         tabLayout = findViewById(R.id.tabs);
 
-        if(boolTabletLandscape) {
+        if (boolTabletLandscape) {
             //listening for tab swipes and clicks
             viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
             pageListener = new PageListener();
@@ -341,7 +345,7 @@ public class MainActivity extends AppCompatActivity implements
         fabWidth = params.width;
 
         //Setting up the recycler view
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setHasFixedSize(true);
 
@@ -389,9 +393,9 @@ public class MainActivity extends AppCompatActivity implements
                     Task taskToReinstate = adapter.getTaskAt(viewHolder.getAdapterPosition());
                     taskViewModel.delete(adapter.getTaskAt(viewHolder.getAdapterPosition()));
                     showSnackbar(taskToReinstate);
-                        //showing motivational toast
-                        showKilledAffirmationToast();
-                //Actions to occur when deleting repeating task
+                    //showing motivational toast
+                    showKilledAffirmationToast();
+                    //Actions to occur when deleting repeating task
                 } else {
 
                     long interval = 0;
@@ -462,7 +466,7 @@ public class MainActivity extends AppCompatActivity implements
                             showKilledAffirmationToast();
                         }
                         preferences.edit().putInt(StringConstants.REPEAT_HINT_KEY, ++timesShown).apply();
-                    }else{
+                    } else {
                         //showing motivational toast
                         showKilledAffirmationToast();
                     }
@@ -472,7 +476,7 @@ public class MainActivity extends AppCompatActivity implements
                     long incorrectCalMillis = incorrectCal.getTimeInMillis() / 1000 / 60 / 60 / 24;
                     Calendar now = Calendar.getInstance();
                     long nowMillis = now.getTimeInMillis() / 1000 / 60 / 60 / 24;
-                    if(incorrectCalMillis <= nowMillis){
+                    if (incorrectCalMillis <= nowMillis) {
                         long errorCorrectedStamp = adapter.getTaskAt(viewHolder.getAdapterPosition()).getTimestamp();
                         switch (adapter.getTaskAt(viewHolder.getAdapterPosition()).getRepeatInterval()) {
                             case "day":
@@ -512,11 +516,26 @@ public class MainActivity extends AppCompatActivity implements
                                 adapter.getTaskAt(viewHolder.getAdapterPosition()).getTimestamp(),
                                 MainActivity.pendingIntent);
                     }
-                    adapter.notifyDataSetChanged();
+//                    adapter.notifyDataSetChanged();
                 }
 
+//                if(adapter.getItemCount() == 1){
+//                    selectedTask = null;
+//                }else {
+//                    selectedTask = adapter.getTaskAt(viewHolder.getAdapterPosition());
+//                }
+//                activityRootView.postInvalidate();
+//                adapter.notifyDataSetChanged();
+//                sectionsPagerAdapter.notifyDataSetChanged();
+
                 final Handler handler = new Handler();
-                final Runnable runnable = () -> adapter.notifyDataSetChanged();
+                final Runnable runnable = () -> {
+                    adapter.notifyDataSetChanged();
+
+                    if(adapter.getItemCount() != 0) {
+                        selectedTask = adapter.getTaskAt(viewHolder.getAdapterPosition() + 1);
+                    }
+                };
                 handler.postDelayed(runnable, 500);
                 toggleFab(true);
                 etTask.setText("");
@@ -560,6 +579,16 @@ public class MainActivity extends AppCompatActivity implements
                     mainActivityPresenter.addTask(null, 0, taskName, null,
                             calendar.getTimeInMillis(), false, false, 0);
 
+                    if (boolTabletLandscape) {
+                        selectedTask = null;
+//                        selectedTask = adapter.getTaskAt(0);
+//                        int id = taskViewModel.getTaskIdByName(taskName);
+//                        selectedTask = taskViewModel.getTask(id);
+//                        adapter.notifyDataSetChanged();
+//            recyclerView.setAdapter(adapter);
+//                        Log.d(TAG, "selected task: " + selectedTask.getTask());
+                    }
+
                     if (intRenameHint <= 2) {
                         if (intRenameHint == 2) {
                             showRenameHintToast();
@@ -575,7 +604,7 @@ public class MainActivity extends AppCompatActivity implements
 
                 return true;
 
-                //Actions to take when editing existing task
+            //Actions to take when editing existing task
             } else if (actionId == EditorInfo.IME_ACTION_DONE) {
 
                 if (!boolMute) {
@@ -619,7 +648,7 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    public static class PlaceholderFragment extends android.support.v4.app.Fragment implements SubtasksView{
+    public static class PlaceholderFragment extends android.support.v4.app.Fragment implements SubtasksView {
 
         private static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -638,8 +667,8 @@ public class MainActivity extends AppCompatActivity implements
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = null;
-            Button btnOpenRelevantActivity;
-            if(selectedTask != null) {
+            ImageButton btnOpenRelevantActivity;
+            if (selectedTask != null) {
                 //Setting up the reminder tab view
                 if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                     rootView = inflater.inflate(R.layout.tab_reminder, container, false);
@@ -647,23 +676,37 @@ public class MainActivity extends AppCompatActivity implements
                     TextView tvTabDate = rootView.findViewById(R.id.tvTabDate);
                     TextView tvTabTime = rootView.findViewById(R.id.tvTabTime);
                     TextView tvTabRepeat = rootView.findViewById(R.id.tvTabRepeat);
-
+                    TextView tvTabNoReminder = rootView.findViewById(R.id.tvTabNoReminder);
+                    ImageView imgTabDate = rootView.findViewById(R.id.imgTabCalendar);
+                    ImageView imgTabTime = rootView.findViewById(R.id.imgTabTime);
+                    ImageView imgTabRepeat = rootView.findViewById(R.id.imgTabRepeat);
                     if (selectedTask.getTimestamp() == 0) {
-                        tvTabDate.setText("There is no reminder set.");
+                        tvTabDate.setVisibility(View.GONE);
+                        tvTabTime.setVisibility(View.GONE);
+                        tvTabRepeat.setVisibility(View.GONE);
+                        imgTabDate.setVisibility(View.GONE);
+                        imgTabTime.setVisibility(View.GONE);
+                        imgTabRepeat.setVisibility(View.GONE);
+                        tvTabNoReminder.setVisibility(View.VISIBLE);
                     } else {
                         Calendar calendar = Calendar.getInstance();
                         calendar.setTimeInMillis(selectedTask.getTimestamp());
-                        int day = calendar.get(Calendar.DAY_OF_MONTH);
-                        int month = calendar.get(Calendar.MONTH);
-                        int year = calendar.get(Calendar.YEAR);
-                        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-                        int minute = calendar.get(Calendar.MINUTE);
-                        tvTabDate.setText("Day: " + day + "/" + month + "/" + year);
-                        tvTabTime.setText("Time: " + hour + ":" + minute);
+                        String formattedDate = mainActivityPresenter.getFormattedDate(selectedTask.getTimestamp());
+                        tvTabDate.setText(formattedDate);
+                        String formattedTime = mainActivityPresenter.getFormattedTime(selectedTask.getTimestamp());
+                        tvTabTime.setText(formattedTime);
                         if (selectedTask.getRepeatInterval() == null) {
-                            tvTabRepeat.setText("No repeat set");
+                            tvTabRepeat.setText("No repeat");
                         } else {
-                            tvTabRepeat.setText(selectedTask.getRepeatInterval());
+                            String interval = selectedTask.getRepeatInterval();
+                            if (interval.equals("day")) {
+                                tvTabRepeat.setText("Every day");
+                            } else if (interval.equals("week")) {
+                                tvTabRepeat.setText("Every week");
+                            } else if (interval.equals("monthly")) {
+                                tvTabRepeat.setText("Every month");
+                            }
+                            imgTabRepeat.setImageDrawable(getResources().getDrawable(R.drawable.tab_repeat));
                         }
                     }
                     btnOpenRelevantActivity.setOnClickListener(view -> {
@@ -671,17 +714,18 @@ public class MainActivity extends AppCompatActivity implements
                         intent.putExtra("task", selectedTask);
                         startActivity(intent);
                     });
-                //setting up the subtasks tab view
+                    //setting up the subtasks tab view
                 } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
                     rootView = inflater.inflate(R.layout.tab_subtasks, container, false);
                     btnOpenRelevantActivity = rootView.findViewById(R.id.btnTabSubtasks);
+                    TextView tvTabNoSubtasks = rootView.findViewById(R.id.tvTabNoSubtasks);
                     SubtaskViewModel subtaskViewModel = ViewModelProviders.of(this).get(SubtaskViewModel.class);
                     SubtasksPresenter subtasksPresenter = new SubtasksPresenterImpl(subtaskViewModel, selectedTask);
                     //checking if needed to display subtasks icon
                     List<Subtask> subtasks = subtasksPresenter.getSubtasksByParent(selectedTask.getId());
                     int subtasksSize = subtasks.size();
                     if (subtasksSize == 0) {
-                        btnOpenRelevantActivity.setText("There are no subtasks");
+                        tvTabNoSubtasks.setVisibility(View.VISIBLE);
                     } else {
                         //Setting up the recycler view
                         RecyclerView recyclerView = rootView.findViewById(R.id.subTasksTabRecyclerView);
@@ -707,11 +751,13 @@ public class MainActivity extends AppCompatActivity implements
                 } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 3) {
                     rootView = inflater.inflate(R.layout.tab_note, container, false);
                     btnOpenRelevantActivity = rootView.findViewById(R.id.btnTabNote);
-                    TextView tvNoNote = rootView.findViewById(R.id.tvTabNote);
+                    TextView tvTabNote = rootView.findViewById(R.id.tvTabNote);
+                    TextView tvTabNoNote = rootView.findViewById(R.id.tvTabNoNote);
                     if (selectedTask.getNote() == null) {
-                        tvNoNote.setText("There is no note for this task.");
+                        tvTabNoNote.setVisibility(View.VISIBLE);
                     } else {
-                        tvNoNote.setText(selectedTask.getNote());
+                        tvTabNote.setText(selectedTask.getNote());
+                        tvTabNote.setMovementMethod(new ScrollingMovementMethod());
                     }
                     btnOpenRelevantActivity.setOnClickListener(view -> {
                         Intent intent = new Intent(getContext(), NoteActivity.class);
@@ -754,7 +800,6 @@ public class MainActivity extends AppCompatActivity implements
         }
 
 
-
     }
 
 //    public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -778,7 +823,7 @@ public class MainActivity extends AppCompatActivity implements
 //    }
 
     private void showMotivationalToast() {
-        if(boolShowMotivation) {
+        if (boolShowMotivation) {
             //showing motivational toast
             int i = random.nextInt(7);
             while (strMotivation[i].equals(strLastToast)) {
@@ -812,53 +857,53 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void showRenameHintToast() {
-            toast.setText(R.string.longClickToRename);
-            final Handler handler = new Handler();
+        toast.setText(R.string.longClickToRename);
+        final Handler handler = new Handler();
 
-            final Runnable runnable = () -> {
-                mpHint.start();
-                toastView.startAnimation(AnimationUtils
-                        .loadAnimation(MainActivity.this,
-                                R.anim.enter_from_right_fast));
-                toastView.setVisibility(View.VISIBLE);
-                final Handler handler2 = new Handler();
-                final Runnable runnable2 = () -> {
-                    toastView.startAnimation
-                            (AnimationUtils.loadAnimation
-                                    (MainActivity.this,
-                                            android.R.anim.fade_out));
-                    toastView.setVisibility(View.GONE);
-                };
-                handler2.postDelayed(runnable2, 2500);
+        final Runnable runnable = () -> {
+            mpHint.start();
+            toastView.startAnimation(AnimationUtils
+                    .loadAnimation(MainActivity.this,
+                            R.anim.enter_from_right_fast));
+            toastView.setVisibility(View.VISIBLE);
+            final Handler handler2 = new Handler();
+            final Runnable runnable2 = () -> {
+                toastView.startAnimation
+                        (AnimationUtils.loadAnimation
+                                (MainActivity.this,
+                                        android.R.anim.fade_out));
+                toastView.setVisibility(View.GONE);
             };
+            handler2.postDelayed(runnable2, 2500);
+        };
 
-            handler.postDelayed(runnable, 500);
+        handler.postDelayed(runnable, 500);
     }
 
     private void showRepeatHintToast() {
-            toast.setText(R.string.youCanCancelRepeat);
-            final Handler handler = new Handler();
+        toast.setText(R.string.youCanCancelRepeat);
+        final Handler handler = new Handler();
 
-            final Runnable runnable = () -> {
-                mpHint.start();
-                toastView.startAnimation(AnimationUtils.loadAnimation
-                        (MainActivity.this, R.anim.enter_from_right_fast));
-                toastView.setVisibility(View.VISIBLE);
-                final Handler handler2 = new Handler();
-                final Runnable runnable2 = () -> {
-                    toastView.startAnimation
-                            (AnimationUtils.loadAnimation
-                                    (MainActivity.this, android.R.anim.fade_out));
-                    toastView.setVisibility(View.GONE);
-                };
-                handler2.postDelayed(runnable2, 2500);
+        final Runnable runnable = () -> {
+            mpHint.start();
+            toastView.startAnimation(AnimationUtils.loadAnimation
+                    (MainActivity.this, R.anim.enter_from_right_fast));
+            toastView.setVisibility(View.VISIBLE);
+            final Handler handler2 = new Handler();
+            final Runnable runnable2 = () -> {
+                toastView.startAnimation
+                        (AnimationUtils.loadAnimation
+                                (MainActivity.this, android.R.anim.fade_out));
+                toastView.setVisibility(View.GONE);
             };
+            handler2.postDelayed(runnable2, 2500);
+        };
 
-            handler.postDelayed(runnable, 500);
+        handler.postDelayed(runnable, 500);
     }
 
     private void showKilledAffirmationToast() {
-        if(boolShowMotivation) {
+        if (boolShowMotivation) {
             //showing motivational toast
             int i = random.nextInt(5);
             while (strKilledAffirmation[i].equals(strLastKilledToast)) {
@@ -1283,7 +1328,7 @@ public class MainActivity extends AppCompatActivity implements
         adapter.notifyItemChanged(preferences.getInt(StringConstants.REFRESH_THIS_ITEM, 0));
         toggleFab(true);
 
-        if(boolResetAdapter && boolTabletLandscape){
+        if (boolResetAdapter && boolTabletLandscape) {
 
             //the adapter which will return the fragments to be displayed
             sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
