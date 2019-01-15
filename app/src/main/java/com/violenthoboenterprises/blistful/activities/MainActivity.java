@@ -232,11 +232,12 @@ public class MainActivity extends AppCompatActivity implements
                 Configuration.SCREENLAYOUT_SIZE_MASK;
         orientation = getResources().getConfiguration().orientation;
 
-        if (((screenSize == 3 || screenSize == 4) && orientation == Configuration.ORIENTATION_LANDSCAPE)) {
-            boolTabletLandscape = true;
-        } else {
-            boolTabletLandscape = false;
-        }
+        boolTabletLandscape = getDeviceAndOrientation();
+//        if (((screenSize == 3 || screenSize == 4) && orientation == Configuration.ORIENTATION_LANDSCAPE)) {
+//            boolTabletLandscape = true;
+//        } else {
+//            boolTabletLandscape = false;
+//        }
 
         //the adapter which will return the fragments to be displayed
         sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -1328,6 +1329,15 @@ public class MainActivity extends AppCompatActivity implements
         adapter.notifyItemChanged(preferences.getInt(StringConstants.REFRESH_THIS_ITEM, 0));
         toggleFab(true);
 
+
+        boolTabletLandscape = getDeviceAndOrientation();
+//        if (((screenSize == 3 || screenSize == 4) && orientation == Configuration.ORIENTATION_LANDSCAPE)) {
+//            boolTabletLandscape = true;
+//        } else {
+//            boolTabletLandscape = false;
+//        }
+
+
         if (boolResetAdapter && boolTabletLandscape) {
 
             //the adapter which will return the fragments to be displayed
@@ -1339,8 +1349,18 @@ public class MainActivity extends AppCompatActivity implements
 
             boolResetAdapter = false;
 
+//            adapter.notifyDataSetChanged();
+
         }
 
+    }
+
+    private boolean getDeviceAndOrientation() {
+        if (((screenSize == 3 || screenSize == 4) && orientation == Configuration.ORIENTATION_LANDSCAPE)) {
+            return boolTabletLandscape = true;
+        } else {
+            return boolTabletLandscape = false;
+        }
     }
 
     @Override

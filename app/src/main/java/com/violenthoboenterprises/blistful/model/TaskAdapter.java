@@ -81,22 +81,19 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         holder.taskProperties.setVisibility(View.GONE);
         holder.tvDue.setTextColor(Color.BLACK);
 
-        holder.taskLayout.setBackground(context.getDrawable(R.drawable.item_background));
+        holder.viewTaskParent.setBackground(context.getDrawable(R.drawable.item_background));
 
         //highlight the selected task when in tablet landscape mode
         if (MainActivity.boolTabletLandscape) {
-            if(MainActivity.selectedTask != null) {
-                Log.d(TAG, "selectedTask: " + MainActivity.selectedTask.getId() + " currentTask: " + currentTask.getId());
-            }
 //            holder.taskLayout.setBackground(context.getDrawable(R.drawable.item_background));
             if (MainActivity.selectedTask == null) {
                 preferences.edit().putInt(StringConstants.REFRESH_THIS_ITEM, position).apply();
                 MainActivity.selectedTask = currentTask;
                 MainActivity.viewPager.setAdapter(MainActivity.sectionsPagerAdapter);
-                holder.taskLayout.setBackground(context.getDrawable(R.drawable.item_background_faded));
+                holder.viewTaskParent.setBackground(context.getDrawable(R.drawable.item_background_faded));
 //                activityRootView.postInvalidate();
             } else if (MainActivity.selectedTask == currentTask) {
-                holder.taskLayout.setBackground(context.getDrawable(R.drawable.item_background_faded));
+                holder.viewTaskParent.setBackground(context.getDrawable(R.drawable.item_background_faded));
             }
         }
 
@@ -159,6 +156,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         holder.taskLayout.setOnClickListener(view -> {
             //for better user experience tasks should not be clickable while keyboard is up
             if (!MainActivity.boolKeyboardShowing) {
+                Log.d(TAG, "boolTabletLandscape: " + MainActivity.boolTabletLandscape);
                 //only show properties if there is no tab layout
                 if (!MainActivity.boolTabletLandscape) {
                     //removing any other visible properties
@@ -189,7 +187,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
                     }
                     preferences.edit().putInt(StringConstants.REFRESH_THIS_ITEM, position).apply();
                     MainActivity.selectedTask = currentTask;
-                    holder.taskLayout.setBackground(context.getDrawable(R.drawable.item_background_faded));
+                    holder.viewTaskParent.setBackground(context.getDrawable(R.drawable.item_background_faded));
 //                    MainActivity.viewPager.setAdapter(MainActivity.sectionsPagerAdapter);
                     MainActivity.viewPager.setCurrentItem(MainActivity.intViewableTab);
                     MainActivity.sectionsPagerAdapter.notifyDataSetChanged();
@@ -507,6 +505,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         private ImageView alarmClock;
         private ImageView clipBoard;
         private ImageView postItNote;
+        private View viewTaskParent;
 
         TaskHolder(final View itemView) {
             super(itemView);
@@ -524,6 +523,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
             alarmClock = itemView.findViewById(R.id.imgAlarmSolid);
             clipBoard = itemView.findViewById(R.id.imgSubtasksSolid);
             postItNote = itemView.findViewById(R.id.imgNoteSolid);
+            viewTaskParent = itemView.findViewById(R.id.viewTaskParent);
             itemView.setOnClickListener(view -> {
                 int position = getAdapterPosition();
                 if (listener != null && position != RecyclerView.NO_POSITION) {

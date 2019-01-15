@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.job.JobScheduler;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -43,12 +44,16 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
     private SubtasksPresenter subtasksPresenter;
     public static boolean boolSubtasksKeyboardShowing;
     private View subtasksRootView;
+    //Needed so that the adapter knows whether to show the activity layout or the viewpager layout
+    public static boolean boolInSubtasks;
 
     @SuppressLint("ClickableViewAccessibility")
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_subtasks);
         Toolbar subTasksToolbar = findViewById(R.id.tbSubtasks);
+
+        boolInSubtasks = true;
 
         //Getting the parent task to which the subtasks are related
         //The parent task to which the subtasks belong
@@ -248,6 +253,7 @@ public class SubtasksActivity extends MainActivity implements SubtasksView {
     public void onBackPressed() {
 
         boolResetAdapter = true;
+        boolInSubtasks = false;
 
         super.onBackPressed();
 

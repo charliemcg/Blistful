@@ -7,7 +7,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/turquoise"
-    android:orientation="vertical"
     tools:context="com.violenthoboenterprises.blistful.activities.MainActivity">
 
     <android.support.v7.widget.Toolbar
@@ -18,7 +17,6 @@
         android:background="@color/turquoise"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.LightTheme"
-        app:layout_constraintBottom_toTopOf="@+id/imgBanner"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -37,57 +35,212 @@
 
     </android.support.v7.widget.Toolbar>
 
-    <RelativeLayout
-        android:id="@+id/adHolder"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:gravity="center"
-        app:layout_constraintBottom_toTopOf="@id/recyclerView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tb">
-
-        <com.google.android.gms.ads.AdView
-            android:id="@+id/adView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:elevation="100dp"
-            android:visibility="gone"
-            ads:adSize="SMART_BANNER"
-            ads:adUnitId="ca-app-pub-2378583121223638/3959260925"/>
-
-        <ImageView
-            android:id="@+id/imgBanner"
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:contentDescription="@string/accessBannerPromptingUser"
-            android:elevation="100dp"
-            android:onClick="showPro"
-            android:src="@drawable/banner"
-            android:visibility="gone"/>
-
-    </RelativeLayout>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/adHolder"
-        tools:listitem="@layout/item_task" />
+        android:orientation="horizontal"
+        ads:layout_constraintBottom_toBottomOf="parent"
+        ads:layout_constraintTop_toBottomOf="@id/tb">
 
-    <ImageView
-        android:id="@+id/imgNoTasks"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:contentDescription="@string/accessInformUserNoTasks"
-        android:src="@drawable/no_tasks_light"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/mainContents"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            ads:layout_constraintBottom_toBottomOf="parent"
+            ads:layout_constraintEnd_toStartOf="@id/pagerLayout"
+            ads:layout_constraintStart_toStartOf="parent"
+            ads:layout_constraintTop_toTopOf="parent">
+
+            <RelativeLayout
+                android:id="@+id/adHolder"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:gravity="center"
+                app:layout_constraintBottom_toTopOf="@id/recyclerView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.gms.ads.AdView
+                    android:id="@+id/adView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:elevation="100dp"
+                    android:visibility="gone"
+                    ads:adSize="SMART_BANNER"
+                    ads:adUnitId="ca-app-pub-2378583121223638/3959260925" />
+
+                <ImageView
+                    android:id="@+id/imgBanner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:contentDescription="@string/accessBannerPromptingUser"
+                    android:elevation="100dp"
+                    android:onClick="showPro"
+                    android:src="@drawable/banner"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/adHolder"
+                tools:listitem="@layout/item_task" />
+
+            <ImageView
+                android:id="@+id/imgNoTasks"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/accessInformUserNoTasks"
+                android:src="@drawable/no_tasks_light"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!--<EditText-->
+            <!--android:id="@+id/etTaskName"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="50dp"-->
+            <!--android:layout_alignParentBottom="true"-->
+            <!--android:background="@color/purple"-->
+            <!--android:hint="@string/taskTitle"-->
+            <!--android:imeOptions="actionDone"-->
+            <!--android:inputType="textCapSentences"-->
+            <!--android:maxLength="50"-->
+            <!--android:maxLines="1"-->
+            <!--android:padding="5dp"-->
+            <!--android:visibility="gone"-->
+            <!--app:layout_constraintBottom_toBottomOf="@id/recyclerView"-->
+            <!--app:layout_constraintEnd_toEndOf="parent"-->
+            <!--app:layout_constraintHorizontal_bias="0.0"-->
+            <!--app:layout_constraintStart_toStartOf="parent"-->
+            <!--app:layout_constraintTop_toTopOf="@id/tb"-->
+            <!--app:layout_constraintVertical_bias="1.0" />-->
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab"
+                android:layout_width="108dp"
+                android:layout_height="87dp"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="32dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:src="@drawable/ic_add"
+                app:backgroundTint="@color/purple"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.978"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.958" />
+
+            <RelativeLayout
+                android:id="@+id/toastView"
+                android:layout_width="wrap_content"
+                android:layout_height="70dp"
+                android:background="@color/purple"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.086"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.858">
+
+                <TextView
+                    android:id="@+id/tvToast"
+                    android:layout_width="wrap_content"
+                    android:layout_height="70dp"
+                    android:layout_margin="1dp"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:textColor="@color/dark_gray"
+                    android:textSize="19sp" />
+
+            </RelativeLayout>
+
+        </android.support.constraint.ConstraintLayout>
+
+        <RelativeLayout
+            android:id="@+id/pagerLayout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:background="@color/lightTurquoise"
+            ads:layout_constraintBottom_toBottomOf="parent"
+            ads:layout_constraintEnd_toEndOf="parent"
+            ads:layout_constraintStart_toEndOf="@id/mainContents"
+            ads:layout_constraintTop_toTopOf="parent">
+
+            <android.support.design.widget.AppBarLayout
+                android:id="@+id/appBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/lightTurquoise">
+
+                <!--<android.support.v7.widget.Toolbar-->
+                <!--android:id="@+id/toolbar"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="?attr/actionBarSize"-->
+                <!--android:layout_weight="1"-->
+                <!--android:background="?attr/colorPrimary"-->
+                <!--app:layout_scrollFlags="scroll|enterAlways"-->
+                <!--app:title="@string/app_name">-->
+
+                <!--</android.support.v7.widget.Toolbar>-->
+
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/tabs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <android.support.design.widget.TabItem
+                        android:id="@+id/tabItem"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Reminder" />
+
+                    <android.support.design.widget.TabItem
+                        android:id="@+id/tabItem2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Subtasks" />
+
+                    <android.support.design.widget.TabItem
+                        android:id="@+id/tabItem3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Note" />
+
+                </android.support.design.widget.TabLayout>
+            </android.support.design.widget.AppBarLayout>
+
+            <View
+                android:id="@+id/divPageLayout"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/appBar"
+                android:background="@color/dark_gray" />
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/divPageLayout" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
 
     <EditText
         android:id="@+id/etTaskName"
@@ -102,56 +255,11 @@
         android:maxLines="1"
         android:padding="5dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/recyclerView"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/tb"
         app:layout_constraintVertical_bias="1.0" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="108dp"
-        android:layout_height="87dp"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="32dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:src="@drawable/ic_add"
-        app:backgroundTint="@color/purple"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.978"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.958" />
-
-    <RelativeLayout
-        android:id="@+id/toastView"
-        android:layout_width="wrap_content"
-        android:layout_height="70dp"
-        android:background="@color/purple"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.086"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.858">
-
-        <TextView
-            android:id="@+id/tvToast"
-            android:layout_width="wrap_content"
-            android:layout_height="70dp"
-            android:layout_margin="1dp"
-            android:gravity="center_vertical"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:textColor="@color/dark_gray"
-            android:textSize="19sp" />
-
-    </RelativeLayout>
 
 </android.support.constraint.ConstraintLayout>

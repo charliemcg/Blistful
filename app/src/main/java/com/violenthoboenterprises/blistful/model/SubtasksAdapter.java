@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.violenthoboenterprises.blistful.R;
 import com.violenthoboenterprises.blistful.activities.MainActivity;
+import com.violenthoboenterprises.blistful.activities.SubtasksActivity;
 import com.violenthoboenterprises.blistful.view.SubtasksView;
 
 import java.util.ArrayList;
@@ -25,13 +26,15 @@ public class SubtasksAdapter extends RecyclerView.Adapter<SubtasksAdapter.Subtas
     private SubtasksView subtaskView;
 
     public SubtasksAdapter(SubtasksView subtaskView) {
+
         this.subtaskView = subtaskView;
+
     }
 
     @Override
     public SubtasksAdapter.SubtaskHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView;
-        if(MainActivity.boolTabletLandscape) {
+        if(/*MainActivity.boolTabletLandscape*/!SubtasksActivity.boolInSubtasks) {
             itemView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.item_tab_subtask, parent, false);
         }else{
