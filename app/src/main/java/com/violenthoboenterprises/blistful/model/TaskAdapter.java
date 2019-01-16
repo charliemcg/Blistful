@@ -156,7 +156,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskHolder> {
         holder.taskLayout.setOnClickListener(view -> {
             //for better user experience tasks should not be clickable while keyboard is up
             if (!MainActivity.boolKeyboardShowing) {
-                Log.d(TAG, "boolTabletLandscape: " + MainActivity.boolTabletLandscape);
                 //only show properties if there is no tab layout
                 if (!MainActivity.boolTabletLandscape) {
                     //removing any other visible properties

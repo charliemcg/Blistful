@@ -417,10 +417,10 @@ public class MainActivity extends AppCompatActivity implements
                     if (diff < 0) {
                         //cancel reminder
                         if (preferences.getBoolean(StringConstants.REMINDERS_AVAILABLE_KEY, false)) {
-                            PendingIntent.getBroadcast(getApplicationContext(),
-                                    adapter.getTaskAt(viewHolder.getAdapterPosition()).getId(),
-                                    MainActivity.alertIntent,
-                                    PendingIntent.FLAG_UPDATE_CURRENT).cancel();
+//                            PendingIntent.getBroadcast(getApplicationContext(),
+//                                    adapter.getTaskAt(viewHolder.getAdapterPosition()).getId(),
+//                                    MainActivity.alertIntent,
+//                                    PendingIntent.FLAG_UPDATE_CURRENT).cancel();
                         }
                         switch (adapter.getTaskAt(viewHolder.getAdapterPosition()).getRepeatInterval()) {
                             case "day":
@@ -442,7 +442,7 @@ public class MainActivity extends AppCompatActivity implements
                         //creating new reminder
                         MainActivity.alertIntent = new Intent(getApplicationContext(), AlertReceiver.class);
                         MainActivity.alertIntent.putExtra("snoozeStatus", false);
-                        MainActivity.alertIntent.putExtra("task", adapter.getTaskAt(viewHolder.getAdapterPosition()));
+                        MainActivity.alertIntent.putExtra("task", adapter.getTaskAt(viewHolder.getAdapterPosition()).getId());
 
                         //Setting alarm
                         MainActivity.pendingIntent = PendingIntent.getBroadcast(

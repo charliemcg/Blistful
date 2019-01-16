@@ -653,15 +653,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
                 int newDay = reminderCal.get(Calendar.DAY_OF_MONTH);
                 reminderPresenter.setDay(newDay);
             }
-                //Setting timestamp of the reminder
-//                calendar.set(Calendar.YEAR, reminderPresenter.getYear());
-//                calendar.set(Calendar.MONTH, reminderPresenter.getMonth());
-//                calendar.set(Calendar.DAY_OF_MONTH, reminderPresenter.getDay());
-//                calendar.set(Calendar.HOUR_OF_DAY, reminderPresenter.getHour());
-//                calendar.set(Calendar.MINUTE, reminderPresenter.getMinute());
                 //Updating the task
-//                reminderPresenter.setTimestamp(calendar.getTimeInMillis());
-//                reminderPresenter.setDisplayedTimestamp(calendar.getTimeInMillis());
                 reminderPresenter.setTimestamp(reminderCal.getTimeInMillis());
                 reminderPresenter.setDisplayedTimestamp(reminderCal.getTimeInMillis());
 
@@ -670,12 +662,6 @@ public class ReminderActivity extends MainActivity implements ReminderView {
                 }
 
                 reminderPresenter.setOriginalDay(reminderPresenter.getDay());
-
-            //don't save. Due time set to in the past
-//            }else{
-//                deleteData();
-//                MainActivity.boolDueInPast = true;
-//            }
 
         }
 
@@ -687,7 +673,7 @@ public class ReminderActivity extends MainActivity implements ReminderView {
 
         MainActivity.alertIntent = new Intent(getApplicationContext(), AlertReceiver.class);
         MainActivity.alertIntent.putExtra("snoozeStatus", false);
-        MainActivity.alertIntent.putExtra("task", task);
+        MainActivity.alertIntent.putExtra("task", task.getId());
 
         //Setting alarm
         MainActivity.pendingIntent = PendingIntent.getBroadcast(
